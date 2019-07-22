@@ -54,6 +54,20 @@ functions:
           path: characters/{id}/remove_item
           method: put
           cors: true
+  get:
+    handler: characters/get.get
+    events:
+      - http:
+          path: characters/{id}
+          method: get
+          cors: true
+  list:
+    handler: characters/list.list
+    events:
+      - http:
+          path: characters
+          method: get
+          cors: true
 
 resources:
   Resources:

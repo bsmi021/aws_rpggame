@@ -9,6 +9,8 @@ os.environ['DYNAMODB_TABLE'] = 'CHARS'
 from create import create
 from add_item import add_item
 from remove_item import remove_item
+from get import get
+from list import list
 
 if __name__ == "__main__":
     request = {
@@ -21,6 +23,9 @@ if __name__ == "__main__":
 
     print('Created character')
     print(response)
+
+    char_id = json.loads(response['body'])['id']
+
     print()
 
     request = {
@@ -70,3 +75,20 @@ if __name__ == "__main__":
 
     print(response)
     
+    request = {
+        'pathParameters': {
+            'id': char_id
+        }
+        
+    }
+
+    character = get(request, None)
+
+    print(character)
+
+    print()
+    print('All characters')
+
+    response = list(None, None)
+
+    print(response)
