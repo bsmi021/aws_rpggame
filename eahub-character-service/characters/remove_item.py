@@ -1,3 +1,5 @@
+# characters/remove_item.py
+
 import os
 import json
 import logging
