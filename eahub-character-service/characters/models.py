@@ -1,3 +1,5 @@
+# characters/models.py
+
 import os
 import json
 from datetime import datetime
@@ -40,6 +42,7 @@ class InventoryItemMap(MapAttribute):
     slot_name = UnicodeAttribute()
     damage = NumberAttribute()
     crit_chance = NumberAttribute()
+    stamina = NumberAttribute(default=10)
 
 class CharacterModel(BaseModel):
     class Meta:
@@ -64,12 +67,16 @@ class CharacterModel(BaseModel):
     min_damage = NumberAttribute(default=2)
     max_damage = NumberAttribute(default=8)
     crit_chance = NumberAttribute(default=.05)
+    hit_points = NumberAttribute(default=100)
+    current_hp = NumberAttribute(default=100)
+
     inventory = ListAttribute(of=InventoryItemMap)
 
-    def calc_offense(self):
+    def calc_stats(self):
         base_min = self.base_min_damage
         base_max = self.base_max_damage
         base_crit = self.base_crit_chance
+        base_hp = self.base_hp
 
         if self.inventory is not None:
             base_crit += Enumerable(self.inventory) \
@@ -78,6 +85,8 @@ class CharacterModel(BaseModel):
                 .sum(lambda x: round(x.damage / 4.75))
             base_max += Enumerable(self.inventory) \
                 .sum(lambda x: round(x.damage / 2))
+            base_hp += Enumerable(self.inventory) \
+                .sum(lambda x: x.stamina * 10)
         else:
             self.inventory = []
 
@@ -86,6 +95,8 @@ class CharacterModel(BaseModel):
         self.crit_chance = base_crit
         self.max_damage = base_max
         self.min_damage = base_min
+        self.hit_points = base_hp
+        self.current_hp = self.hit_points
 
     def add_item(self, item):
         if self.inventory is None:
@@ -98,7 +109,7 @@ class CharacterModel(BaseModel):
             self.inventory.remove(existing_item)
         
         self.inventory.append(item)
-        self.calc_offense()
+        self.calc_stats()
         self.save()
 
     def remove_item(self, item_id):
@@ -111,11 +122,11 @@ class CharacterModel(BaseModel):
         if item is not None:
             self.inventory.remove(item)
 
-        self.calc_offense()
+        self.calc_stats()
         self.save()
 
     def save(self, conditional_operator=None, **expected_values):
-        self.calc_offense()
+        self.calc_stats()
         self.updated_at = datetime.utcnow()
         super(CharacterModel, self).save()
 

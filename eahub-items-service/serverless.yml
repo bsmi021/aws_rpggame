@@ -1,0 +1,93 @@
+service: sascraft-item-service # NOTE: update this with your service name
+
+provider:
+  name: aws
+  runtime: python3.7
+  region: us-east-2
+  stage: dev
+  environment:
+    DYNAMODB_TABLE: ${self:service}-ITEMS-${opt:stage, self:provider.stage}
+    REGION: ${self:provider.region}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - sqs:*
+      Resource:
+        - "*"
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:DescribeTable
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+package:
+  exclude:
+    - env/**
+    - node_modules/**
+    - secrets.yml
+    - .gitignore
+
+functions:
+  create:
+    handler: items/create.create
+    events:
+      - http:
+          path: items
+          method: post
+          cors: true
+  update:
+    handler: items/update.update
+    events:
+      - http:
+          path: items/{id}
+          method: put
+          cors: true
+  get:
+    handler: items/get.get
+    events:
+      - http:
+          path: items/{id}
+          method: get
+          cors: true
+  list:
+    handler: items/list.list
+    events:
+      - http:
+          path: items
+          method: get
+          cors: true
+
+resources:
+  Resources:
+    ItemsDynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - 
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+
+plugins:
+  - serverless-python-requirements
+  - serverless-pseudo-parameters
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  secrets: ${file(secrets.yml):${self:custom.stage}}
+  pythonRequirements:
+    dockerizePip: false
+

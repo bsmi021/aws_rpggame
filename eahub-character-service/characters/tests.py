@@ -15,7 +15,7 @@ from list import list
 if __name__ == "__main__":
     request = {
         'body': json.dumps({
-            'name': 'Angst'
+            'name': 'Edge'
         })
     }
 
@@ -35,7 +35,8 @@ if __name__ == "__main__":
             'slot': 1,
             'slot_name': 'HEAD',
             'damage': 25,
-            'crit_chance': .033
+            'crit_chance': .033,
+            'stamina': 15
         })
         }
 
@@ -52,7 +53,8 @@ if __name__ == "__main__":
             'slot': 2,
             'slot_name': 'CHEST',
             'damage': 40,
-            'crit_chance': .013
+            'crit_chance': .013,
+            'stamina': 5
         })
         }
 
