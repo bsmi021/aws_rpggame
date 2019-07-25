@@ -1,0 +1,14 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "sascraftdemo-dev-20190725111931-authRole",
+            "UnauthRoleArn": "arn:aws:iam::815248853218:role/sascraftdemo-dev-20190725111931-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::815248853218:role/sascraftdemo-dev-20190725111931-authRole",
+            "Region": "us-east-2",
+            "DeploymentBucketName": "sascraftdemo-dev-20190725111931-deployment",
+            "UnauthRoleName": "sascraftdemo-dev-20190725111931-unauthRole",
+            "StackName": "sascraftdemo-dev-20190725111931",
+            "StackId": "arn:aws:cloudformation:us-east-2:815248853218:stack/sascraftdemo-dev-20190725111931/9d2ab7b0-aeef-11e9-973c-0afb0832a490"
+        }
+    }
+}

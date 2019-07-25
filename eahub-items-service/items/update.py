@@ -30,7 +30,10 @@ def update(event, context):
 
     response = {
         'statusCode': 200,
-        'body': json.dumps(dict(item))
+        'body': json.dumps(dict(item)),
+        'headers': {
+            'Access-Control-Allow-Origin': '*'
+        }
     }
 
     logger.debug(f'Response: {json.dumps(response)}')

@@ -26,7 +26,10 @@ def list(event, context):
             {
                 "items": [dict(x) for x in results]
                 }
-            )
+            ),
+        'headers': {
+            'Access-Control-Allow-Origin': '*'
+        }
     }
 
     return response

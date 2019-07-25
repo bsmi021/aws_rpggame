@@ -1,0 +1,45 @@
+service: sascraft-char-aggr-service # NOTE: update this with your service name
+
+provider:
+  name: aws
+  runtime: python3.7
+  region: us-east-2
+  stage: dev
+  environment:
+    REGION: ${self:provider.region}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - lambda:InvokeFunction
+      Resource:
+        - "arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-item-service-${opt:stage, self:provider.stage}-get"
+        - "arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-add_item"
+package:
+  exclude:
+    - env/**
+    - node_modules/**
+    - secrets.yml
+    - .gitignore
+
+functions:
+  equip_item:
+    handler: aggregates/equip_item.equip_item
+    environment:
+      ITEM_SERVICE: sascraft-item-service-${opt:stage, self:provider.stage}-get
+      ADD_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-add_item
+    events:
+      - http:
+          path: characters/{id}/equip_item
+          method: put
+          cors: true
+    
+plugins:
+  - serverless-python-requirements
+  - serverless-pseudo-parameters
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  secrets: ${file(secrets.yml):${self:custom.stage}}
+  pythonRequirements:
+    dockerizePip: false
+

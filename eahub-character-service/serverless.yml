@@ -42,11 +42,6 @@ functions:
           cors: true
   add_item:
     handler: characters/add_item.add_item
-    events:
-      - http:
-          path: characters/{id}/add_item
-          method: put
-          cors: true
   remove_item:
     handler: characters/remove_item.remove_item
     events:
