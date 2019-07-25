@@ -48,8 +48,10 @@ export class Items extends React.Component<RouteComponentProps, ItemsState> {
           {this.state.items.map(item => {
             return (
               <li key={item.id}>
-                <p>{item.id}</p>
-                <Link to={`/items/${item.id}`}>{item.name}</Link>
+                <p>
+                  <Link to={`/items/${item.id}`}>{item.name}</Link>:{' '}
+                  {item.slot_name}
+                </p>
               </li>
             );
           })}

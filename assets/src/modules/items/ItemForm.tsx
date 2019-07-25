@@ -8,20 +8,22 @@ import {
   Button
 } from 'react-bootstrap';
 import { API } from 'aws-amplify';
+import { Redirect } from 'react-router';
 
 interface Props {}
 
 interface IState {
   name: string;
   description: string;
-  quality: number;
+  quality: string;
   slot: string;
-  damage: number;
-  stamina: number;
-  crit_chance: number;
+  damage: string;
+  stamina: string;
+  crit_chance: string;
   item?: IItem;
   isLoading: boolean;
   toConfirm: boolean;
+  shouldRedirect: boolean;
 }
 
 export class ItemForm extends React.Component<Props, IState> {
@@ -32,12 +34,13 @@ export class ItemForm extends React.Component<Props, IState> {
       name: '',
       description: '',
       slot: '1',
-      quality: 1,
-      damage: 10,
-      stamina: 10,
-      crit_chance: 0.02,
+      quality: '1',
+      damage: '10',
+      stamina: '10',
+      crit_chance: '0.02',
       isLoading: true,
-      toConfirm: false
+      toConfirm: false,
+      shouldRedirect: false
     };
   }
 
@@ -51,6 +54,16 @@ export class ItemForm extends React.Component<Props, IState> {
     });
   };
 
+  handleNumberChange = (event: any) => {
+    const target = event.target as HTMLInputElement;
+    const re: RegExp = /^[0-9.,]+$/;
+    if (target.value === '' || re.test(target.value))
+      this.setState({
+        ...this.state,
+        [target.name as any]: target.value
+      });
+  };
+
   onSubmit = () => {
     const item = this.state;
 
@@ -58,15 +71,13 @@ export class ItemForm extends React.Component<Props, IState> {
       body: {
         name: item.name,
         description: item.description,
-        quality: 1, //item.quality,
-        slot: 2, // item.slot,
-        damage: 30, //item.damage,
-        stamina: 20, //item.stamina,
-        crit_chance: 0.22 //item.crit_chance
+        quality: Number(item.quality),
+        slot: Number(item.slot),
+        damage: Number(item.damage),
+        stamina: Number(item.stamina),
+        crit_chance: Number(item.crit_chance) * 0.01
       }
     };
-
-    alert(JSON.stringify(myInit));
 
     API.post('items', '/items', myInit)
       .then(response => {
@@ -97,7 +108,40 @@ export class ItemForm extends React.Component<Props, IState> {
                   onChange={this.handleChange}
                 />
                 <Form.Label>Quality: </Form.Label>
-
+                <Form.Control
+                  name="quality"
+                  type="text"
+                  value={this.state.quality}
+                  onChange={this.handleNumberChange}
+                />
+                <Form.Label>Slot: </Form.Label>
+                <Form.Control
+                  name="slot"
+                  type="text"
+                  value={this.state.slot}
+                  onChange={this.handleNumberChange}
+                />
+                <Form.Label>Damage: </Form.Label>
+                <Form.Control
+                  name="damage"
+                  type="text"
+                  value={this.state.damage}
+                  onChange={this.handleNumberChange}
+                />
+                <Form.Label>Stamina: </Form.Label>
+                <Form.Control
+                  name="stamina"
+                  type="text"
+                  value={this.state.stamina}
+                  onChange={this.handleNumberChange}
+                />
+                <Form.Label>Critical Strike Chance: </Form.Label>
+                <Form.Control
+                  name="crit_chance"
+                  type="text"
+                  value={this.state.crit_chance}
+                  onChange={this.handleNumberChange}
+                />
                 <Button onClick={this.onSubmit}>Submit</Button>
               </FormGroup>
             </div>

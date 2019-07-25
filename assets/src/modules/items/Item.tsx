@@ -23,11 +23,16 @@ const Item: React.SFC<Props> = props => {
           <Col>Slot: {item.slot_name}</Col>
         </Row>
         <Row>
-          <Col><h6>{item.quality_name}</h6></Col>
+          <Col>
+            <h6>{item.quality_name}</h6>
+          </Col>
         </Row>
         <Row>
-          <Col><i>{item.description}</i></Col>
+          <Col>
+            <i>{item.description}</i>
+          </Col>
         </Row>
+        <Row />
         <Row>
           <Col>Damage: {item.damage}</Col>
           <Col>Critical Strike Chance %: {item.crit_chance}</Col>

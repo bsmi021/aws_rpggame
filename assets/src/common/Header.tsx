@@ -25,9 +25,7 @@ const Header: React.SFC<RouteComponentProps> = props => {
   };
   return (
     <header className="header">
-
       <Navbar bg="dark" variant="dark" expand="lg">
-        
         <Navbar.Brand href="/home">{'SASCraft'}</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
@@ -36,20 +34,19 @@ const Header: React.SFC<RouteComponentProps> = props => {
             <Nav.Link href="/home">Home</Nav.Link>
             <Nav.Link href="/items">Items</Nav.Link>
             <NavDropdown title="Admin" id="basic-nav-dropdown">
-              <NavDropdown.Item href="#items/3.1">Items</NavDropdown.Item>
+              <NavDropdown.Item href="/add_item">Add Item</NavDropdown.Item>
             </NavDropdown>
           </Nav>
 
           <div className="search-container">
-        <input
-          type="search"
-          placeholder="search"
-          value={search}
-          onChange={handleSearchChange}
-          onKeyDown={handleSearchKeydown}
-        />
-      </div>
-
+            <input
+              type="search"
+              placeholder="search"
+              value={search}
+              onChange={handleSearchChange}
+              onKeyDown={handleSearchKeydown}
+            />
+          </div>
         </Navbar.Collapse>
       </Navbar>
     </header>
