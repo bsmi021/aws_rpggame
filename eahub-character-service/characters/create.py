@@ -25,6 +25,7 @@ def create(event, context):
     character = CharacterModel(id=str(uuid4()),
                                name=data.get('name'),
                                account=data.get('account', 'None'),
+                               player_class=data.get('player_class'),
                                created_at=datetime.utcnow())
 
     character.save()

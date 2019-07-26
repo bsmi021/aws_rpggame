@@ -1,14 +1,7 @@
-import React, { Component, Fragment } from 'react';
-import { LinkContainer } from 'react-router-bootstrap';
-import {
-  Link,
-  withRouter,
-  RouteComponentProps,
-  NavLink
-} from 'react-router-dom';
-import { Nav, Navbar, NavItem, NavDropdown } from 'react-bootstrap';
+import React from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import '../App.css';
-import { Routes } from '../Routes';
 import 'url-search-params-polyfill';
 
 const Header: React.SFC<RouteComponentProps> = props => {

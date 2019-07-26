@@ -1,12 +1,10 @@
 import React from 'react';
-import PropsRoute from './common/PropsRoute';
 import Items from './modules/items/Items';
 import {
   BrowserRouter as Router,
   Route,
   RouteComponentProps,
-  Switch,
-  Redirect
+  Switch
 } from 'react-router-dom';
 import Header from './common/Header';
 import ItemPage from './modules/items/ItemPage';

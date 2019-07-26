@@ -1,0 +1,10 @@
+.CharacterHeader {
+  background-color: lightslategray;
+}
+.CharacterHeader.Character-name {
+  font-size: 40px;
+}
+.CharacterHeader.Character-info {
+  font-size: 16px;
+  vertical-align: bottom;
+}

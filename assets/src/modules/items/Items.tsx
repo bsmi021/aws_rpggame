@@ -1,5 +1,4 @@
 import React from 'react';
-import { ItemPage } from './ItemPage';
 import { API } from 'aws-amplify';
 import { IItem } from './ItemType';
 import { Link, RouteComponentProps } from 'react-router-dom';

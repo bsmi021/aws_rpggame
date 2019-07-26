@@ -19,4 +19,6 @@ export interface ICharacter {
   hit_points: number;
   current_hp: number;
   inventory?: IItem[];
+  created_at: string;
+  updated_at: string;
 }

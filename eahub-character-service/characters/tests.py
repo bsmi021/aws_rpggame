@@ -22,7 +22,8 @@ if __name__ == "__main__":
 
     request = {
         'body': json.dumps({
-            'name': 'Edge'
+            'name': 'Chico',
+            'player_class': 3
         })
     }
 

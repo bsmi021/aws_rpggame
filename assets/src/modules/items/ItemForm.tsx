@@ -1,14 +1,7 @@
 import * as React from 'react';
 import { IItem } from './ItemType';
-import {
-  FormGroup,
-  FormControl,
-  Form,
-  FormLabel,
-  Button
-} from 'react-bootstrap';
+import { FormGroup, Form, Button } from 'react-bootstrap';
 import { API } from 'aws-amplify';
-import { Redirect } from 'react-router';
 
 interface Props {}
 

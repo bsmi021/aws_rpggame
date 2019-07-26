@@ -1,6 +1,6 @@
 import React from 'react';
 import { API } from 'aws-amplify';
-import { Prompt, RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import { IItem } from './ItemType';
 import Item from './Item';
 
