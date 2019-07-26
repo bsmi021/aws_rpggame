@@ -8,8 +8,10 @@ from uuid import uuid4
 
 if 'ENV' in os.environ:
     from models import ItemModel
+    from utils import ModelEncoder
 else:
     from items.models import ItemModel
+    from items.utils import ModelEncoder
 
 log_level = os.environ.get('LOG_LEVEL', 'INFO')
 logging.root.setLevel(logging.getLevelName(log_level))
@@ -30,7 +32,7 @@ def update(event, context):
 
     response = {
         'statusCode': 200,
-        'body': json.dumps(dict(item)),
+        'body': json.dumps(item, cls=ModelEncoder),
         'headers': {
             'Access-Control-Allow-Origin': '*'
         }

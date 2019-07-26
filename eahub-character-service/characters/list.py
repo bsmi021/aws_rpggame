@@ -8,8 +8,10 @@ from uuid import uuid4
 
 if 'ENV' in os.environ:
     from models import CharacterModel, InventoryItemMap
+    from utils import ModelEncoder
 else:
     from characters.models import CharacterModel, InventoryItemMap
+    from characters.utils import ModelEncoder
 
 log_level = os.environ.get('LOG_LEVEL', 'INFO')
 logging.root.setLevel(logging.getLevelName(log_level))
@@ -24,9 +26,9 @@ def list(event, context):
         'statusCode': 200,
         'body': json.dumps(
             {
-                "characters": [dict(x) for x in characters]
+                "characters": [x for x in characters]
                 }
-            ),
+            , cls=ModelEncoder),
         'headers': {
             'Access-Control-Allow-Origin': '*'
         }

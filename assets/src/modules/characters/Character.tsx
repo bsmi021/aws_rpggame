@@ -33,6 +33,7 @@ const Character: React.SFC<Props> = props => {
                     <li key={item.id}>
                       <div>
                         <Link to={`/items/${item.id}`}>{item.name}</Link>
+                        {item.slot}
                         {item.slot_name}
                       </div>
                     </li>

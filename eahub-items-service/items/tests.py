@@ -12,6 +12,7 @@ from create import create
 from update import update
 from get import get
 from list import list
+from models import ItemModel
 
 def create_item():
     # test creating an item
@@ -55,6 +56,9 @@ def update_item(item, damage, stamina, crit_chance):
     return response
 
 if __name__ == "__main__":
+
+    if not ItemModel.exists():
+        ItemModel.create_table(read_capacity_units=100, write_capacity_units=100, wait=True)
 
     item = create_item()
     print(item)

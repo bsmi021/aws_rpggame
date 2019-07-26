@@ -134,6 +134,8 @@ class CharacterModel(BaseModel):
         return json.dumps(dict(self))
 
 
+
+
 if __name__ == "__main__":
     import random
 
@@ -155,3 +157,7 @@ if __name__ == "__main__":
     character_1.save()
     print()
     print(character_1)
+
+    print(character_1.to_json())
+
+    

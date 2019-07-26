@@ -13,8 +13,13 @@ from add_item import add_item
 from remove_item import remove_item
 from get import get
 from list import list
+from models import CharacterModel, InventoryItemMap
 
 if __name__ == "__main__":
+
+    if not CharacterModel.exists():
+        CharacterModel.create_table(read_capacity_units=100, write_capacity_units=100, wait=True)
+
     request = {
         'body': json.dumps({
             'name': 'Edge'
@@ -88,7 +93,9 @@ if __name__ == "__main__":
 
     character = get(request, None)
 
-    print(character)
+    print()
+    print()
+    print(character['body'])
 
     print()
     print('All characters')
@@ -96,3 +103,24 @@ if __name__ == "__main__":
     response = list(None, None)
 
     print(response)
+
+
+    
+    character_1 = CharacterModel(name='Angst')
+
+    character_1.save()
+
+    print(character_1)
+
+    character_1.add_item(InventoryItemMap(id=str(uuid4()), slot=1, slot_name='Head', damage=21, crit_chance=.025))
+    character_1.save()
+    print()
+    print(character_1)
+
+    character_1.add_item(InventoryItemMap(id=str(uuid4()), slot=1, slot_name='Head', damage=15, crit_chance=.033))
+    character_1.save()
+    print()
+    print(character_1)
+
+
+    
