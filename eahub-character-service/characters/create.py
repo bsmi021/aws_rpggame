@@ -29,7 +29,10 @@ def create(event, context):
 
     response = {
         'statusCode': 200,
-        'body': json.dumps(dict(character))
+        'body': json.dumps(dict(character)),
+        'headers': {
+            'Access-Control-Allow-Origin': '*'
+        }
     }
 
     logger.debug(f'Response: {json.dumps(response)}')

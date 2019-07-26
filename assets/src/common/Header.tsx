@@ -32,6 +32,7 @@ const Header: React.SFC<RouteComponentProps> = props => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto" variant="pills" defaultActiveKey="/home">
             <Nav.Link href="/home">Home</Nav.Link>
+            <Nav.Link href="/characters">Characters</Nav.Link>
             <Nav.Link href="/items">Items</Nav.Link>
             <NavDropdown title="Admin" id="basic-nav-dropdown">
               <NavDropdown.Item href="/add_item">Add Item</NavDropdown.Item>

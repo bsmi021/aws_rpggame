@@ -12,6 +12,8 @@ import Header from './common/Header';
 import ItemPage from './modules/items/ItemPage';
 import NotFound from './modules/notFound/NotFound';
 import AddItem from './modules/items/AddItem';
+import CharacterList from './modules/characters/CharacterList';
+import CharacterPage from './modules/characters/CharacterPage';
 
 const RoutesWrap: React.SFC = () => {
   return (
@@ -36,6 +38,8 @@ export const Routes: React.SFC<RouteComponentProps> = props => {
         <Route path="/items" exact component={Items} />
         <Route path="/items/:id" exact component={ItemPage} />
         <Route path="/add_item" exact component={AddItem} />
+        <Route path="/characters" exact component={CharacterList} />
+        <Route path="/characters/:id" exact component={CharacterPage} />
         <Route component={NotFound} />
       </Switch>
     </div>

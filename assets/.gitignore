@@ -10,6 +10,7 @@
 
 # production
 /build
+/config.js
 
 # misc
 .DS_Store
@@ -32,3 +33,4 @@ dist/
 node_modules/
 aws-exports.js
 awsconfiguration.json
+config.js
