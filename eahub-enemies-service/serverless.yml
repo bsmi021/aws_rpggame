@@ -1,0 +1,84 @@
+service: sascraft-enemy-service # NOTE: update this with your service name
+
+provider:
+  name: aws
+  runtime: python3.7
+  region: us-east-2
+  stage: dev
+  environment:
+    DYNAMODB_TABLE: ${self:service}-ENEMIES-${opt:stage, self:provider.stage}
+    REGION: ${self:provider.region}
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - sqs:*
+      Resource:
+        - '*'
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:DescribeTable
+      Resource: 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}'
+
+package:
+  exclude:
+    - env/**
+    - node_modules/**
+    - secrets.yml
+    - .gitignore
+
+functions:
+  create:
+    handler: enemies/create.create
+    events:
+      - http:
+          path: enemies
+          method: post
+          cors: true
+
+  get:
+    handler: enemies/get.get
+    events:
+      - http:
+          path: enemies/{id}
+          method: get
+          cors: true
+  list:
+    handler: enemies/list.list
+    events:
+      - http:
+          path: enemies
+          method: get
+          cors: true
+
+resources:
+  Resources:
+    EnemiesDynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+
+plugins:
+  - serverless-python-requirements
+  - serverless-pseudo-parameters
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  secrets: ${file(secrets.yml):${self:custom.stage}}
+  pythonRequirements:
+    dockerizePip: false

@@ -11,7 +11,7 @@ if 'ENV' in os.environ:
     from utils import ModelEncoder
 else:
     from characters.models import CharacterModel, InventoryItemMap
-    from utils import ModelEncoder
+    from characters.utils import ModelEncoder
 
 
 

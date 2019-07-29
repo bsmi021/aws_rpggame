@@ -48,9 +48,9 @@ export class CharacterList extends React.Component<RouteComponentProps, State> {
               <li key={character.id}>
                 <p>
                   <Link to={`/characters/${character.id}`}>
-                    {character.name}
+                    {character.name}[{character.level}]
                   </Link>
-                  : {character.level}
+                  : {character.player_class_name}
                 </p>
               </li>
             );

@@ -21,4 +21,8 @@ export interface ICharacter {
   inventory?: IItem[];
   created_at: string;
   updated_at: string;
+  player_class_name: string;
+  attack_speed: number;
+  can_dual_wield: boolean;
+  can_use_2h: boolean;
 }
