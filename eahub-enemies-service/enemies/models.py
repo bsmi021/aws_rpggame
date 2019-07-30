@@ -125,3 +125,7 @@ class EnemyModel(BaseModel):
 
     def __repr__(self):
         return json.dumps(dict(self))
+
+if __name__ == "__main__":
+    if not EnemyModel.exists():
+        EnemyModel.create_table(read_capacity_units=1, write_capacity_units=1, wait=True)

@@ -192,6 +192,6 @@ if __name__ == "__main__":
     print()
     print(character_1)
 
-    print(character_1.to_json())
+    #print(character_1.to_json())
 
     
