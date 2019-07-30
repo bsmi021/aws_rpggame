@@ -15,33 +15,31 @@ const Item: React.SFC<Props> = props => {
 
   return (
     <React.Fragment>
-      <Container>
-        <Row>
-          <Col lg="auto">
-            <h3>{item.name}</h3>
-          </Col>
-          <Col>Slot: {item.slot_name}</Col>
-        </Row>
-        <Row>
-          <Col>
-            <h6>{item.quality_name}</h6>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <i>{item.description}</i>
-          </Col>
-        </Row>
-        <Row />
-        <Row>
-          <Col>Damage: {item.damage}</Col>
-          <Col>Critical Strike Chance %: {item.crit_chance}</Col>
-          <Col>
-            Stamina: {item.stamina} (this will provide {item.stamina * 10}{' '}
-            hitpoints)
-          </Col>
-        </Row>
-      </Container>
+      <div className="card">
+        <div className="card-title">
+          <h4>{item.name}</h4>
+          <p>{item.description}</p>
+        </div>
+        <div className="card-subtitle">
+          <h5>{item.slot_name}</h5>
+        </div>
+        <div className="card-body">
+          <div>
+            <div>
+              <h6>Damage</h6>
+              <p>{item.damage}</p>
+            </div>
+            <div>
+              <h6>Stamina</h6>
+              <p>{item.stamina}</p>
+            </div>
+            <div>
+              <h6>Crit Chance %</h6>
+              <p>{item.crit_chance}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </React.Fragment>
   );
 };

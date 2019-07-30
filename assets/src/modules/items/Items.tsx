@@ -3,6 +3,7 @@ import { API } from 'aws-amplify';
 import { IItem } from './ItemType';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import 'url-search-params-polyfill';
+import { Card, Container } from 'react-bootstrap';
 
 interface ItemsProps {}
 
@@ -43,18 +44,23 @@ export class Items extends React.Component<RouteComponentProps, ItemsState> {
         <div className="container-category">
           <h3>Inventory Items</h3>
         </div>
-        <ul className="items-list">
-          {this.state.items.map(item => {
-            return (
-              <li key={item.id}>
-                <p>
-                  <Link to={`/items/${item.id}`}>{item.name}</Link>:{' '}
-                  {item.slot_name}
-                </p>
-              </li>
-            );
-          })}
-        </ul>
+        {this.state.items.map(item => {
+          return (
+            <div key={item.id}>
+              <Link to={`/items/${item.id}`}>
+                <Card key={item.id} className="item-card">
+                  <Card.Title className="item-card-title">
+                    {item.name}
+                  </Card.Title>
+                  <Card.Subtitle>{item.slot_name}</Card.Subtitle>
+                  <Card.Body>
+                    <div>{item.description}</div>
+                  </Card.Body>
+                </Card>
+              </Link>
+            </div>
+          );
+        })}
       </div>
     );
   }
