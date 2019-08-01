@@ -13,10 +13,12 @@ export const ItemRow = (props: ItemRowProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    API.get('items', `items/${item.id}`, null)
-      .then(response => setItem(response))
-      .then(() => setLoading(false))
-      .catch(error => alert(error));
+    if (!item.name) {
+      API.get('items', `items/${item.id}`, null)
+        .then(response => setItem(response))
+        .then(() => setLoading(false))
+        .catch(error => alert(error));
+    }
   }, []);
 
   return (

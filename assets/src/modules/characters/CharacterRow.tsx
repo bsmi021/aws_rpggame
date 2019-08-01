@@ -13,12 +13,14 @@ const CharacterRow = (props: CharacterRowProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    API.get('characters', `characters/${character.id}`, null)
-      .then(response => {
-        setCharacter(response);
-      })
-      .then(() => setLoading(false))
-      .catch(error => alert(error));
+    if (!character.name) {
+      API.get('characters', `characters/${character.id}`, null)
+        .then(response => {
+          setCharacter(response);
+        })
+        .then(() => setLoading(false))
+        .catch(error => alert(error));
+    }
   }, []);
 
   return (
