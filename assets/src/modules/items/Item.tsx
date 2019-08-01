@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { IItem } from './ItemType';
-import { Row, Container, Col } from 'react-bootstrap';
 
 interface Props {
   item?: IItem;
@@ -20,9 +19,7 @@ const Item: React.SFC<Props> = props => {
           <h4>{item.name}</h4>
           <p>{item.description}</p>
         </div>
-        <div className="card-subtitle">
-          <h5>{item.slot_name}</h5>
-        </div>
+        <div className="card-subtitle">{item.slot_name}</div>
         <div className="card-body">
           <div>
             <div>

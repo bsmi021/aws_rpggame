@@ -1,5 +1,5 @@
 import React from 'react';
-import Items from './modules/items/Items';
+import ItemsList from './modules/items/ItemsList';
 import {
   BrowserRouter as Router,
   Route,
@@ -13,6 +13,7 @@ import AddItem from './modules/items/AddItem';
 import CharacterList from './modules/characters/CharacterList';
 import CharacterPage from './modules/characters/CharacterPage';
 import { Container } from 'react-bootstrap';
+import Home from './common/Home';
 
 const RoutesWrap: React.SFC = () => {
   return (
@@ -34,7 +35,10 @@ export const Routes: React.SFC<RouteComponentProps> = props => {
     <div>
       <Header />
       <Switch>
-        <Route path="/items" exact component={Items} />
+        <Route path="/" exact component={Home} />
+        <Route path="/home" exact component={Home} />
+        <Route path="/items" exact component={ItemsList} />
+        <Route path="#items" exact component={ItemsList} />
         <Route path="/items/:id" exact component={ItemPage} />
         <Route path="/add_item" exact component={AddItem} />
         <Route path="/characters" exact component={CharacterList} />

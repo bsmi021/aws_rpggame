@@ -50,7 +50,8 @@ ItemSlot = {
     11: 'NECK',
     12: 'MAIN_HAND',
     13: 'OFF_HAND',
-    14: 'BOTH_HAND'
+    14: 'BOTH_HAND',
+    15: 'WAIST'
 }
 
 ItemQuality = {

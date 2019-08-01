@@ -1,8 +1,9 @@
 import React from 'react';
 import { API } from 'aws-amplify';
 import { ICharacter } from './CharacterType';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import 'url-search-params-polyfill';
+import CharacterRow from './CharacterRow';
 
 interface Props {}
 
@@ -45,14 +46,9 @@ export class CharacterList extends React.Component<RouteComponentProps, State> {
         <ul className="items-list">
           {this.state.characters.map(character => {
             return (
-              <li key={character.id}>
-                <p>
-                  <Link to={`/characters/${character.id}`}>
-                    {character.name}[{character.level}]
-                  </Link>
-                  : {character.player_class_name}
-                </p>
-              </li>
+              <div key={character.id}>
+                <CharacterRow character={character} />
+              </div>
             );
           })}
         </ul>

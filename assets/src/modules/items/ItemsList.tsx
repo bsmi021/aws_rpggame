@@ -1,9 +1,9 @@
 import React from 'react';
 import { API } from 'aws-amplify';
 import { IItem } from './ItemType';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import 'url-search-params-polyfill';
-import { Card, Container } from 'react-bootstrap';
+import { ItemRow } from './ItemRow';
 
 interface ItemsProps {}
 
@@ -11,7 +11,10 @@ interface ItemsState {
   items: IItem[];
 }
 
-export class Items extends React.Component<RouteComponentProps, ItemsState> {
+export class ItemsList extends React.Component<
+  RouteComponentProps,
+  ItemsState
+> {
   public static getDerivedStateFromProps(
     props: RouteComponentProps,
     state: ItemsState
@@ -47,17 +50,7 @@ export class Items extends React.Component<RouteComponentProps, ItemsState> {
         {this.state.items.map(item => {
           return (
             <div key={item.id}>
-              <Link to={`/items/${item.id}`}>
-                <Card key={item.id} className="item-card">
-                  <Card.Title className="item-card-title">
-                    {item.name}
-                  </Card.Title>
-                  <Card.Subtitle>{item.slot_name}</Card.Subtitle>
-                  <Card.Body>
-                    <div>{item.description}</div>
-                  </Card.Body>
-                </Card>
-              </Link>
+              <ItemRow item={item} />
             </div>
           );
         })}
@@ -66,4 +59,4 @@ export class Items extends React.Component<RouteComponentProps, ItemsState> {
   }
 }
 
-export default Items;
+export default ItemsList;

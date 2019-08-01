@@ -1,6 +1,12 @@
 import * as React from 'react';
 import { IItem } from './ItemType';
-import { FormGroup, Form, Button } from 'react-bootstrap';
+import {
+  FormGroup,
+  Form,
+  Button,
+  InputGroup,
+  FormControl
+} from 'react-bootstrap';
 import { API } from 'aws-amplify';
 
 interface Props {}
@@ -18,6 +24,8 @@ interface IState {
   toConfirm: boolean;
   shouldRedirect: boolean;
 }
+
+const qualityOptions: string[] = ['Common', 'Rare', 'Legendary'];
 
 export class ItemForm extends React.Component<Props, IState> {
   constructor(props: Props) {
@@ -45,6 +53,14 @@ export class ItemForm extends React.Component<Props, IState> {
       ...this.state,
       [target.name as any]: target.value
     });
+  };
+
+  handleQualityChange = (event: any) => {
+    const target = event.target as HTMLInputElement;
+    const field = target.name;
+
+    this.setState({ ...this.state, [field as any]: target.value });
+    console.log(target.value);
   };
 
   handleNumberChange = (event: any) => {
@@ -93,6 +109,9 @@ export class ItemForm extends React.Component<Props, IState> {
                   value={this.state.name}
                   onChange={this.handleChange}
                 />
+                <Form.Text className="text-muted">
+                  Give it a good name
+                </Form.Text>
                 <Form.Label>Description:</Form.Label>
                 <Form.Control
                   name="description"
@@ -100,13 +119,42 @@ export class ItemForm extends React.Component<Props, IState> {
                   value={this.state.description}
                   onChange={this.handleChange}
                 />
-                <Form.Label>Quality: </Form.Label>
-                <Form.Control
-                  name="quality"
-                  type="text"
-                  value={this.state.quality}
-                  onChange={this.handleNumberChange}
-                />
+                <Form.Text className="text-muted">
+                  A flavor description, you can be funny.
+                </Form.Text>
+
+                <div key={`inline-quality`} className="mb-3">
+                  <Form.Label>Item Quality:</Form.Label>
+                  <br />
+                  <Form.Check
+                    inline
+                    label="Common"
+                    name="qualityRadios"
+                    value="1"
+                    type="radio"
+                    id={`inline-quality-1`}
+                    onChange={this.handleNumberChange}
+                  />
+                  <Form.Check
+                    inline
+                    label="Rare"
+                    name="qualityRadios"
+                    value="2"
+                    type="radio"
+                    id={`inline-quality-2`}
+                    onChange={this.handleNumberChange}
+                  />
+                  <Form.Check
+                    inline
+                    label="Legendary"
+                    name="qualityRadios"
+                    value="3"
+                    type="radio"
+                    id={`inline-quality-3`}
+                    onChange={this.handleNumberChange}
+                  />
+                </div>
+
                 <Form.Label>Slot: </Form.Label>
                 <Form.Control
                   name="slot"
@@ -135,7 +183,9 @@ export class ItemForm extends React.Component<Props, IState> {
                   value={this.state.crit_chance}
                   onChange={this.handleNumberChange}
                 />
-                <Button onClick={this.onSubmit}>Submit</Button>
+                <Button variant="primary" type="submit" onClick={this.onSubmit}>
+                  Submit
+                </Button>
               </FormGroup>
             </div>
           </Form>

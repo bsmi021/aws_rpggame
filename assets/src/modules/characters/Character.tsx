@@ -4,6 +4,7 @@ import { Row, Container, Col, Card, ListGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Item from '../items/Item';
 import './character.css';
+import { ItemRow } from '../items/ItemRow';
 // import './character2.css';
 
 interface Props {
@@ -38,37 +39,7 @@ const Character: React.SFC<Props> = props => {
               </Row>
             </div>
           </div>
-          <Row>
-            <Card className="card">
-              <Card.Body className="card card-body">
-                <Card.Title className="card card-title">DPS</Card.Title>
-                <Card.Text>
-                  {(
-                    (character.min_damage + character.max_damage) /
-                    2 /
-                    (character.attack_speed / 1000)
-                  ).toFixed(1)}
-                </Card.Text>
-              </Card.Body>
-            </Card>
 
-            <Card style={{ width: '18rem' }}>
-              <Card.Body>
-                <Card.Title>Health</Card.Title>
-                <Card.Subtitle>Total hitpoints</Card.Subtitle>
-                <Card.Text>{character.hit_points}</Card.Text>
-              </Card.Body>
-            </Card>
-            <Card style={{ width: '18rem' }}>
-              <Card.Body>
-                <Card.Title>Damage Range</Card.Title>
-                <Card.Subtitle>Range of normal attacks</Card.Subtitle>
-                <Card.Text>
-                  {character.min_damage}-{character.max_damage}
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </Row>
           <Row>
             <Col lg="auto">
               <div className="CharacterBody Character-stats">
@@ -113,17 +84,14 @@ const Character: React.SFC<Props> = props => {
           </Row>
           <Row>
             <Col lg="auto">
-              <h6>Inventory</h6>
+              <h4>Inventory</h4>
               {character.inventory ? (
                 <ul className="items-list">
                   {character.inventory.map(item => {
                     return (
-                      <li key={item.id}>
-                        <div>
-                          <Link to={`/items/${item.id}`}>{item.name}</Link>
-                          <Item item={item} />
-                        </div>
-                      </li>
+                      <div key={item.id}>
+                        <ItemRow item={item} />
+                      </div>
                     );
                   })}
                 </ul>
