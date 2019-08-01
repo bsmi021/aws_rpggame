@@ -6,7 +6,15 @@ This repo consists of deployable assets for Amazon Web Services which include La
 
 This project uses:
 
-- Serverless
-- Amplify
+- [NodeJS](https://nodejs.org/en/download/)
+- [Serverless](https://serverless.com/framework/docs/getting-started/)
+  ```#Install the serverless cli
+  npm install -g serverless
+  ```
+- [AWS Amplify JavaScript](https://aws-amplify.github.io/docs/js/start)
+  ```#Install and configure AWS Amplify
+  npm install -g @aws-amplify/cli
+  amplify configure
+  ```
 
 More instructions to come
