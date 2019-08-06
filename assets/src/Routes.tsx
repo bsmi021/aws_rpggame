@@ -4,7 +4,8 @@ import {
   BrowserRouter as Router,
   Route,
   RouteComponentProps,
-  Switch
+  Switch,
+  BrowserRouter
 } from 'react-router-dom';
 import Header from './common/Header';
 import ItemPage from './modules/items/ItemPage';
@@ -32,20 +33,21 @@ export const Routes: React.SFC<RouteComponentProps> = props => {
   const [loggedIn, setLoggedIn] = React.useState(true);
   document.title = 'SASCraft Demo';
   return (
-    <div>
+    <div className="ui container">
       <Header />
-      <Switch>
-        <Route path="/" exact component={Home} />
-        <Route path="/home" exact component={Home} />
-        <Route path="/items" exact component={ItemsList} />
-        <Route path="#items" exact component={ItemsList} />
-        <Route path="/items/:id" exact component={ItemPage} />
-        <Route path="/add_item" exact component={AddItem} />
-        <Route path="/characters" exact component={CharacterList} />
-        <Route path="/characters/:id" exact component={CharacterPage} />
-        <Route component={NotFound} />
-      </Switch>
-      <Container />
+      <div>
+        <Switch>
+          <Route path="/" exact component={Home} />
+          <Route path="/home" exact component={Home} />
+          <Route path="/items" exact component={ItemsList} />
+          <Route path="/items/new" exact component={AddItem} />
+          <Route path="/items/:id" exact component={ItemPage} />
+
+          <Route path="/characters" exact component={CharacterList} />
+          <Route path="/characters/:id" exact component={CharacterPage} />
+          <Route component={NotFound} />
+        </Switch>
+      </div>
     </div>
   );
 };

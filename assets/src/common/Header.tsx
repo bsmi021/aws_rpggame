@@ -10,12 +10,15 @@ const Header: React.SFC<RouteComponentProps> = props => {
     const searchParams = new URLSearchParams(props.location.search);
     setSearch(searchParams.get('search') || '');
   }, []);
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.currentTarget.value);
   };
+
   const handleSearchKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     props.history.push(`/products?search=${search}`);
   };
+
   return (
     <header className="header">
       <Navbar bg="dark" variant="dark" expand="lg">
@@ -28,7 +31,7 @@ const Header: React.SFC<RouteComponentProps> = props => {
             <Nav.Link href="/characters">Characters</Nav.Link>
             <Nav.Link href="/items">Items</Nav.Link>
             <NavDropdown title="Admin" id="basic-nav-dropdown">
-              <NavDropdown.Item href="/add_item">Add Item</NavDropdown.Item>
+              <NavDropdown.Item href="/items/new">Add Item</NavDropdown.Item>
             </NavDropdown>
           </Nav>
 

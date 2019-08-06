@@ -39,7 +39,12 @@ export const CharacterList = (props: CharacterListProps) => {
       </ul>
     </div>
   ) : (
-    <div>Loading...</div>
+    <div className="ui segment">
+      <p />
+      <div className="ui active dimmer">
+        <div className="ui loader" />
+      </div>
+    </div>
   );
 };
 

@@ -24,27 +24,27 @@ const CharacterRow = (props: CharacterRowProps) => {
   }, []);
 
   return (
-    <div>
-      <div key={character.id}>
-        <Link to={`/characters/${character.id}`}>
-          <Card className="card">
-            <Card.Title>{character.name}</Card.Title>
-            <Card.Subtitle>
-              <div
-                className="metadata"
-                style={{
-                  color: 'grey',
-                  fontSize: '12px',
-                  fontStyle: 'italic',
-                  marginLeft: '20px'
-                }}
-              >
-                Level {character.level} {character.player_class_name}
-              </div>
-            </Card.Subtitle>
-          </Card>
-        </Link>
-      </div>
+    <div key={character.id} className="card">
+      <Link to={`/characters/${character.id}`}>
+        <div className="content">
+          <div className="header">{character.name}</div>
+          <div
+            className="meta"
+            style={{
+              color: 'grey',
+              fontSize: '12px',
+              fontStyle: 'italic',
+              marginLeft: '20px'
+            }}
+          >
+            <span>
+              Level {character.level} {character.player_class_name}
+            </span>
+          </div>
+        </div>
+
+        <div className="extra content">10 Fights</div>
+      </Link>
     </div>
   );
 };
