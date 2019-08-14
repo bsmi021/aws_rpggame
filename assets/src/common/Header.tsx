@@ -1,23 +1,23 @@
 import React from 'react';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { withRouter, Link, RouteComponentProps } from 'react-router-dom';
 import { Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import '../App.css';
 import 'url-search-params-polyfill';
 
 const Header: React.SFC<RouteComponentProps> = props => {
-  const [search, setSearch] = React.useState('');
-  React.useEffect(() => {
-    const searchParams = new URLSearchParams(props.location.search);
-    setSearch(searchParams.get('search') || '');
-  }, []);
+  // const [search, setSearch] = React.useState('');
+  // React.useEffect(() => {
+  //   const searchParams = new URLSearchParams(props.location.search);
+  //   setSearch(searchParams.get('search') || '');
+  // }, []);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.currentTarget.value);
-  };
+  // const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSearch(e.currentTarget.value);
+  // };
 
-  const handleSearchKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    props.history.push(`/products?search=${search}`);
-  };
+  // const handleSearchKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  //   props.history.push(`/products?search=${search}`);
+  // };
 
   return (
     <header className="header">
@@ -35,15 +35,6 @@ const Header: React.SFC<RouteComponentProps> = props => {
             </NavDropdown>
           </Nav>
 
-          <div className="search-container">
-            <input
-              type="search"
-              placeholder="search"
-              value={search}
-              onChange={handleSearchChange}
-              onKeyDown={handleSearchKeydown}
-            />
-          </div>
         </Navbar.Collapse>
       </Navbar>
     </header>

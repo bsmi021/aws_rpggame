@@ -1,8 +1,8 @@
-import React from 'react';
-import { API } from 'aws-amplify';
-import { RouteComponentProps } from 'react-router-dom';
-import { ICharacter } from './CharacterType';
-import Character from './Character';
+import React from "react";
+import { API } from "aws-amplify";
+import { RouteComponentProps } from "react-router-dom";
+import { ICharacter } from "./CharacterType";
+import Character from "./Character";
 
 type Props = RouteComponentProps<{ id: string }>;
 
@@ -19,8 +19,8 @@ export class CharacterPage extends React.Component<Props, CharacterPageState> {
   async componentDidMount() {
     if (this.props.match.params.id) {
       await API.get(
-        'characters',
-        `/characters/${this.props.match.params.id}`,
+        "characters",
+        `characters/${this.props.match.params.id}`,
         null
       )
         .then(response => {

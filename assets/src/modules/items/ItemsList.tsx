@@ -1,26 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { API } from 'aws-amplify';
-import { IItem } from './ItemType';
-import 'url-search-params-polyfill';
-import { ItemRow } from './ItemRow';
+import React, { useState, useEffect } from "react";
+import { IItem } from "./ItemType";
+import "url-search-params-polyfill";
+import { ItemRow } from "./ItemRow";
 
-interface ItemsListProps {
-  items: IItem[];
-}
+import { connect, useSelector, useDispatch } from "react-redux";
+import { fetchItems } from "../../actions/ItemActions";
 
-interface ItemsState {
-  items: IItem[];
-}
-
-export const ItemsList = (props: ItemsListProps) => {
-  const [items, setItems] = useState<IItem[]>(props.items);
+export const ItemsList = () => {
   const [loading, setLoading] = useState(true);
-
+  const items: IItem[] = useSelector((state: any) =>
+    Object.values(state.items)
+  );
+  const dispatch = useDispatch();
   useEffect(() => {
-    API.get('items', '/items', null)
-      .then(response => setItems(response.items))
-      .then(() => setLoading(false))
-      .catch(error => alert(error));
+    dispatch(fetchItems());
+
+    setLoading(false);
   }, []);
 
   return !loading ? (
@@ -37,8 +32,16 @@ export const ItemsList = (props: ItemsListProps) => {
       })}
     </div>
   ) : (
-    <div>Loading...</div>
+    <div className="ui segment">
+      <p />
+      <div className="ui active dimmer">
+        <div className="ui loader" />
+      </div>
+    </div>
   );
 };
 
-export default ItemsList;
+export default connect(
+  null,
+  { fetchItems }
+)(ItemsList);

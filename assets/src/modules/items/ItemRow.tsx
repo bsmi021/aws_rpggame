@@ -1,24 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { API } from 'aws-amplify';
-import { IItem } from './ItemType';
-import { Link } from 'react-router-dom';
-import { Card } from 'react-bootstrap';
+import React, { useState, useEffect } from "react";
+import { API } from "aws-amplify";
+import { IItem } from "./ItemType";
+import { Link } from "react-router-dom";
+import { Card } from "react-bootstrap";
+import { fetchItem } from "../../actions/ItemActions";
+import { connect, useSelector, useDispatch } from "react-redux";
 
 interface ItemRowProps {
   item: IItem;
 }
 
 export const ItemRow = (props: ItemRowProps) => {
-  const [item, setItem] = useState<IItem>(props.item);
+  const item: IItem = useSelector((state: any) => state.items[props.item.id]);
   const [loading, setLoading] = useState(true);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    if (!item.name) {
-      API.get('items', `items/${item.id}`, null)
-        .then(response => setItem(response))
-        .then(() => setLoading(false))
-        .catch(error => alert(error));
-    }
+    //    if (!item.name) {
+    // API.get('items', `items/${item.id}`, null)
+    //   .then(response => setItem(response))
+    //   .then(() => setLoading(false))
+    //   .catch(error => alert(error));
+    dispatch(fetchItem(props.item.id));
+    //  }
   }, []);
 
   return (
@@ -44,4 +49,7 @@ export const ItemRow = (props: ItemRowProps) => {
   );
 };
 
-export default ItemRow;
+export default connect(
+  null,
+  { fetchItem }
+)(ItemRow);

@@ -1,26 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { API } from 'aws-amplify';
-import { ICharacter } from './CharacterType';
-import 'url-search-params-polyfill';
-import CharacterRow from './CharacterRow';
+import React, { useState, useEffect } from "react";
+import { ICharacter } from "./CharacterType";
+import "url-search-params-polyfill";
+import CharacterRow from "./CharacterRow";
 
-interface CharacterListProps {
-  characters: ICharacter[];
-}
+import { connect, useSelector, useDispatch } from "react-redux";
+import { fetchCharacters } from "../../actions/CharacterActions";
 
-interface State {
-  characters: ICharacter[];
-}
-
-export const CharacterList = (props: CharacterListProps) => {
-  const [characters, setCharacters] = useState<ICharacter[]>(props.characters);
+export const CharacterList = () => {
   const [loading, setLoading] = useState(true);
 
+  const characters: ICharacter[] = useSelector((state: any) =>
+    Object.values(state.characters)
+  );
+  const dispatch = useDispatch();
   useEffect(() => {
-    API.get('characters', '/characters', null)
-      .then(response => setCharacters(response.characters))
-      .then(() => setLoading(false))
-      .catch(error => alert(error));
+    dispatch(fetchCharacters());
+
+    setLoading(false);
   }, []);
 
   return !loading ? (
@@ -29,7 +25,7 @@ export const CharacterList = (props: CharacterListProps) => {
         <h3>Player Characters</h3>
       </div>
       <ul className="items-list">
-        {characters.map(character => {
+        {characters.map((character: ICharacter) => {
           return (
             <div key={character.id}>
               <CharacterRow character={character} />
@@ -48,4 +44,13 @@ export const CharacterList = (props: CharacterListProps) => {
   );
 };
 
-export default CharacterList;
+const mapStateToProps = (state: any) => {
+  return {
+    characters: Object.values(state.characters)
+  };
+};
+
+export default connect(
+  null,
+  { fetchCharacters }
+)(CharacterList);

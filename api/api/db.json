@@ -1,0 +1,39 @@
+{
+  "characters": [
+    {
+      "id": 1,
+      "name": "Brian"
+    }
+  ],
+  "items": [],
+  "streams": [
+    {
+      "title": "My Stream",
+      "description": "Yes",
+      "id": 1
+    },
+    {
+      "id": 2,
+      "title": "Sandy is a dog",
+      "description": "Look at the gray dog"
+    },
+    {
+      "title": "This is pretty damned good",
+      "description": "Let's check this shit out",
+      "userId": "110576447545271663666",
+      "id": 3
+    },
+    {
+      "title": "Oliver Dancing",
+      "description": "You want to see this",
+      "userId": "110576447545271663666",
+      "id": 4
+    },
+    {
+      "title": "Test Stream Form",
+      "description": "Test Stream Formx",
+      "userId": "110576447545271663666",
+      "id": 5
+    }
+  ]
+}
