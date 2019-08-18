@@ -1,0 +1,19 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "eahub-rpggame-dev-20190818064633-authRole",
+            "UnauthRoleArn": "arn:aws:iam::815248853218:role/eahub-rpggame-dev-20190818064633-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::815248853218:role/eahub-rpggame-dev-20190818064633-authRole",
+            "Region": "us-east-2",
+            "DeploymentBucketName": "eahub-rpggame-dev-20190818064633-deployment",
+            "UnauthRoleName": "eahub-rpggame-dev-20190818064633-unauthRole",
+            "StackName": "eahub-rpggame-dev-20190818064633",
+            "StackId": "arn:aws:cloudformation:us-east-2:815248853218:stack/eahub-rpggame-dev-20190818064633/7270f200-c1a5-11e9-9e2c-06ba3123ae48"
+        },
+        "categories": {
+            "auth": {
+                "eahubrpggamed0664d92": {}
+            }
+        }
+    }
+}

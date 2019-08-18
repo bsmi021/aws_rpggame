@@ -25,7 +25,7 @@ def create(event, context):
     character = CharacterModel(id=str(uuid4()),
                                name=data.get('name'),
                                account=data.get('account', 'None'),
-                               player_class=data.get('player_class'),
+                               player_class=int(data.get('player_class')),
                                created_at=datetime.utcnow())
 
     character.save()
@@ -41,9 +41,3 @@ def create(event, context):
     logger.debug(f'Response: {json.dumps(response)}')
 
     return response
-
-
-
-
-
-
