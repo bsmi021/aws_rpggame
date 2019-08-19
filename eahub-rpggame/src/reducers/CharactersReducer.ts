@@ -8,7 +8,8 @@ import {
 const initialCharacterState: ICharacterState = {
   characters: [],
   charactersLoading: false,
-  currentCharacter: null
+  currentCharacter: null,
+  defaultCharacter: null
 };
 
 export const charactersReducer: Reducer<ICharacterState, CharacterActions> = (
@@ -22,6 +23,13 @@ export const charactersReducer: Reducer<ICharacterState, CharacterActions> = (
         charactersLoading: true
       };
     }
+    case CharacterActionTypes.SETDEFAULT: {
+      return {
+        ...state,
+        defaultCharacter: action.character,
+        charactersLoading: false
+      };
+    }
     case CharacterActionTypes.GETALL: {
       return {
         ...state,
@@ -33,6 +41,14 @@ export const charactersReducer: Reducer<ICharacterState, CharacterActions> = (
       return {
         ...state,
         currentCharacter: action.character,
+        charactersLoading: false
+      };
+    }
+    case CharacterActionTypes.EQUIPITEM || CharacterActionTypes.UNEQUIPITEM: {
+      return {
+        ...state,
+        currentCharacter: action.character,
+        defaultCharacter: action.character,
         charactersLoading: false
       };
     }

@@ -6,14 +6,20 @@ provider:
   region: us-east-2
   stage: dev
   environment:
+    ITEM_SERVICE: sascraft-item-service-${opt:stage, self:provider.stage}-get
+    ADD_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-add_item
+    GET_CHAR_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-get
+    REMOVE_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-remove_item
     REGION: ${self:provider.region}
   iamRoleStatements:
-    - Effect: "Allow"
+    - Effect: 'Allow'
       Action:
         - lambda:InvokeFunction
       Resource:
-        - "arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-item-service-${opt:stage, self:provider.stage}-get"
-        - "arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-add_item"
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-item-service-${opt:stage, self:provider.stage}-get'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-add_item'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-get'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-remove_item'
 package:
   exclude:
     - env/**
@@ -22,17 +28,28 @@ package:
     - .gitignore
 
 functions:
+  get:
+    handler: aggregates/get.get
+    events:
+      - http:
+          path: characters/{id}
+          method: get
+          cors: true
   equip_item:
     handler: aggregates/equip_item.equip_item
-    environment:
-      ITEM_SERVICE: sascraft-item-service-${opt:stage, self:provider.stage}-get
-      ADD_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-add_item
     events:
       - http:
           path: characters/{id}/equip_item
           method: put
           cors: true
-    
+  remove_item:
+    handler: aggregates/unequip_item.unequip_item
+    events:
+      - http:
+          path: characters/{id}/unequip_item
+          method: put
+          cors: true
+
 plugins:
   - serverless-python-requirements
   - serverless-pseudo-parameters
@@ -42,4 +59,3 @@ custom:
   secrets: ${file(secrets.yml):${self:custom.stage}}
   pythonRequirements:
     dockerizePip: false
-

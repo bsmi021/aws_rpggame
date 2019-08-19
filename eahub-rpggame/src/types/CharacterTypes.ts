@@ -26,13 +26,23 @@ export interface ICharacter {
   can_use_2h: boolean;
 }
 
+export enum CharacterClasses {
+  WARRIOR = 'WARRIOR',
+  SORCERER = 'SORCERER',
+  ROGUE = 'ROGUE',
+  ARCHER = 'ARCHER'
+}
+
 export enum CharacterActionTypes {
   GETALL = 'CHARACTERS/GETALL',
   GETSINGLE = 'CHARACTERS/GETSINGLE',
   LOADING = 'CHARACTERS/LOADING',
   CREATE = 'CHARACTERS/CREATE',
   EDIT = 'CHARACTERS/EDIT',
-  DELETE = 'CHARACTERS/DELETE'
+  DELETE = 'CHARACTERS/DELETE',
+  SETDEFAULT = 'CHARACTERS/SETDEFAULT',
+  EQUIPITEM = 'CHARACTERS/EQUIPITEM',
+  UNEQUIPITEM = 'CHARACTERS/UNEQUIPITEM'
 }
 
 export interface ICharacterGetAllAction {
@@ -63,16 +73,35 @@ export interface ICharacterDelete {
   type: CharacterActionTypes.DELETE;
 }
 
+export interface ICharacterSetDefault {
+  type: CharacterActionTypes.SETDEFAULT;
+  character: ICharacter;
+}
+
+export interface ICharacterEquipItem {
+  type: CharacterActionTypes.EQUIPITEM;
+  character: ICharacter;
+}
+
+export interface ICharacterUnequipItem {
+  type: CharacterActionTypes.UNEQUIPITEM;
+  character: ICharacter;
+}
+
 export type CharacterActions =
   | ICharacterCreate
   | ICharacterDelete
   | ICharacterEdit
   | ICharacterGetAllAction
   | ICharacterGetSingleAction
-  | ICharacterLoading;
+  | ICharacterLoading
+  | ICharacterSetDefault
+  | ICharacterUnequipItem
+  | ICharacterEquipItem;
 
 export interface ICharacterState {
   readonly characters: ICharacter[];
   readonly charactersLoading: boolean;
   readonly currentCharacter: ICharacter | null;
+  readonly defaultCharacter: ICharacter | null;
 }

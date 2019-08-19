@@ -36,6 +36,25 @@ export const authReducer: Reducer<IAuthState, AuthActions> = (
         authLoading: false
       };
     }
+    case AuthActionTypes.SIGNEDIN: {
+      return {
+        ...state,
+        userId: action.userId,
+        userName: action.userName,
+        isAuthenticated: true,
+        authLoading: false
+      };
+    }
+    case AuthActionTypes.SIGNEDOUT: {
+      return {
+        ...state,
+        auth: undefined,
+        isAuthenticated: false,
+        authLoading: false,
+        userId: undefined,
+        userName: undefined
+      };
+    }
     default:
       return state;
   }

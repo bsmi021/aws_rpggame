@@ -12,13 +12,29 @@ import {
   ICharacterGetSingleAction,
   ICharacterLoading,
   ICharacterState,
-  CharacterActionTypes
+  ICharacterSetDefault,
+  CharacterActionTypes,
+  ICharacterEquipItem,
+  ICharacterUnequipItem
 } from '../types/CharacterTypes';
 import { async } from 'q';
 
 const loading: ActionCreator<ICharacterLoading> = () => ({
   type: CharacterActionTypes.LOADING
 });
+
+export const setDefaultCharacter: ActionCreator<
+  ThunkAction<Promise<AnyAction>, ICharacterState, null, ICharacterSetDefault>
+> = (character: ICharacter) => {
+  return async (dispatch: Dispatch) => {
+    dispatch(loading());
+
+    return dispatch({
+      type: CharacterActionTypes.SETDEFAULT,
+      character
+    });
+  };
+};
 
 export const getCharacters: ActionCreator<
   ThunkAction<Promise<AnyAction>, ICharacterState, null, ICharacterGetAllAction>
@@ -44,11 +60,45 @@ export const getCharacter: ActionCreator<
 > = (id: string) => {
   return async (dispatch: Dispatch) => {
     dispatch(loading());
-    const response = await API.get('characters', `/characters/${id}`, null);
+    const response = await API.get('charsaggr', `/characters/${id}`, null);
     const character = response;
     return dispatch({
       character,
       type: CharacterActionTypes.GETSINGLE
+    });
+  };
+};
+
+export const equipItem: ActionCreator<
+  ThunkAction<Promise<AnyAction>, ICharacterState, null, ICharacterEquipItem>
+> = (charId: string, itemId: string) => {
+  return async (dispatch: Dispatch) => {
+    dispatch(loading());
+    const response = await API.put(
+      'charsaggr',
+      `/characters/${charId}/remove_item`,
+      { body: { id: itemId } }
+    );
+    return dispatch({
+      type: CharacterActionTypes.UNEQUIPITEM,
+      character: response
+    });
+  };
+};
+
+export const unequipItem: ActionCreator<
+  ThunkAction<Promise<AnyAction>, ICharacterState, null, ICharacterUnequipItem>
+> = (charId: string, itemId: string) => {
+  return async (dispatch: Dispatch) => {
+    dispatch(loading());
+    const response = await API.put(
+      'charsaggr',
+      `/characters/${charId}/unequip_item`,
+      { body: { id: itemId } }
+    );
+    return dispatch({
+      type: CharacterActionTypes.EQUIPITEM,
+      character: response
     });
   };
 };

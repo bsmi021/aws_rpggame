@@ -9,13 +9,30 @@ import {
   IAuthSignOutAction,
   AuthActionTypes,
   IAuthState,
-  ISignIn
+  ISignIn,
+  IAuthSignedInAction
 } from '../types/AuthTypes';
-import { stringify } from 'querystring';
+import { string } from 'prop-types';
+import { async } from 'q';
 
 const loading: ActionCreator<IAuthLoadingAction> = () => ({
   type: AuthActionTypes.LOADING
 });
+
+export const signedIn: ActionCreator<
+  ThunkAction<Promise<AnyAction>, IAuthState, null, IAuthSignedInAction>
+> = (userId: string, userName: string) => {
+  return async (dispatch: Dispatch) => {
+    dispatch(loading());
+
+    return dispatch({
+      type: AuthActionTypes.SIGNEDIN,
+      userName,
+      userId,
+      isAuthenticated: true
+    });
+  };
+};
 
 export const signIn: ActionCreator<
   ThunkAction<Promise<AnyAction>, IAuthState, null, IAuthSignInAction>

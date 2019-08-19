@@ -39,7 +39,6 @@ class CharactersPage extends React.Component<IProps> {
           search={search}
           characters={this.props.characters}
           loading={this.props.loading}
-          userId={this.props.userId}
         />
       </div>
     );

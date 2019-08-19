@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { Prompt, RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getItem } from '../../actions/ItemActions';
 import { IItem } from '../../types/ItemTypes';
 import { IApplicationState } from '../../store/Store';
-import ItemsPage from './ItemsPage';
 import Item from './Item';
 
 interface IProps extends RouteComponentProps<{ id: string }> {
@@ -23,7 +22,11 @@ class ItemPage extends React.Component<IProps> {
 
     return (
       <div className="ui container">
-        {item ? <Item item={item} /> : <p>Item not found</p>}
+        {item ? (
+          <Item item={item} loading={this.props.loading} />
+        ) : (
+          <p>Item not found</p>
+        )}
       </div>
     );
   }

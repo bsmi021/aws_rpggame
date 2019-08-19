@@ -5,10 +5,14 @@ import { connect, useSelector, useDispatch } from 'react-redux';
 import { IApplicationState } from '../../store/Store';
 import { button } from '@aws-amplify/ui';
 import { signOut } from '../../actions/AuthActions';
+import CharacterSmallCard from '../characters/CharacterSmallCard';
 
 const Header: React.FunctionComponent = () => {
   const isAuthenticated = useSelector(
     (state: IApplicationState) => state.auth.isAuthenticated
+  );
+  const defaultCharacter = useSelector(
+    (state: IApplicationState) => state.characters.defaultCharacter
   );
 
   const dispatch = useDispatch();
@@ -25,25 +29,14 @@ const Header: React.FunctionComponent = () => {
         Items
       </NavLink>
       <div className="right menu">
+        {defaultCharacter && (
+          <CharacterSmallCard character={defaultCharacter} />
+        )}
         {isAuthenticated && (
           <div className="item">
             <button className="ui button" onClick={() => dispatch(signOut())}>
               Log Out
             </button>
-          </div>
-        )}
-        {!isAuthenticated && (
-          <div className="item">
-            <NavLink to="/login" className="ui button primary">
-              Login
-            </NavLink>
-          </div>
-        )}
-        {!isAuthenticated && (
-          <div className="item">
-            <NavLink to="/signup" className="ui button secondary">
-              Signup
-            </NavLink>
           </div>
         )}
       </div>

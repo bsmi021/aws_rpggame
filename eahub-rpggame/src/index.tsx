@@ -1,18 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 import Amplify from 'aws-amplify';
 import config from './config';
-import { Store } from 'redux';
-import { Provider } from 'react-redux';
 import configureStore, { IApplicationState } from './store/Store';
-import RoutesWrap from './components/router/Routes';
+import Root from './components/root/Root';
 
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
+    // region: awsmobile.aws_cognito_region,
+    // userPoolId: awsmobile.aws_user_pools_id,
+    // identityPoolId: awsmobile.aws_cognito_identity_pool_id,
+    // userPoolWebClientId: awsmobile.aws_user_pools_web_client_id
     region: config.cognito.REGION,
     userPoolId: config.cognito.USER_POOL_ID,
     identityPoolId: config.cognito.IDENTITY_POOL_ID,
@@ -29,22 +30,15 @@ Amplify.configure({
         name: 'characters',
         endpoint: config.apiGateway.CHARS_API_URL,
         region: config.apiGateway.REGION
+      },
+      {
+        name: 'charsaggr',
+        endpoint: config.apiGateway.CHARS_AGGR_URL,
+        region: config.apiGateway.REGION
       }
     ]
   }
 });
-
-interface IProps {
-  store: Store<IApplicationState>;
-}
-
-const Root: React.FunctionComponent<IProps> = props => {
-  return (
-    <Provider store={props.store}>
-      <RoutesWrap />
-    </Provider>
-  );
-};
 
 const store = configureStore();
 

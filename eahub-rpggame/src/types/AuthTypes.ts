@@ -14,7 +14,19 @@ export interface ISignIn {
 export enum AuthActionTypes {
   SIGNIN = 'AUTH/SIGNIN',
   SIGNOUT = 'AUTH/SIGNOUT',
-  LOADING = 'AUTH/LOADING'
+  LOADING = 'AUTH/LOADING',
+  SIGNEDIN = 'AUTH/SIGNEDIN',
+  SIGNEDOUT = 'AUTH/SIGNEDOUT'
+}
+
+export interface IAuthSignedInAction {
+  type: AuthActionTypes.SIGNEDIN;
+  userId: string;
+  userName: string;
+}
+
+export interface IAuthSignedOutAction {
+  type: AuthActionTypes.SIGNEDOUT;
 }
 
 export interface IAuthSignInAction {
@@ -34,7 +46,9 @@ export interface IAuthLoadingAction {
 export type AuthActions =
   | IAuthSignInAction
   | IAuthSignOutAction
-  | IAuthLoadingAction;
+  | IAuthLoadingAction
+  | IAuthSignedInAction
+  | IAuthSignedOutAction;
 
 export interface IAuthState {
   readonly isAuthenticated: boolean;

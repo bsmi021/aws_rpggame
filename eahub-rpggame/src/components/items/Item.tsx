@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { IItem } from '../../types/ItemTypes';
+import withLoader from '../common/withLoader';
 
 interface IProps {
   item?: IItem;
+  loading: boolean;
 }
 
 const Item: React.FunctionComponent<IProps> = props => {
@@ -41,4 +43,4 @@ const Item: React.FunctionComponent<IProps> = props => {
   );
 };
 
-export default Item;
+export default withLoader(Item);
