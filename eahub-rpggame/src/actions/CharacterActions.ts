@@ -76,7 +76,7 @@ export const equipItem: ActionCreator<
     dispatch(loading());
     const response = await API.put(
       'charsaggr',
-      `/characters/${charId}/remove_item`,
+      `/characters/${charId}/equip_item`,
       { body: { id: itemId } }
     );
     return dispatch({
