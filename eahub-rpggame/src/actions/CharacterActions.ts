@@ -80,7 +80,7 @@ export const equipItem: ActionCreator<
       { body: { id: itemId } }
     );
     return dispatch({
-      type: CharacterActionTypes.UNEQUIPITEM,
+      type: CharacterActionTypes.EQUIPITEM,
       character: response
     });
   };
@@ -97,7 +97,7 @@ export const unequipItem: ActionCreator<
       { body: { id: itemId } }
     );
     return dispatch({
-      type: CharacterActionTypes.EQUIPITEM,
+      type: CharacterActionTypes.UNEQUIPITEM,
       character: response
     });
   };
