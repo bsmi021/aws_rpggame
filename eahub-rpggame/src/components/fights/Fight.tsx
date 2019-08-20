@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { IApplicationState } from '../../store/Store';
-import { IFight } from '../../types/FightTypes';
+import { IFight, IAttack } from '../../types/FightTypes';
 import { useDispatch, useSelector } from 'react-redux';
-import { Grid } from 'semantic-ui-react';
+import { Grid, List, Transition } from 'semantic-ui-react';
 import { fightsReducer } from '../../reducers/FightReducer';
 import { attack } from '../../actions/FightActions';
 
@@ -12,6 +12,24 @@ interface IProps {
 
 export const Fight: React.FunctionComponent<IProps> = (props: IProps) => {
   const dispatch = useDispatch();
+  const [interval, setIntervalState] = React.useState();
+
+  // React.useEffect(() => {
+  //   setIntervalState(
+  //     setInterval(() => {
+
+  //       if (fight && !fight.is_active) {
+  //         setIntervalState(undefined);
+  //       }
+  //       if (fight) {
+  //         console.log(fight.enemy.curr_hp);
+  //       }
+  //     }, 1000)
+  //   );
+  //   return () => {
+  //     setIntervalState(undefined);
+  //   };
+  // }, []);
 
   const [attackActive, setAttackActive] = React.useState(true);
 
@@ -30,7 +48,7 @@ export const Fight: React.FunctionComponent<IProps> = (props: IProps) => {
 
   return (
     <div className="ui container">
-      <Grid>
+      <Grid container={true} stackable={false} celled={true}>
         <Grid.Row>
           <Grid.Column>
             <div>
@@ -39,10 +57,10 @@ export const Fight: React.FunctionComponent<IProps> = (props: IProps) => {
           </Grid.Column>
         </Grid.Row>
         <Grid.Row>
-          <Grid.Column>
+          <Grid.Column width={3}>
             <button
               className="ui button primary"
-              disabled={!attackActive && !fight.is_active}
+              disabled={!attackActive || !fight.is_active}
               onClick={e => {
                 e.preventDefault();
 
@@ -61,15 +79,32 @@ export const Fight: React.FunctionComponent<IProps> = (props: IProps) => {
             </button>
           </Grid.Column>
           <Grid.Column>
-            <ul>
-              {attacks.map(att => {
-                return (
-                  <li key={att.id}>
-                    {att.attack_amt} | {att.is_critical}
-                  </li>
-                );
-              })}
-            </ul>
+            <Transition.Group
+              as={List}
+              duration={200}
+              divided={true}
+              relaxed={true}
+              animation="drop"
+            >
+              {attacks
+                .filter((a: IAttack) => a.fight_id === fight.id)
+                .map(att => {
+                  return (
+                    <List.Item key={att.id}>
+                      <List.Description>
+                        <Grid>
+                          <Grid.Row>
+                            <Grid.Column>{att.attack_amt}</Grid.Column>
+                            <Grid.Column>
+                              {att.is_critical && <div>Crit</div>}
+                            </Grid.Column>
+                          </Grid.Row>
+                        </Grid>
+                      </List.Description>
+                    </List.Item>
+                  );
+                })}
+            </Transition.Group>
           </Grid.Column>
         </Grid.Row>
       </Grid>

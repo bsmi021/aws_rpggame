@@ -47,7 +47,7 @@ export interface IAttack {
   source_tp: string;
   target_id: string;
   target_tp: string;
-  fight_id: number;
+  fight_id: string;
   attack_ts: Date;
 }
 

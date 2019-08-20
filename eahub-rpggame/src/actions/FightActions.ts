@@ -1,5 +1,5 @@
 import { ActionCreator, AnyAction, Dispatch } from 'redux';
-import { ThunkAction } from 'redux-thunk';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { API } from 'aws-amplify';
 
 import { IApplicationState } from '../store/Store';
@@ -19,7 +19,7 @@ const loading: ActionCreator<IFightLoadingAction> = () => ({
 export const getFight: ActionCreator<
   ThunkAction<Promise<AnyAction>, IFightState, null, IFightGetSingleAction>
 > = (id: string) => {
-  return async (dispatch: Dispatch, getState) => {
+  return async (dispatch: ThunkDispatch<{}, {}, AnyAction>, getState) => {
     dispatch(loading());
 
     const response = await API.get('fightsaggr', `fights/${id}`, null);
@@ -34,7 +34,7 @@ export const getFight: ActionCreator<
 export const attack: ActionCreator<
   ThunkAction<Promise<AnyAction>, IApplicationState, null, IFightAttackAction>
 > = (characterId: string, fightId: string) => {
-  return async (dispatch: Dispatch, getState) => {
+  return async (dispatch: ThunkDispatch<{}, {}, AnyAction>, getState) => {
     dispatch(loading());
 
     const attackrequest = {
@@ -65,7 +65,7 @@ export const attack: ActionCreator<
 export const startFight: ActionCreator<
   ThunkAction<Promise<AnyAction>, IApplicationState, null, IFightStartAction>
 > = () => {
-  return async (dispatch: Dispatch, getState) => {
+  return async (dispatch: ThunkDispatch<{}, {}, AnyAction>, getState) => {
     dispatch(loading());
 
     const character = getState().characters.defaultCharacter;

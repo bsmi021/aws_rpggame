@@ -17,14 +17,15 @@ export const CharacterSmallCard: React.FunctionComponent<IProps> = props => {
   return (
     <NavLink
       to={`/characters/${character.id}`}
-      className="ui inverted button  "
+      className="item"
+      style={{ background: 'darkgrey' }}
     >
       <div className="ui items">
-        <div className="inverted item">
+        <div className="item">
           <div className="ui avatar image">
             <img
               src={`${classIcon(character.player_class_name)}`}
-              style={{ background: 'lightgrey' }}
+              style={{ background: 'lightgrey', height: '25px', width: '25px' }}
               alt={character.player_class_name}
             />
           </div>

@@ -6,6 +6,9 @@ import Amplify from 'aws-amplify';
 import config from './config';
 import configureStore from './store/Store';
 import Root from './components/root/Root';
+import { createBrowserHistory } from 'history';
+
+const browserHistory = createBrowserHistory();
 
 Amplify.configure({
   Auth: {

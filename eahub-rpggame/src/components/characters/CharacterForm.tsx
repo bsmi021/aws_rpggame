@@ -3,6 +3,8 @@ import { Form, DropdownProps } from 'semantic-ui-react';
 import { classDescription } from './charUtils';
 import { useDispatch } from 'react-redux';
 import { createCharacter } from '../../actions/CharacterActions';
+import { Redirect } from 'react-router';
+import { Dispatch } from 'redux';
 
 const classOptions = [
   { key: 1, text: 'WARRIOR', value: 1 },
@@ -15,8 +17,9 @@ const CharacterForm: React.FunctionComponent = () => {
   const [characterName, setCharacterName] = React.useState('');
   const [playerClass, setPlayerClass] = React.useState(1);
   const [charNameValid, setCharNameValid] = React.useState(false);
+  const [redirect, setRedirect] = React.useState(false);
 
-  const dispatch = useDispatch();
+  const dispatch: Dispatch<any> = useDispatch();
 
   const onPlayerNameChange = (e: any, d: any) => {
     const charName: string = d.value;
@@ -38,12 +41,18 @@ const CharacterForm: React.FunctionComponent = () => {
     }
   };
 
+  if (redirect) {
+    return <Redirect to="/characters" />;
+  }
+
   return (
     <form
       onSubmit={e => {
         e.preventDefault();
 
         dispatch(createCharacter(characterName, playerClass));
+
+        setRedirect(true);
       }}
       className="ui form error"
     >

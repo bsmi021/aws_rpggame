@@ -30,7 +30,8 @@ export const fightsReducer: Reducer<IFightState, FightActions> = (
         ...state,
         fightsLoading: false,
         currentFight: action.fight,
-        fights: state.fights.concat(action.fight)
+        fights: state.fights.concat(action.fight),
+        attacks: []
       };
     }
     case FightActionTypes.GETSINGLE: {
@@ -45,7 +46,7 @@ export const fightsReducer: Reducer<IFightState, FightActions> = (
         ...state,
         currentFight: action.fight,
         currentAttack: action.attack,
-        attacks: state.attacks.concat(action.attack)
+        attacks: [...state.attacks, action.attack]
       };
     }
     case FightActionTypes.ERROR: {

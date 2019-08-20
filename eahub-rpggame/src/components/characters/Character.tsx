@@ -10,6 +10,10 @@ import { setDefaultCharacter } from '../../actions/CharacterActions';
 import { useSelector, useDispatch } from 'react-redux';
 import { IApplicationState } from '../../store/Store';
 import { startFight } from '../../actions/FightActions';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { IFightStartAction } from '../../types/FightTypes';
+import { Redirect } from 'react-router';
 
 interface IProps {
   character?: ICharacter;
@@ -17,9 +21,22 @@ interface IProps {
   setDefaultCharacter: typeof setDefaultCharacter;
 }
 
+export type ReduxDispatch = ThunkDispatch<IApplicationState, any, Action>;
+
+const useReduxDispatch: ReduxDispatch = () => {
+  return useDispatch<ReduxDispatch>();
+};
+
 const Character: React.FunctionComponent<IProps> = props => {
   const character = props.character;
   const dispatch = useDispatch();
+
+  // TODO: Remove this
+  const currentFight = useSelector((store: IApplicationState) => {
+    return store.fights.currentFight;
+  });
+
+  const [fightRedirect, setFightRedirect] = React.useState(false);
 
   const userId: string =
     useSelector((state: IApplicationState) => {
@@ -33,21 +50,22 @@ const Character: React.FunctionComponent<IProps> = props => {
         : '';
     }) || '';
 
+  // handle start fight click
+  const onStartFight = (e: any) => {
+    e.preventDefault();
+
+    dispatch(startFight());
+  };
+
   const fightButton = () => {
     return (
-      <button
-        className="ui mini button left floated"
-        onClick={e => {
-          e.preventDefault();
-          dispatch(startFight());
-        }}
-      >
+      <button className="ui mini button left floated" onClick={onStartFight}>
         start fight
       </button>
     );
   };
 
-  const historyPane = () => {
+  const inventoryPane = () => {
     if (!character) {
       return null;
     }
@@ -67,13 +85,17 @@ const Character: React.FunctionComponent<IProps> = props => {
   const panes = [
     {
       menuItem: 'Inventory',
-      render: () => <Tab.Pane attached={false}>{historyPane()}</Tab.Pane>
+      render: () => <Tab.Pane attached={false}>{inventoryPane()}</Tab.Pane>
     },
     {
       menuItem: 'History',
       render: () => <Tab.Pane attached={false}>History</Tab.Pane>
     }
   ];
+
+  if (currentFight && currentFight.is_active) {
+    return <Redirect to={`/fights/${currentFight.id}`} />;
+  }
 
   if (!character) {
     return null;
