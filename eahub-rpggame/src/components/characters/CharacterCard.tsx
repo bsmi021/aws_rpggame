@@ -36,7 +36,10 @@ export const CharacterCard: React.FunctionComponent<IProps> = props => {
     character && (
       <NavLink to={`/characters/${character.id}`} className={'ui card raised'}>
         <div className="ui tiny image">
-          <img src={`${classIcon(character.player_class_name)}`} />
+          <img
+            src={`${classIcon(character.player_class_name)}`}
+            alt={character.player_class_name}
+          />
         </div>
         <div className="middle aligned content">
           <div className="header">{character.name}</div>

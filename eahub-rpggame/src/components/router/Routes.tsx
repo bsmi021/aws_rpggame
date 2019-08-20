@@ -6,7 +6,7 @@ import {
   Switch,
   Redirect
 } from 'react-router-dom';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+// import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import NotFoundPage from '../notFound/NotFoundPage';
 import Home from '../home/Home';
 import Header from '../header/Header';
@@ -14,6 +14,7 @@ import CharactersPage from '../characters/CharactersPage';
 import ItemsPage from '../items/ItemsPage';
 import ItemPage from '../items/ItemPage';
 import CharacterPage from '../characters/CharacterPage';
+import CharacterForm from '../characters/CharacterForm';
 
 const RoutesWrap: React.FunctionComponent = () => {
   return (
@@ -32,6 +33,7 @@ const Routes: React.FunctionComponent<RouteComponentProps> = props => {
         <Redirect exact={true} from="/" to="/home" />
         <Route exact={true} path="/home" component={Home} />
         <Route exact={true} path="/characters" component={CharactersPage} />
+        <Route exact={true} path="/characters/new" component={CharacterForm} />
         <Route exact={true} path="/characters/:id" component={CharacterPage} />
         <Route exact={true} path="/items" component={ItemsPage} />
         <Route exact={true} path="/items/:id" component={ItemPage} />

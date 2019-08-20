@@ -5,7 +5,6 @@ import { Provider, connect } from 'react-redux';
 import RoutesWrap from '../router/Routes';
 import { Authenticator, Greetings } from 'aws-amplify-react';
 import { Auth } from 'aws-amplify';
-import { isTSCallSignatureDeclaration } from '@babel/types';
 import { signedIn } from '../../actions/AuthActions';
 
 interface IProps {
@@ -19,6 +18,11 @@ class Root extends React.Component<IProps> {
     document.title = 'SAS® SAScraft Demo';
     return (
       <Provider store={this.props.store}>
+        {!this.props.isAuthenticated && (
+          <div className="ui container">
+            <h1>Welcome to SAScraft</h1>
+          </div>
+        )}
         <Authenticator
           hide={[Greetings]}
           onStateChange={(res: any) => {

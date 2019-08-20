@@ -1,6 +1,5 @@
 import { Reducer } from 'redux';
 import { IAuthState, AuthActionTypes, AuthActions } from '../types/AuthTypes';
-import { CognitoUser } from '@aws-amplify/auth';
 
 const initialAuthState: IAuthState = {
   userId: undefined,

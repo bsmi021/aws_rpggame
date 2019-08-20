@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ICharacter, CharacterClasses } from '../../types/CharacterTypes';
+import { ICharacter } from '../../types/CharacterTypes';
 import withLoader from '../common/withLoader';
 import { Grid, Tab, Card } from 'semantic-ui-react';
 import ItemCardSmall from '../items/ItemCardSmall';
@@ -7,7 +7,7 @@ import { IItem } from '../../types/ItemTypes';
 import { classIcon, calcDps, isMyCharacter } from './charUtils';
 import { setDefaultCharacter } from '../../actions/CharacterActions';
 
-import { useSelector, connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { IApplicationState } from '../../store/Store';
 
 interface IProps {
@@ -81,6 +81,7 @@ const Character: React.FunctionComponent<IProps> = props => {
                   <img
                     src={`${classIcon(character.player_class_name)}`}
                     style={{ height: '50px', width: '50px' }}
+                    alt={character.player_class_name}
                   />
                 </div>
                 <h2

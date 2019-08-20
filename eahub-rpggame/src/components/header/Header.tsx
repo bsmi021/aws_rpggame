@@ -1,9 +1,7 @@
 import * as React from 'react';
-import { Menu, MenuItemProps } from 'semantic-ui-react';
-import { NavLink, Redirect } from 'react-router-dom';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { NavLink } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { IApplicationState } from '../../store/Store';
-import { button } from '@aws-amplify/ui';
 import { signOut } from '../../actions/AuthActions';
 import CharacterSmallCard from '../characters/CharacterSmallCard';
 

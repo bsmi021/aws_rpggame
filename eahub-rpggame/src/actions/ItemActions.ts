@@ -4,9 +4,9 @@ import { ThunkAction } from 'redux-thunk';
 import { API } from 'aws-amplify';
 
 import {
-  IItem,
-  IItemCreateAction,
-  IItemEditAction,
+  // IItem,
+  // IItemCreateAction,
+  // IItemEditAction,
   IItemGetSingleAction,
   IItemLoadingAction,
   IItemsGetAllAction,

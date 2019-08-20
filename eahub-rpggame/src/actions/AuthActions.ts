@@ -12,8 +12,6 @@ import {
   ISignIn,
   IAuthSignedInAction
 } from '../types/AuthTypes';
-import { string } from 'prop-types';
-import { async } from 'q';
 
 const loading: ActionCreator<IAuthLoadingAction> = () => ({
   type: AuthActionTypes.LOADING

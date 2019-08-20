@@ -1,9 +1,6 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 
 import { IItem } from '../../types/ItemTypes';
-import { getItems, getItem } from '../../actions/ItemActions';
-import { IApplicationState } from '../../store/Store';
 import { NavLink } from 'react-router-dom';
 import { colorSelector } from './itemUtils';
 

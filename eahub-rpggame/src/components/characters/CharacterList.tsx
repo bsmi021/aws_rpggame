@@ -1,10 +1,8 @@
 import * as React from 'react';
-import { Link, NavLink } from 'react-router-dom';
 import { ICharacter } from '../../types/CharacterTypes';
-import { charactersReducer } from '../../reducers/CharactersReducer';
 import withLoader from '../common/withLoader';
 
-import { useSelector, connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { IApplicationState } from '../../store/Store';
 import CharacterCard from './CharacterCard';
 
@@ -14,21 +12,24 @@ interface IProps {
   loading: boolean;
 }
 
-const isMyCharacter = (account: string, userId: string) => {
-  return account === userId;
-};
-
 const CharactersList: React.FunctionComponent<IProps> = props => {
-  const search = props.search;
+  // const search = props.search;
   const characters = props.characters;
+  const userId = useSelector(
+    (state: IApplicationState) => state.auth.userId || ''
+  );
 
   return (
     <div className="ui container centered">
       <div className="ui cards">
         {characters &&
-          characters.map((character: ICharacter) => {
-            return <CharacterCard key={character.id} character={character} />;
-          })}
+          characters
+            .sort((a: ICharacter, b: ICharacter) =>
+              a.account === userId ? -1 : 1
+            )
+            .map((character: ICharacter) => {
+              return <CharacterCard key={character.id} character={character} />;
+            })}
       </div>
     </div>
   );

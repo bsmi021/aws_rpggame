@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, NavLink } from 'react-router-dom';
 import 'url-search-params-polyfill';
 import { connect } from 'react-redux';
 
@@ -32,7 +32,12 @@ class CharactersPage extends React.Component<IProps> {
         <div className="ui container">
           <h4>Characters</h4>
           {this.props.isAuthenticated && (
-            <button className="float-right">Create New</button>
+            <NavLink
+              to="/characters/new"
+              className="ui button primary float-right"
+            >
+              Create New
+            </NavLink>
           )}
         </div>
         <CharacterList

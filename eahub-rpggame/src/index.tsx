@@ -4,7 +4,7 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 import Amplify from 'aws-amplify';
 import config from './config';
-import configureStore, { IApplicationState } from './store/Store';
+import configureStore from './store/Store';
 import Root from './components/root/Root';
 
 Amplify.configure({

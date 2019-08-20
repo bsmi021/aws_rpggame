@@ -1,14 +1,11 @@
 import * as React from 'react';
 import { IItem } from '../../types/ItemTypes';
-import { getItem } from '../../actions/ItemActions';
 import { equipItem, unequipItem } from '../../actions/CharacterActions';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { IApplicationState } from '../../store/Store';
-import { Card } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
 import { colorSelector } from './itemUtils';
-import { isMyCharacter } from '../characters/charUtils';
 
 interface IProps {
   item?: IItem;

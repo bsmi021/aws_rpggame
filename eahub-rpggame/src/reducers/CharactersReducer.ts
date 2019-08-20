@@ -44,6 +44,14 @@ export const charactersReducer: Reducer<ICharacterState, CharacterActions> = (
         charactersLoading: false
       };
     }
+    case CharacterActionTypes.CREATE: {
+      return {
+        ...state,
+        currentCharacter: action.character,
+        charactersLoading: false,
+        characters: state.characters.concat(action.character)
+      };
+    }
     case CharacterActionTypes.EQUIPITEM || CharacterActionTypes.UNEQUIPITEM: {
       return {
         ...state,

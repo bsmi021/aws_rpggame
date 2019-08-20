@@ -9,6 +9,7 @@ provider:
     ITEM_SERVICE: sascraft-item-service-${opt:stage, self:provider.stage}-get
     ADD_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-add_item
     GET_CHAR_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-get
+    LIST_CHAR_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-list
     REMOVE_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-remove_item
     REGION: ${self:provider.region}
   iamRoleStatements:
@@ -20,6 +21,7 @@ provider:
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-add_item'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-get'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-remove_item'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-list'
 package:
   exclude:
     - env/**
@@ -28,6 +30,13 @@ package:
     - .gitignore
 
 functions:
+  list:
+    handler: aggregates/list.list
+    events:
+      - http:
+          path: characters
+          method: get
+          cors: true
   get:
     handler: aggregates/get.get
     events:

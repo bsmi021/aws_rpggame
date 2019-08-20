@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import { IItem } from '../../types/ItemTypes';
 import withLoader from '../common/withLoader';
 import { Card } from 'semantic-ui-react';
@@ -12,9 +11,6 @@ interface IProps {
 }
 
 const ItemList: React.FunctionComponent<IProps> = props => {
-  const search = props.search;
-  const items = props.items;
-
   const renderList = () => {
     return (
       <React.Fragment>

@@ -1,12 +1,9 @@
 import { ActionCreator, AnyAction, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-
 import { API } from 'aws-amplify';
 
 import {
   ICharacterCreate,
-  ICharacterDelete,
-  ICharacterEdit,
   ICharacter,
   ICharacterGetAllAction,
   ICharacterGetSingleAction,
@@ -17,7 +14,7 @@ import {
   ICharacterEquipItem,
   ICharacterUnequipItem
 } from '../types/CharacterTypes';
-import { async } from 'q';
+import { IApplicationState } from '../store/Store';
 
 const loading: ActionCreator<ICharacterLoading> = () => ({
   type: CharacterActionTypes.LOADING
@@ -41,7 +38,7 @@ export const getCharacters: ActionCreator<
 > = () => {
   return async (dispatch: Dispatch) => {
     dispatch(loading());
-    const response = await API.get('characters', '/characters', null);
+    const response = await API.get('charsaggr', '/characters', null);
     const characters = response.characters;
     return dispatch({
       characters,
@@ -98,6 +95,32 @@ export const unequipItem: ActionCreator<
     );
     return dispatch({
       type: CharacterActionTypes.UNEQUIPITEM,
+      character: response
+    });
+  };
+};
+
+export const createCharacter: ActionCreator<
+  ThunkAction<Promise<AnyAction>, IApplicationState, null, ICharacterCreate>
+> = (characterName: string, characterClass: number) => {
+  return async (dispatch: Dispatch, getState) => {
+    dispatch(loading());
+    const userId = getState().auth.userId || '';
+
+    const request = {
+      body: {
+        name: characterName,
+        account: userId,
+        player_class: characterClass
+      }
+    };
+
+    const response = await API.post('characters', 'characters', request).catch(
+      e => alert('An error occurred when trying to save this new character.')
+    );
+
+    return dispatch({
+      type: CharacterActionTypes.CREATE,
       character: response
     });
   };

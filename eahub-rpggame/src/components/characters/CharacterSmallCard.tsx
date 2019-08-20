@@ -25,6 +25,7 @@ export const CharacterSmallCard: React.FunctionComponent<IProps> = props => {
             <img
               src={`${classIcon(character.player_class_name)}`}
               style={{ background: 'lightgrey' }}
+              alt={character.player_class_name}
             />
           </div>
           <div className="middle aligned content">

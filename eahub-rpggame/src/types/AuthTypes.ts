@@ -1,5 +1,3 @@
-import { CognitoUser } from '@aws-amplify/auth';
-
 export interface IAuthProps {
   isAuthenticated: boolean;
   userHasAuthenticated: (authenticated: boolean) => void;
