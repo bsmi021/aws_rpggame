@@ -1,4 +1,4 @@
-service: eahub-fight-service # NOTE: update this with your service name
+service: sascraft-fight-service # NOTE: update this with your service name
 
 provider:
   name: aws

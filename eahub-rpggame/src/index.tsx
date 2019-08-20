@@ -35,6 +35,11 @@ Amplify.configure({
         name: 'charsaggr',
         endpoint: config.apiGateway.CHARS_AGGR_URL,
         region: config.apiGateway.REGION
+      },
+      {
+        name: 'fightsaggr',
+        endpoint: config.apiGateway.FIGHTS_AGGR_URL,
+        region: config.apiGateway.REGION
       }
     ]
   }

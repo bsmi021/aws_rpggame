@@ -7,8 +7,9 @@ import { IItem } from '../../types/ItemTypes';
 import { classIcon, calcDps, isMyCharacter } from './charUtils';
 import { setDefaultCharacter } from '../../actions/CharacterActions';
 
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { IApplicationState } from '../../store/Store';
+import { startFight } from '../../actions/FightActions';
 
 interface IProps {
   character?: ICharacter;
@@ -18,6 +19,7 @@ interface IProps {
 
 const Character: React.FunctionComponent<IProps> = props => {
   const character = props.character;
+  const dispatch = useDispatch();
 
   const userId: string =
     useSelector((state: IApplicationState) => {
@@ -30,6 +32,20 @@ const Character: React.FunctionComponent<IProps> = props => {
         ? state.characters.defaultCharacter.id
         : '';
     }) || '';
+
+  const fightButton = () => {
+    return (
+      <button
+        className="ui mini button left floated"
+        onClick={e => {
+          e.preventDefault();
+          dispatch(startFight());
+        }}
+      >
+        start fight
+      </button>
+    );
+  };
 
   const historyPane = () => {
     if (!character) {
@@ -110,6 +126,7 @@ const Character: React.FunctionComponent<IProps> = props => {
                     Make Default
                   </button>
                 )}
+              {character.id === defaultCharacterId && fightButton()}
             </Grid.Column>
           </Grid.Row>
           <Grid.Row columns="equal" color="grey">

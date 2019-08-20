@@ -1,0 +1,65 @@
+service: sascraft-fight-aggr-service # NOTE: update this with your service name
+
+provider:
+  name: aws
+  runtime: python3.7
+  region: us-east-2
+  stage: dev
+  environment:
+    GET_CHAR_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-get
+    CREATE_ENEMY_SERVICE: sascraft-enemy-service-${opt:stage, self:provider.stage}-create
+    CREATE_FIGHT_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-create
+    ATTACK_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-attack
+    GET_FIGHT_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-get
+    REGION: ${self:provider.region}
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - lambda:InvokeFunction
+      Resource:
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-get'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-enemy-service-${opt:stage, self:provider.stage}-create'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-fight-service-${opt:stage, self:provider.stage}-create'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-fight-service-${opt:stage, self:provider.stage}-attack'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-fight-service-${opt:stage, self:provider.stage}-get'
+
+functions:
+  start:
+    handler: fights/prototype.start
+    events:
+      - http:
+          path: fights/start
+          method: post
+          cors: true
+  attack:
+    handler: fights/pattack.attack
+    events:
+      - http:
+          path: fights/attack
+          method: post
+          cors: true
+
+  get:
+    handler: fights/get.get
+    events:
+      - http:
+          path: fights/{id}
+          method: get
+          cors: true
+
+package:
+  exclude:
+    - env/**
+    - node_modules/**
+    - secrets.yml
+    - .gitignore
+
+plugins:
+  - serverless-python-requirements
+  - serverless-pseudo-parameters
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  secrets: ${file(secrets.yml):${self:custom.stage}}
+  pythonRequirements:
+    dockerizePip: false
