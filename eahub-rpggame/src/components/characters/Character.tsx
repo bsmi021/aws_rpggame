@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ICharacter } from '../../types/CharacterTypes';
 import withLoader from '../common/withLoader';
-import { Grid, Tab, Card } from 'semantic-ui-react';
+import { Grid, Tab, Card, Progress } from 'semantic-ui-react';
 import ItemCardSmall from '../items/ItemCardSmall';
 import { IItem } from '../../types/ItemTypes';
 import { classIcon, calcDps, isMyCharacter } from './charUtils';
@@ -149,6 +149,17 @@ const Character: React.FunctionComponent<IProps> = props => {
                   </button>
                 )}
               {character.id === defaultCharacterId && fightButton()}
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Column>
+              <Progress
+                total={character.xp_to_lvl}
+                value={character.curr_lvl_xp}
+                color="purple"
+                active={true}
+                label={`${character.curr_lvl_xp}/${character.xp_to_lvl}`}
+              />
             </Grid.Column>
           </Grid.Row>
           <Grid.Row columns="equal" color="grey">

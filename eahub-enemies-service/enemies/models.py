@@ -106,7 +106,7 @@ class EnemyModel(BaseModel):
         self.block_pct = race_attributes['block_pct']
         self.dodge_pct = race_attributes['dodge_pct']
 
-        self.hit_points = round(((self.base_hp * (1 + self.level * .1)) * 25.5))
+        self.hit_points = round(((self.base_hp * (1 + self.level * .1)) * 3.1))
         self.current_hp = self.hit_points
         self.previous_hp = self.hit_points
 

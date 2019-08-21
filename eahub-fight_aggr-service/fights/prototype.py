@@ -4,6 +4,7 @@
 import os
 import json
 import logging
+import random
 from boto3 import client
 
 log_level = os.environ.get('LOG_LEVEL', 'INFO')
@@ -40,7 +41,7 @@ def start(event, context):
 
     # get the character's level to pass as req param to enemy service
     char_level = char_data['level']
-    en_race = 1 # hard coded to an orc for now
+    en_race = random.choice([1, 2, 3, 4]) # hard coded to an orc for now
 
     # request object for the create enemy service
     enemy_request = {

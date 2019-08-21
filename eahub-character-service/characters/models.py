@@ -6,6 +6,10 @@ from datetime import datetime
 from uuid import uuid4
 from py_linq import Enumerable
 from enum import Enum
+if 'ENV' in os.environ:
+    import experienceCalcs
+else:
+    import characters.experienceCalcs as experienceCalcs
 
 from pynamodb.attributes import (UnicodeAttribute,
                                  ListAttribute,
@@ -68,6 +72,8 @@ class CharacterModel(BaseModel):
     player_class_name = UnicodeAttribute(default=PlayerClass.WARRIOR.name)
     level = NumberAttribute(default=1)
     xp_gained = NumberAttribute(default=0)
+    curr_lvl_xp = NumberAttribute(default=0)
+    xp_to_lvl = NumberAttribute(default=0)
     base_damage = NumberAttribute(default=0)
     tot_damage = NumberAttribute(default=0)
     base_min_damage = NumberAttribute(default=2)
@@ -85,11 +91,41 @@ class CharacterModel(BaseModel):
     can_use_2h = BooleanAttribute(default=False)
     inventory = ListAttribute(of=InventoryItemMap)
 
+    def update_xp(self, xp_earned):
+        """Updates the characters xp based on the amount earned
+        
+        Arguments:
+            xp_earned {int} -- Amount of exp earned for killing an enemy
+        """
+
+        xp_x = xp_earned + self.curr_lvl_xp
+        
+        if (xp_x >= self.xp_to_lvl):
+            self.level += 1
+            print(f"Ding You've Reacted Level: {self.level}")
+            self.curr_lvl_xp = xp_x - self.xp_to_lvl
+            self.xp_to_lvl = experienceCalcs.xp_required_to_level(self.level)
+            self.calc_stats()
+
+            while self.curr_lvl_xp >= self.xp_to_lvl:
+                self.level += 1
+                print(f"Ding You've Reacted Level: {self.level}")
+                self.curr_lvl_xp = xp_x - self.xp_to_lvl
+                self.xp_to_lvl = experienceCalcs.xp_required_to_level(self.level)
+                self.calc_stats()
+        else:
+            self.curr_lvl_xp += xp_earned
+        
+
+        self.xp_gained += xp_earned
+        self.updated_at = datetime.utcnow()
+        super(CharacterModel, self).save()
+
     def calc_stats(self):
-        base_min = self.base_min_damage
-        base_max = self.base_max_damage
+        base_min = round(((self.base_min_damage * (1 + self.level * .1)) * 1.55))
+        base_max = round(((self.base_max_damage * (1 + self.level * .1)) * 1.55))
         base_crit = self.base_crit_chance
-        base_hp = self.base_hp
+        base_hp = round(((self.base_hp * (1 + self.level * .1)) * 6.5))
         base_damage = self.base_damage
 
         if self.inventory is not None:
@@ -159,6 +195,8 @@ class CharacterModel(BaseModel):
 
         self.player_class_name = PlayerClass(self.player_class).name
 
+        self.xp_to_lvl = experienceCalcs.xp_required_to_level(1)
+
     def save(self, conditional_operator=None, **expected_values):
         
         self.set_class_attributes()
@@ -180,17 +218,29 @@ if __name__ == "__main__":
 
     character_1.save()
 
-    print(character_1)
+    #print(character_1)
 
     character_1.add_item(InventoryItemMap(id=str(uuid4()), slot=1, slot_name='Head', damage=21, crit_chance=.025))
     character_1.save()
     print()
-    print(character_1)
+   # print(character_1)
 
     character_1.add_item(InventoryItemMap(id=str(uuid4()), slot=1, slot_name='Head', damage=15, crit_chance=.033))
     character_1.save()
     print()
-    print(character_1)
+  #  print(character_1)
+
+    character_1.update_xp(50)
+    print(f'lvl: {character_1.level} (hp: {character_1.hit_points} {character_1.min_damage}-{character_1.max_damage}) curr_xp: {character_1.curr_lvl_xp} xp_to_lvl: {character_1.xp_to_lvl} total_xp: {character_1.xp_gained}')
+    character_1.update_xp(50)
+    print(f'lvl: {character_1.level} (hp: {character_1.hit_points} {character_1.min_damage}-{character_1.max_damage}) curr_xp: {character_1.curr_lvl_xp} xp_to_lvl: {character_1.xp_to_lvl} total_xp: {character_1.xp_gained}')
+    character_1.update_xp(65)
+    print(f'lvl: {character_1.level} (hp: {character_1.hit_points} {character_1.min_damage}-{character_1.max_damage}) curr_xp: {character_1.curr_lvl_xp} xp_to_lvl: {character_1.xp_to_lvl} total_xp: {character_1.xp_gained}')
+    character_1.update_xp(85)
+    print(f'lvl: {character_1.level} (hp: {character_1.hit_points} {character_1.min_damage}-{character_1.max_damage}) curr_xp: {character_1.curr_lvl_xp} xp_to_lvl: {character_1.xp_to_lvl} total_xp: {character_1.xp_gained}')
+    character_1.update_xp(5000)
+    print(f'lvl: {character_1.level} (hp: {character_1.hit_points} {character_1.min_damage}-{character_1.max_damage}) curr_xp: {character_1.curr_lvl_xp} xp_to_lvl: {character_1.xp_to_lvl} total_xp: {character_1.xp_gained}')
+    #print(character_1)
 
     #print(character_1.to_json())
 

@@ -24,6 +24,8 @@ export interface ICharacter {
   attack_speed: number;
   can_dual_wield: boolean;
   can_use_2h: boolean;
+  xp_to_lvl: number;
+  curr_lvl_xp: number;
 }
 
 export enum CharacterClasses {

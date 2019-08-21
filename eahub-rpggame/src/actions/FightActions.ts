@@ -23,10 +23,15 @@ export const getFight: ActionCreator<
     dispatch(loading());
 
     const response = await API.get('fightsaggr', `fights/${id}`, null);
-
+    const enemy = await API.get(
+      'enemies',
+      `enemies/${response.enemy.id}`,
+      null
+    );
     return dispatch({
       type: FightActionTypes.GETSINGLE,
-      fight: response
+      fight: response,
+      enemy
     });
   };
 };
@@ -90,8 +95,11 @@ export const startFight: ActionCreator<
         null
       );
 
+      const enemy = await API.get('enemies', `enemies/${fight.enemy.id}`, null);
+
       return dispatch({
         type: FightActionTypes.START,
+        enemy,
         fight
       });
     }

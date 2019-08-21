@@ -1,3 +1,5 @@
+import { IEnemy } from './EnemyTypes';
+
 export interface IFightEnemy {
   id: string;
   status: string;
@@ -66,6 +68,7 @@ export interface IFightLoadingAction {
 export interface IFightStartAction {
   type: FightActionTypes.START | FightActionTypes.ERROR;
   fight: IFight;
+  enemy: IEnemy;
 }
 
 export interface IFightAttackAction {
@@ -77,6 +80,7 @@ export interface IFightAttackAction {
 export interface IFightGetSingleAction {
   type: FightActionTypes.GETSINGLE;
   fight: IFight;
+  enemy: IEnemy;
 }
 
 export type FightActions =
@@ -92,4 +96,5 @@ export interface IFightState {
   readonly currentAttack: IAttack | null;
   readonly fightsLoading: boolean;
   readonly fightStartError: boolean;
+  readonly currentFightEnemy: IEnemy | null;
 }

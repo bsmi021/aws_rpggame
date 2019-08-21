@@ -19,7 +19,8 @@ Amplify.configure({
     // userPoolWebClientId: awsmobile.aws_user_pools_web_client_id
     region: config.cognito.REGION,
     userPoolId: config.cognito.USER_POOL_ID,
-    identityPoolId: config.cognito.IDENTITY_POOL_ID,
+    // commented out for now need to investigate
+    // identityPoolId: config.cognito.IDENTITY_POOL_ID,
     userPoolWebClientId: config.cognito.APP_CLIENT_ID
   },
   API: {
@@ -42,6 +43,16 @@ Amplify.configure({
       {
         name: 'fightsaggr',
         endpoint: config.apiGateway.FIGHTS_AGGR_URL,
+        region: config.apiGateway.REGION
+      },
+      {
+        name: 'fights',
+        endpoint: config.apiGateway.FIGHTS_URL,
+        region: config.apiGateway.REGION
+      },
+      {
+        name: 'enemies',
+        endpoint: config.apiGateway.ENEMIES_URL,
         region: config.apiGateway.REGION
       }
     ]

@@ -6,6 +6,7 @@ import RoutesWrap from '../router/Routes';
 import { Authenticator, Greetings } from 'aws-amplify-react';
 import { Auth } from 'aws-amplify';
 import { signedIn } from '../../actions/AuthActions';
+import awsmobile from '../../config';
 
 interface IProps {
   store: Store<IApplicationState>;

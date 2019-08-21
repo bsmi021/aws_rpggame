@@ -7,6 +7,8 @@ provider:
   stage: dev
   environment:
     GET_CHAR_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-get
+    ADD_XP_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-add_xp
+    GET_ENEMY_SERVICE: sascraft-enemy-service-${opt:stage, self:provider.stage}-get
     CREATE_ENEMY_SERVICE: sascraft-enemy-service-${opt:stage, self:provider.stage}-create
     CREATE_FIGHT_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-create
     ATTACK_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-attack
@@ -18,10 +20,12 @@ provider:
         - lambda:InvokeFunction
       Resource:
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-get'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-add_xp'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-enemy-service-${opt:stage, self:provider.stage}-create'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-fight-service-${opt:stage, self:provider.stage}-create'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-fight-service-${opt:stage, self:provider.stage}-attack'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-fight-service-${opt:stage, self:provider.stage}-get'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-enemy-service-${opt:stage, self:provider.stage}-get'
 
 functions:
   start:
@@ -39,6 +43,12 @@ functions:
           method: post
           cors: true
 
+  handleFightUpdate:
+    handler: fights/fightUpdateHandler.handler
+    events:
+      - stream:
+          type: dynamodb
+          arn: 'arn:aws:dynamodb:us-east-2:815248853218:table/sascraft-fight-service-FIGHTS-dev/stream/2019-08-21T14:12:37.275'
   get:
     handler: fights/get.get
     events:

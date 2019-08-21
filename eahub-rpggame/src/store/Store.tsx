@@ -11,6 +11,8 @@ import { IFightState } from '../types/FightTypes';
 import { fightsReducer } from '../reducers/FightReducer';
 import { saveState, loadState } from './localStorage';
 import _ from 'lodash';
+import { IEnemyState } from '../types/EnemyTypes';
+import { enemiesReducer } from '../reducers/EnemyReducer';
 
 const persistedState = loadState();
 
@@ -19,13 +21,15 @@ export interface IApplicationState {
   items: IItemsState;
   auth: IAuthState;
   fights: IFightState;
+  enemies: IEnemyState;
 }
 
 const rootReducer = combineReducers<IApplicationState>({
   characters: charactersReducer,
   items: itemsReducer,
   auth: authReducer,
-  fights: fightsReducer
+  fights: fightsReducer,
+  enemies: enemiesReducer
 });
 
 // configure the store and return it
@@ -41,7 +45,8 @@ export default function configureStore(): Store<IApplicationState> {
         auth: store.getState().auth,
         characters: store.getState().characters,
         items: store.getState().items,
-        fights: store.getState().fights
+        fights: store.getState().fights,
+        enemies: store.getState().enemies
       });
     }, 1000)
   );

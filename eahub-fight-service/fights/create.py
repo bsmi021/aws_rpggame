@@ -42,9 +42,9 @@ def create(event, context):
                   block_amt=enemy_data['block_amt'],
                   block_pct=enemy_data['block_pct'],
                   dodge_pct=enemy_data['dodge_pct'],
-                  base_hp=enemy_data['base_hp'],
-                  curr_hp=enemy_data['base_hp'],
-                  prev_hp=enemy_data['base_hp'])
+                  base_hp=enemy_data['hit_points'],
+                  curr_hp=enemy_data['hit_points'],
+                  prev_hp=enemy_data['hit_points'])
 
     fight.enemy = enemy
 

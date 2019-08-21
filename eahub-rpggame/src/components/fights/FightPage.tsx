@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, Prompt } from 'react-router-dom';
 import Fight from './Fight';
 import { getFight } from '../../actions/FightActions';
 import { IFight } from '../../types/FightTypes';
@@ -21,10 +21,18 @@ export class FightPage extends React.Component<IProps> {
     const fight = this.props.fight;
     return (
       <div className="ui container">
+        <Prompt
+          when={fight && fight.enemy.status.toLowerCase() === 'alive'}
+          message="Are you sure you want to leave while this fight is active?"
+        />
         {fight ? <Fight fight={fight} /> : <></>}
       </div>
     );
   }
+
+  private navAwayMessage = () => {
+    'Are you sure you want to leave while this fight is still active?';
+  };
 }
 
 const mapStateToProps = (store: IApplicationState) => {
