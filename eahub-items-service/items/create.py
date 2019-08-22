@@ -27,6 +27,7 @@ def create(event, context):
                      slot=data.get('slot'),
                      quality=data.get('quality'),
                      damage=data.get('damage'),
+                     level=data.get('level'),
                      crit_chance=data.get('crit_chance'),
                      stamina=data.get('stamina'))
 

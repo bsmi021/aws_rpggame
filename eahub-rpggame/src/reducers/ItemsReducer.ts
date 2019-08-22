@@ -32,6 +32,13 @@ export const itemsReducer: Reducer<IItemsState, ItemActions> = (
         itemsLoading: false
       };
     }
+    case ItemActionTypes.CREATE: {
+      return {
+        ...state,
+        itemsLoading: false,
+        items: [...state.items, action.item]
+      };
+    }
     default:
       return state;
   }

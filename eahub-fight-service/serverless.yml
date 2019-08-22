@@ -8,6 +8,7 @@ provider:
   environment:
     DYNAMODB_FIGHT_TABLE: ${self:service}-FIGHTS-${opt:stage, self:provider.stage}
     DYNAMODB_ATTACK_TABLE: ${self:service}-ATTACKS-${opt:stage, self:provider.stage}
+    DYNAMODB_CHAR_FIGHT_TABLE: ${self:service}-CHARACTER_FIGHTS_MAP-${opt:state, self:provider.stage}
     REGION: ${self:provider.region}
   iamRoleStatements:
     - Effect: 'Allow'
@@ -35,6 +36,16 @@ provider:
         - dynamodb:DeleteItem
         - dynamodb:DescribeTable
       Resource: 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_ATTACK_TABLE}'
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:DescribeTable
+      Resource: 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_CHAR_FIGHT_TABLE}'
 
 package:
   exclude:
@@ -56,6 +67,13 @@ functions:
     events:
       - http:
           path: fights/{id}
+          method: get
+          cors: true
+  list:
+    handler: fights/list.list
+    events:
+      - http:
+          path: fights
           method: get
           cors: true
   attack:
@@ -100,6 +118,25 @@ resources:
           ReadCapacityUnits: 10
           WriteCapacityUnits: 10
         TableName: ${self:provider.environment.DYNAMODB_ATTACK_TABLE}
+
+    CharFightsMapDynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Delete
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: char_id
+            AttributeType: S
+          - AttributeName: fight_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: char_id
+            KeyType: HASH
+          - AttributeName: fight_id
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
+        TableName: ${self:provider.environment.DYNAMODB_CHAR_FIGHT_TABLE}
 
 plugins:
   - serverless-python-requirements

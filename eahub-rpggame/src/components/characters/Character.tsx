@@ -73,9 +73,11 @@ const Character: React.FunctionComponent<IProps> = props => {
       <div>
         {character.inventory ? (
           <Card.Group stackable={true}>
-            {character.inventory.map((item: IItem) => {
-              return <ItemCardSmall key={item.id} item={item} />;
-            })}
+            {character.inventory
+              .sort((a: IItem, b: IItem) => (a.slot > b.slot ? 1 : -1))
+              .map((item: IItem) => {
+                return <ItemCardSmall key={item.id} item={item} />;
+              })}
           </Card.Group>
         ) : null}
       </div>
@@ -134,7 +136,9 @@ const Character: React.FunctionComponent<IProps> = props => {
               </span>
             </Grid.Column>
             <Grid.Column width={10}>
-              <h4>{character.player_class_name}</h4>
+              <h4>
+                Level {character.level} {character.player_class_name}
+              </h4>
               {isMyCharacter(character.account, userId) &&
                 character.id !== defaultCharacterId && (
                   <button

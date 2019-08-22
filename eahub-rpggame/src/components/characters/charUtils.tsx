@@ -4,13 +4,13 @@ import { ICharacter } from '../../types/CharacterTypes';
 export const classIcon = (className: string) => {
   switch (className) {
     case 'WARRIOR':
-      return '/icons/warrior.png';
+      return '/icons/characters/015-helmet.png';
     case 'ARCHER':
-      return '/icons/archer.jpg';
+      return '/icons/characters/018-cupids-bow.png';
     case 'SORCERER':
-      return '/icons/sorcerer.png';
+      return '/icons/characters/016-sorcery-book.png';
     case 'ROGUE':
-      return '/icons/rogue.png';
+      return '/icons/characters/017-dagger.png';
     default:
       return null;
   }

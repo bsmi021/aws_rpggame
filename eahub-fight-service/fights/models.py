@@ -63,6 +63,19 @@ class Character (MapAttribute):
     max_damage = NumberAttribute()
 
 
+class CharacterFightModel(Model):
+    class Meta:
+        table_name = os.environ.get('DYNAMODB_CHAR_FIGHT_TABLE', 'CHARACTER_FIGHTS')
+        if 'ENV' in os.environ:
+            host = 'http://localhost:8000'
+        else:
+            region = aws_region
+            host = f'https://dynamodb.{aws_region}.amazonaws.com'
+
+    char_id = UnicodeAttribute(hash_key=True, null=False)
+    fight_id = UnicodeAttribute(range_key=True, null=False)
+    enemy_id = UnicodeAttribute(null=False)
+
 class FightModel(BaseModel):
     class Meta:
         table_name = os.environ.get('DYNAMODB_FIGHT_TABLE', 'FIGHTS')

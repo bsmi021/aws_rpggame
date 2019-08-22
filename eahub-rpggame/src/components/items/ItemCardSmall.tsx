@@ -3,6 +3,7 @@ import * as React from 'react';
 import { IItem } from '../../types/ItemTypes';
 import { NavLink } from 'react-router-dom';
 import { colorSelector } from './itemUtils';
+import { Grid } from 'semantic-ui-react';
 
 interface IProps {
   item?: IItem;

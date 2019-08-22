@@ -1,5 +1,5 @@
 from datetime import datetime
-from models import FightModel, Enemy, Character, AttackModel
+from models import FightModel, Enemy, Character, AttackModel, CharacterFightModel
 from utils import ModelEncoder
 import json
 import multiprocessing
@@ -8,6 +8,8 @@ from uuid import uuid4
 import random
 import time
 
+os.environ['REGION'] = 'us-east-2'
+os.environ['ENV'] = '1'
 
 def calc_dodge(dodge_chance):
     return random.randint(1, 100) * .01 <= dodge_chance
@@ -114,6 +116,9 @@ if __name__ == "__main__":
         AttackModel.create_table(read_capacity_units=5,
                                  write_capacity_units=5,
                                  wait=True)
+
+    if not CharacterFightModel.exists():
+        CharacterFightModel.create_table(read_capacity_units=5, write_capacity_units=5, wait=True)
 
     for result in AttackModel.scan():
         print(json.dumps(result, cls=ModelEncoder))

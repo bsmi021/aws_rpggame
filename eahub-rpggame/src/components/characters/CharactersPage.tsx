@@ -7,6 +7,8 @@ import CharacterList from './CharacterList';
 import { getCharacters } from '../../actions/CharacterActions';
 import { ICharacter } from '../../types/CharacterTypes';
 import { IApplicationState } from '../../store/Store';
+import { Segment } from 'semantic-ui-react';
+import { firstBy } from 'thenby';
 
 interface IProps extends RouteComponentProps {
   getCharacters: typeof getCharacters; // action creator
@@ -30,21 +32,31 @@ class CharactersPage extends React.Component<IProps> {
     return (
       <div className="ui container-fluid">
         <div className="ui container">
-          <h4>Characters</h4>
-          {this.props.isAuthenticated && (
+          <Segment>
+            <h2>Characters</h2>
             <NavLink
               to="/characters/new"
               className="ui button primary float-right"
             >
               Create New
             </NavLink>
-          )}
+            <button
+              className="ui small button blue float-right"
+              onClick={() => this.props.getCharacters()}
+            >
+              <i className="refresh icon" />
+            </button>
+          </Segment>
+          <Segment>
+            <CharacterList
+              search={search}
+              characters={this.props.characters.sort(
+                firstBy(c => c.name, { direction: -1 })
+              )}
+              loading={this.props.loading}
+            />
+          </Segment>
         </div>
-        <CharacterList
-          search={search}
-          characters={this.props.characters}
-          loading={this.props.loading}
-        />
       </div>
     );
   }

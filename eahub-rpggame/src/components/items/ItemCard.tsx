@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { IApplicationState } from '../../store/Store';
 import { NavLink } from 'react-router-dom';
-import { colorSelector } from './itemUtils';
+import { colorSelector, itemSlotIcon } from './itemUtils';
 
 interface IProps {
   item?: IItem;
@@ -47,7 +47,10 @@ export const ItemCard: React.FunctionComponent<IProps> = props => {
         to={`/items/${item.id}`}
         className={`ui card raised ${colorSelector(item.quality)}`}
       >
-        <div className="content">
+        <div className="ui mini image">
+          <img src={`${itemSlotIcon(item.slot)}`} alt={item.slot_name} />
+        </div>
+        <div className="middle aligned content">
           <div className="header">{item.name}</div>
           <div className="meta">{item.slot_name}</div>
           <div className="description">{item.description}</div>

@@ -8,6 +8,7 @@ import {
 import { ICharacter } from '../../types/CharacterTypes';
 import { IApplicationState } from '../../store/Store';
 import Character from './Character';
+import { firstBy } from 'thenby';
 
 interface IProps extends RouteComponentProps<{ id: string }> {
   getCharacter: typeof getCharacter;

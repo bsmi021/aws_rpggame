@@ -17,18 +17,38 @@ log_level = os.environ.get('LOG_LEVEL', 'INFO')
 logging.root.setLevel(logging.getLevelName(log_level))
 logger = logging.getLogger(__name__)
 
+
 def list(event, context):
     logger.debug(f'Event received: {json.dumps(event)}')
 
-    results = ItemModel.scan()
+    # query params {level, slot, quality}
+    if 'queryStringParameters' in event:
+        queryParams = event.get('queryStringParameters', {})
+
+        if queryParams is not None:
+
+            queryFields = {'slot', 'quality', 'level'}
+            query = None
+
+            for fieldName in queryFields:
+                field = getattr(ItemModel, fieldName, None)
+                if field is None or fieldName not in queryParams:
+                    continue
+                clause = field == int(queryParams[fieldName])
+                query = clause if query is None else query & clause
+
+            results = ItemModel.scan(query)
+        else:
+            results = ItemModel.scan()
+    else:
+        results = ItemModel.scan()
 
     response = {
         'statusCode': 200,
         'body': json.dumps(
             {
                 "items": [x for x in results]
-                }
-            , cls=ModelEncoder),
+            }, cls=ModelEncoder),
         'headers': {
             'Access-Control-Allow-Origin': '*'
         }

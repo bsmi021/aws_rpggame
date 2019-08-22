@@ -16,6 +16,7 @@ import ItemPage from '../items/ItemPage';
 import CharacterPage from '../characters/CharacterPage';
 import CharacterForm from '../characters/CharacterForm';
 import FightPage from '../fights/FightPage';
+import ItemForm from '../items/ItemForm';
 
 const RoutesWrap: React.FunctionComponent = () => {
   return (
@@ -37,7 +38,9 @@ const Routes: React.FunctionComponent<RouteComponentProps> = props => {
         <Route exact={true} path="/characters/new" component={CharacterForm} />
         <Route exact={true} path="/characters/:id" component={CharacterPage} />
         <Route exact={true} path="/items" component={ItemsPage} />
+        <Route exact={true} path="/items/new" component={ItemForm} />
         <Route exact={true} path="/items/:id" component={ItemPage} />
+
         <Route exact={true} path="/fights/:id" component={FightPage} />
         <Route component={NotFoundPage} />
       </Switch>

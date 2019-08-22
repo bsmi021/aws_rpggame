@@ -1,16 +1,20 @@
-export interface IItem {
+export interface IItem extends IItemBase {
   id: string;
-  name: string;
   created_at: Date;
   modified_at: Date;
+  quality_name: string;
+  slot_name: string;
+}
+
+export interface IItemBase {
+  name: string;
   description: string;
   quality: number;
-  quality_name: string;
   slot: number;
-  slot_name: string;
   damage: number;
   stamina: number;
-  crit_chance: string;
+  crit_chance: number;
+  level: number;
 }
 
 export enum ItemActionTypes {

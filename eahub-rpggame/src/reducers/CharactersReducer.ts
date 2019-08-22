@@ -52,7 +52,15 @@ export const charactersReducer: Reducer<ICharacterState, CharacterActions> = (
         characters: state.characters.concat(action.character)
       };
     }
-    case CharacterActionTypes.EQUIPITEM || CharacterActionTypes.UNEQUIPITEM: {
+    case CharacterActionTypes.EQUIPITEM: {
+      return {
+        ...state,
+        currentCharacter: action.character,
+        defaultCharacter: action.character,
+        charactersLoading: false
+      };
+    }
+    case CharacterActionTypes.UNEQUIPITEM: {
       return {
         ...state,
         currentCharacter: action.character,

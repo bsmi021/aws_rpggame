@@ -79,6 +79,7 @@ class ItemModel(BaseModel):
     damage = NumberAttribute(default=10)
     stamina = NumberAttribute(default=10)
     crit_chance = NumberAttribute(default=0.01)
+    level = NumberAttribute(default=1)
 
     def save(self, conditional_operator=None, **expected_values):
         self.updated_at = datetime.utcnow()

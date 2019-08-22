@@ -7,10 +7,10 @@ from datetime import datetime
 from uuid import uuid4
 
 if 'ENV' in os.environ:
-    from models import FightModel, Character, Enemy
+    from models import FightModel, Character, Enemy, CharacterFightModel
     from utils import ModelEncoder
 else:
-    from fights.models import FightModel, Character, Enemy
+    from fights.models import FightModel, Character, Enemy, CharacterFightModel
     from fights.utils import ModelEncoder
 
 log_level = os.environ.get('LOG_LEVEL', 'INFO')
@@ -49,6 +49,11 @@ def create(event, context):
     fight.enemy = enemy
 
     fight.save()
+
+    for char in fight.characters:
+        logger.info(char.id)
+        char_fight = CharacterFightModel(char_id=char.id, fight_id=fight.id, enemy_id=fight.enemy.id)
+        char_fight.save()
 
     response = {
         'statusCode': 200,

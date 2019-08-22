@@ -34,10 +34,10 @@ def unequip_item(event, context):
 
     response = json.loads(invoke_response.get('Payload').read())
 
-    # response = {
-    #     'statusCode': 200,
-    #     'body': response['body'],
-    #     'headers': {'Access-Control-Allow-Origin': '*'}
-    # }
+    response = {
+        'statusCode': 200,
+        'body': response['body'],
+        'headers': {'Access-Control-Allow-Origin': '*'}
+    }
 
     return response

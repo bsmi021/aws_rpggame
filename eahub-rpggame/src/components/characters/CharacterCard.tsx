@@ -35,7 +35,7 @@ export const CharacterCard: React.FunctionComponent<IProps> = props => {
   return (
     character && (
       <NavLink to={`/characters/${character.id}`} className={'ui card raised'}>
-        <div className="ui tiny image">
+        <div className="ui mini image">
           <img
             src={`${classIcon(character.player_class_name)}`}
             alt={character.player_class_name}
@@ -43,7 +43,9 @@ export const CharacterCard: React.FunctionComponent<IProps> = props => {
         </div>
         <div className="middle aligned content">
           <div className="header">{character.name}</div>
-          <div className="meta">{character.player_class_name}</div>
+          <div className="meta">
+            <b>{character.level}</b> {character.player_class_name}
+          </div>
           {isMyCharacter(character.account, userId) && (
             <div className="extra content float">
               <button

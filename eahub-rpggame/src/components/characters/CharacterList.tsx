@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { IApplicationState } from '../../store/Store';
 import CharacterCard from './CharacterCard';
 import { Checkbox } from 'semantic-ui-react';
-
+import { firstBy } from 'thenby';
 interface IProps {
   characters?: ICharacter[];
   search: string;
@@ -32,8 +32,10 @@ const CharactersList: React.FunctionComponent<IProps> = props => {
       <div className="ui cards">
         {characters &&
           characters
-            .sort((a: ICharacter, b: ICharacter) =>
-              a.account === userId ? -1 : 1
+            .sort(
+              firstBy(c => c.account === userId, { direction: -1 }).thenBy(
+                c => c.name
+              )
             )
             .filter((a: ICharacter) =>
               filterCharacters ? a.account === userId : true
