@@ -20,90 +20,90 @@ if __name__ == "__main__":
     if not CharacterModel.exists():
         CharacterModel.create_table(read_capacity_units=100, write_capacity_units=100, wait=True)
 
-    request = {
-        'body': json.dumps({
-            'name': 'Chico',
-            'player_class': 3
-        })
-    }
+    # request = {
+    #     'body': json.dumps({
+    #         'name': 'Chico',
+    #         'player_class': 3
+    #     })
+    # }
 
-    response = create(request, None)
+    # response = create(request, None)
 
-    print('Created character')
-    print(response)
+    # print('Created character')
+    # print(response)
 
-    char_id = json.loads(response['body'])['id']
+    # char_id = json.loads(response['body'])['id']
 
-    print()
+    # print()
 
-    request = {
-        'pathParameters': {'id': json.loads(response['body'])['id']},
-        'body': json.dumps({
-            'id': str(uuid4()),
-            'slot': 1,
-            'slot_name': 'HEAD',
-            'damage': 25,
-            'crit_chance': .033,
-            'stamina': 15
-        })
-        }
+    # request = {
+    #     'pathParameters': {'id': json.loads(response['body'])['id']},
+    #     'body': json.dumps({
+    #         'id': str(uuid4()),
+    #         'slot': 1,
+    #         'slot_name': 'HEAD',
+    #         'damage': 25,
+    #         'crit_chance': .033,
+    #         'stamina': 15
+    #     })
+    #     }
 
-    response = add_item(request, None)
-    print('Added first item')
-    print(response)
-    print()
+    # response = add_item(request, None)
+    # print('Added first item')
+    # print(response)
+    # print()
 
-    item_id = str(uuid4())
-    request = {
-        'pathParameters': {'id': json.loads(response['body'])['id']},
-        'body': json.dumps({
-            'id': item_id,
-            'slot': 2,
-            'slot_name': 'CHEST',
-            'damage': 40,
-            'crit_chance': .013,
-            'stamina': 5
-        })
-        }
+    # item_id = str(uuid4())
+    # request = {
+    #     'pathParameters': {'id': json.loads(response['body'])['id']},
+    #     'body': json.dumps({
+    #         'id': item_id,
+    #         'slot': 2,
+    #         'slot_name': 'CHEST',
+    #         'damage': 40,
+    #         'crit_chance': .013,
+    #         'stamina': 5
+    #     })
+    #     }
 
-    response = add_item(request, None)
+    # response = add_item(request, None)
 
-    print('Add second item')
-    print(response)
-    print()
+    # print('Add second item')
+    # print(response)
+    # print()
 
-    print(f'Removing item: {item_id}')
+    # print(f'Removing item: {item_id}')
 
-    request = {
-        'pathParameters': {'id': json.loads(response['body'])['id']},
-        'body': json.dumps({
-            'id': item_id
-        })
-        }
+    # request = {
+    #     'pathParameters': {'id': json.loads(response['body'])['id']},
+    #     'body': json.dumps({
+    #         'id': item_id
+    #     })
+    #     }
 
-    response = remove_item(request, None)
+    # response = remove_item(request, None)
 
-    print(response)
+    # print(response)
     
-    request = {
-        'pathParameters': {
-            'id': char_id
-        }
+    # request = {
+    #     'pathParameters': {
+    #         'id': char_id
+    #     }
         
-    }
+    # }
 
-    character = get(request, None)
+    # character = get(request, None)
 
-    print()
-    print()
-    print(character['body'])
+    # print()
+    # print()
+    # print(character['body'])
 
-    print()
-    print('All characters')
+    # print()
+    # print('All characters')
 
-    response = list(None, None)
+    # response = list(None, None)
 
-    print(response)
+    # print(response)
 
 
     
@@ -118,8 +118,25 @@ if __name__ == "__main__":
     print()
     print(character_1)
 
-    character_1.add_item(InventoryItemMap(id=str(uuid4()), slot=1, slot_name='Head', damage=15, crit_chance=.033))
-    character_1.save()
+    character_1.add_item(InventoryItemMap(id=str(uuid4()), slot=2, slot_name='Head', damage=15, crit_chance=.033))
+    #character_1.save()
+    #character_1.equip_item(character_1.inventory[0].inv_id)
+
+    print(((character_1.min_damage + character_1.max_damage) / 2 / (character_1.attack_speed / 1000)))
+
+    for item in character_1.inventory:
+        character_1.equip_item(item.inv_id)
+        print(((character_1.min_damage + character_1.max_damage) / 2 / (character_1.attack_speed / 1000)))
+    for item in character_1.inventory:
+        character_1.unequip_item(item.inv_id)
+        print(((character_1.min_damage + character_1.max_damage) / 2 / (character_1.attack_speed / 1000)))
+
+    item_ids = [x.inv_id for x in character_1.inventory]
+
+    for inv_id in item_ids:
+        character_1.remove_item(inv_id)
+        print(len(character_1.inventory))
+
     print()
     print(character_1)
 

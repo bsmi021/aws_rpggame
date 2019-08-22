@@ -1,4 +1,4 @@
-# aggregates/get.py
+# aggregates/add_item.py
 
 import os
 import json
@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 region = os.environ['REGION']
 item_lambda = os.environ['ITEM_SERVICE']
-char_lambda = os.environ['GET_CHAR_SERVICE']
+char_lambda = os.environ['CHAR_ADDITEM_SERVICE']
 
 lambda_client = client('lambda', region_name=region)
 
@@ -19,14 +19,15 @@ lambda_client = client('lambda', region_name=region)
 def handler(event, context):
     logger.debug(f'Event received: {json.dumps(event)}')
     char_id = event['pathParameters']['id']
+    data = json.loads(event['body'])
 
     request = {
         'pathParameters': {
-            'id': char_id
+            'id': data['id']
         }
     }
 
-    invoke_response = lambda_client.invoke(FunctionName=char_lambda,
+    invoke_response = lambda_client.invoke(FunctionName=item_lambda,
                                            InvocationType='RequestResponse',
                                            Payload=json.dumps(request))
 
@@ -34,32 +35,26 @@ def handler(event, context):
 
     data = json.loads(data['body'])
 
-    char_inventory = data['inventory']
-    inventory = []
-
-    for item in char_inventory:
-        item_id = item['id']
-
-        request = {
-            'pathParameters': {
-                'id': item_id
-            }
+    event['body'] = json.dumps(
+        {
+            'id': data['id'],
+            'slot': data['slot'],
+            'damage': data['damage'],
+            'stamina': data['stamina'],
+            'crit_chance': data['crit_chance'],
+            'slot_name': data['slot_name']
         }
+    )
 
-        invoke_response = lambda_client.invoke(FunctionName=item_lambda,
-                                               InvocationType='RequestResponse',
-                                               Payload=json.dumps(request))
+    invoke_response = lambda_client.invoke(FunctionName=char_lambda,
+                                           InvocationType='RequestResponse',
+                                           Payload=json.dumps(event))
 
-        i_data = json.loads(invoke_response.get('Payload').read())
-        i_data = json.loads(i_data['body'])
-
-        inventory.append(i_data)
-
-    data['inventory'] = inventory
+    response_p = json.loads(invoke_response.get('Payload').read())
 
     response = {
         'statusCode': 200,
-        'body': json.dumps(data),
+        'body': response_p['body'],
         'headers': {
             'Access-Control-Allow-Origin': '*'
         }

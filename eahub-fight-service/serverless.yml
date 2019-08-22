@@ -76,12 +76,29 @@ functions:
           path: fights
           method: get
           cors: true
+
+  charfightslist:
+    handler: fights/charlist.list
+    events:
+      - http:
+          path: fights/characters/{id}
+          method: get
+          cors: true
+
   attack:
     handler: fights/attack.attack
     events:
       - http:
           path: fights/{id}/attack
           method: put
+          cors: true
+
+  listattacks:
+    handler: fights/list_attacks.list
+    events:
+      - http:
+          path: fights/{id}/attacks
+          method: get
           cors: true
 
 resources:

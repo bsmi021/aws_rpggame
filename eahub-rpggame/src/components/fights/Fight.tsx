@@ -69,7 +69,7 @@ export const Fight: React.FunctionComponent<IProps> = (props: IProps) => {
 
   return (
     <div className="ui container">
-      <Grid container={true} stackable={false} celled={true}>
+      <Grid container={true} stackable={true} celled={true}>
         <Grid.Row>
           <Grid.Column>
             <div>

@@ -80,6 +80,10 @@ class ItemModel(BaseModel):
     stamina = NumberAttribute(default=10)
     crit_chance = NumberAttribute(default=0.01)
     level = NumberAttribute(default=1)
+    is_warrior = BooleanAttribute(default=False)
+    is_sorcerer = BooleanAttribute(default=False)
+    is_rogue = BooleanAttribute(default=False)
+    is_archer = BooleanAttribute(default=False)
 
     def save(self, conditional_operator=None, **expected_values):
         self.updated_at = datetime.utcnow()

@@ -1,7 +1,19 @@
 import React, { FunctionComponent, useState } from 'react';
-import { Form, DropdownProps, FormGroup, Segment } from 'semantic-ui-react';
+import {
+  Form,
+  DropdownProps,
+  FormGroup,
+  Segment,
+  Checkbox
+} from 'semantic-ui-react';
 import { Redirect } from 'react-router';
-import { itemSlots, itemQualities } from './itemUtils';
+import {
+  itemSlots,
+  itemQualities,
+  calcAttackPower,
+  calcStamina,
+  calcCritChance
+} from './itemUtils';
 import { useDispatch } from 'react-redux';
 import { createItem } from '../../actions/ItemActions';
 
@@ -10,11 +22,15 @@ const ItemForm: React.FunctionComponent = () => {
   const [description, setDescription] = useState('');
   const [quality, setQuality] = useState(1);
   const [slot, setSlot] = useState(0);
-  const [damage, setDamage] = useState();
-  const [level, setLevel] = useState(1);
-  const [critChance, setCritChance] = useState();
+  const [damage, setDamage] = useState(0);
+  const [level, setLevel] = useState(0);
+  const [critChance, setCritChance] = useState(0);
   const [redirect, setRedirect] = useState(false);
-  const [stamina, setStamina] = useState();
+  const [stamina, setStamina] = useState(0);
+  const [isWarrior, setIsWarrior] = useState(false);
+  const [isSorcerer, setIsSorcerer] = useState(false);
+  const [isArcher, setIsArcher] = useState(false);
+  const [isRogue, setIsRogue] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -30,10 +46,20 @@ const ItemForm: React.FunctionComponent = () => {
         damage,
         level,
         crit_chance: critChance,
-        stamina
+        stamina,
+        is_warrior: isWarrior,
+        is_rogue: isRogue,
+        is_archer: isArcher,
+        is_sorcerer: isSorcerer
       })
     );
     setRedirect(true);
+  };
+
+  const calcItemStats = (ilevel: number, iquality: number) => {
+    setDamage(calcAttackPower(ilevel, iquality));
+    setStamina(calcStamina(ilevel, iquality));
+    setCritChance(Number(calcCritChance(ilevel, iquality)));
   };
 
   const onTextChange = (e: any, d: any) => {
@@ -49,25 +75,28 @@ const ItemForm: React.FunctionComponent = () => {
     }
   };
 
-  const handleNumberChange = (e: any, d: any) => {
-    const re: RegExp = /^[0-9.,]+$/;
+  const onIsWarriorChanged = (e: any, d: any) => {
+    setIsWarrior(d.value);
+  };
+  const onIsSorcererChanged = (e: any, d: any) => {
+    setIsSorcerer(d.value);
+  };
+  const onIsArcherChanged = (e: any, d: any) => {
+    setIsArcher(d.value);
+  };
+  const onIsRogueChanged = (e: any, d: any) => {
+    setIsRogue(d.value);
+  };
+
+  const onLevelChange = (e: any, d: any) => {
+    const re: RegExp = /^[0-9]+$/;
+
     if (d.value === '' || re.test(d.value)) {
-      switch (d.name) {
-        case 'critChance':
-          setCritChance(Number(d.value));
-          break;
-        case 'stamina':
-          setStamina(Number(d.value));
-          break;
-        case 'damage':
-          setDamage(Number(d.value));
-          break;
-        case 'level':
-          setLevel(Number(d.value));
-          break;
-        default:
-          break;
-      }
+      const dLevel = Number(d.value);
+
+      setLevel(dLevel);
+
+      calcItemStats(dLevel, quality);
     }
   };
 
@@ -75,11 +104,15 @@ const ItemForm: React.FunctionComponent = () => {
     event: React.SyntheticEvent<HTMLElement, Event>,
     drop: DropdownProps
   ) => {
-    event.preventDefault();
+    // event.preventDefault();
 
     if (drop.value) {
       const qualityId = parseInt(drop.value.toString(), 0);
       setQuality(qualityId);
+
+      if (level) {
+        calcItemStats(level, qualityId);
+      }
     }
   };
 
@@ -118,13 +151,41 @@ const ItemForm: React.FunctionComponent = () => {
             name="description"
           />
         </Form.Group>
+        <Form.Group inline={true}>
+          <label>Class(es):</label>
+          <Checkbox
+            label="Warrior"
+            checked={isWarrior}
+            onChange={onIsWarriorChanged}
+            name="isWarrior"
+          />
+          <Checkbox
+            label="Sorcerer"
+            checked={isSorcerer}
+            onChange={onIsSorcererChanged}
+            name="isSorcerer"
+          />
+          <Checkbox
+            label="Archer"
+            checked={isArcher}
+            onChange={onIsArcherChanged}
+            name="isArcher"
+          />
+          <Checkbox
+            label="Rogue"
+            checked={isRogue}
+            onChange={onIsRogueChanged}
+            name="isRogue"
+          />
+        </Form.Group>
         <Form.Group>
           <Form.Input
             label="Min. Level"
             placeholder="Minimum level"
             value={level}
-            onChange={handleNumberChange}
+            onChange={onLevelChange}
             name="level"
+            autoComplete="off"
           />
           <Form.Select
             label="Item Slot"
@@ -144,24 +205,24 @@ const ItemForm: React.FunctionComponent = () => {
         <Form.Group>
           <Form.Input
             label="Stamina"
-            placeHolder="Enter Stamina"
+            placeholder="Stamina"
             value={stamina}
-            onChange={handleNumberChange}
             name="stamina"
+            readOnly={true}
           />
           <Form.Input
             label="Crit Chance"
             placeholder="Enter Crit Chance %"
             name="critChance"
             value={critChance}
-            onChange={handleNumberChange}
+            readOnly={true}
           />
           <Form.Input
             label="Damage"
             placeholder="Enter damage"
             value={damage}
-            onChange={handleNumberChange}
             name="damage"
+            readOnly={true}
           />
         </Form.Group>
         <Segment>

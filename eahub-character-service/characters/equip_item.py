@@ -1,4 +1,4 @@
-# characters/remove_item.py
+# characters/equip_item.py
 
 import os
 import json
@@ -13,22 +13,24 @@ else:
     from characters.models import CharacterModel, InventoryItemMap
     from characters.utils import ModelEncoder
 
+
+
 log_level = os.environ.get('LOG_LEVEL', 'INFO')
 logging.root.setLevel(logging.getLevelName(log_level))
 logger = logging.getLogger(__name__)
 
 
-def remove_item(event, context):
-    logger.debug(f'Event received: {json.dumps(event)}')
+def equip_item(event, context):
+    logger.debug((f'Event received: {json.dumps(event)}'))
     char_id = event['pathParameters']['id']
+
     data = json.loads(event.get('body'))
 
     character = CharacterModel.get(char_id)
 
-    if character is None:
-        raise Exception('No character found')
+    inv_id = data['inv_id']
 
-    character.remove_item(data.get('id'))
+    character.equip_item(inv_id)
 
     response = {
         'statusCode': 200,
@@ -38,7 +40,6 @@ def remove_item(event, context):
         }
     }
 
-    logger.debug(f'Response: {json.dumps(event)}')
+    logger.debug(f'Response: {json.dumps(response)}')
 
     return response
-

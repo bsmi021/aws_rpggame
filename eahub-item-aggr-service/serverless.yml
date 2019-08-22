@@ -1,0 +1,61 @@
+service: eahub-item-aggr-service # NOTE: update this with your service name
+
+provider:
+  name: aws
+  runtime: python3.7
+  region: us-east-2
+  stage: dev
+  environment:
+    GET_ITEM_SERVICE: sascraft-item-service-${opt:stage, self:provider.stage}-get
+    LIST_ITEM_SERVICE: sascraft-item-service-${opt:stage, self:provider.stage}-list
+    CREATE_ITEM_SERVICE: sascraft-item-service-${opt:stage, self:provider.stage}-create
+
+    REGION: ${self:provider.region}
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - lambda:InvokeFunction
+      Resource:
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-item-service-${opt:stage, self:provider.stage}-get'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-item-service-${opt:stage, self:provider.stage}-list'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-item-service-${opt:stage, self:provider.stage}-create'
+
+functions:
+  get:
+    handler: aggregates/get.handler
+    events:
+      - http:
+          path: items/{id}
+          method: get
+          cors: true
+  list:
+    handler: aggregates/list.handler
+    events:
+      - http:
+          path: items
+          method: get
+          cors: true
+  create:
+    handler: aggregates/create.handler
+    events:
+      - http:
+          path: items
+          method: post
+          cors: true
+
+package:
+  exclude:
+    - env/**
+    - node_modules/**
+    - secrets.yml
+    - .gitignore
+
+plugins:
+  - serverless-python-requirements
+  - serverless-pseudo-parameters
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  secrets: ${file(secrets.yml):${self:custom.stage}}
+  pythonRequirements:
+    dockerizePip: false

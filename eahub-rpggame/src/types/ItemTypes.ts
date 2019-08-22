@@ -15,6 +15,10 @@ export interface IItemBase {
   stamina: number;
   crit_chance: number;
   level: number;
+  is_warrior: boolean;
+  is_archer: boolean;
+  is_rogue: boolean;
+  is_sorcerer: boolean;
 }
 
 export enum ItemActionTypes {
@@ -22,7 +26,8 @@ export enum ItemActionTypes {
   GETSINGLE = 'ITEMS/GETSINGLE',
   LOADING = 'ITEMS/LOADING',
   CREATE = 'ITEMS/CREATE',
-  EDIT = 'ITEMS/EDIT'
+  EDIT = 'ITEMS/EDIT',
+  ERROR = 'ITEMS/ERROR'
 }
 
 export interface IItemsGetAllAction {
@@ -41,7 +46,7 @@ export interface IItemLoadingAction {
 
 export interface IItemCreateAction {
   type: ItemActionTypes.CREATE;
-  item: IItem;
+  items: IItem[];
 }
 
 export interface IItemEditAction {
@@ -49,15 +54,21 @@ export interface IItemEditAction {
   item: IItem;
 }
 
+export interface IItemErrorAction {
+  type: ItemActionTypes.ERROR;
+}
+
 export type ItemActions =
   | IItemCreateAction
   | IItemEditAction
   | IItemGetSingleAction
   | IItemsGetAllAction
+  | IItemErrorAction
   | IItemLoadingAction;
 
 export interface IItemsState {
   readonly items: IItem[];
   readonly currentItem: IItem | null;
   readonly itemsLoading: boolean;
+  readonly error: string | null;
 }

@@ -4,6 +4,7 @@ import {
   CharacterActions,
   ICharacterState
 } from '../types/CharacterTypes';
+import { AuthActionTypes } from '../types/AuthTypes';
 
 const initialCharacterState: ICharacterState = {
   characters: [],

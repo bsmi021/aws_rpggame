@@ -13,6 +13,56 @@ export const colorSelector = (quality: number) => {
   }
 };
 
+export const calcAttackPower = (level: number, quality: number) => {
+  let power = level * 1.19 + 8.1;
+
+  switch (quality) {
+    case 2:
+      power = power * 1.1;
+      break;
+    case 3:
+      power = power * 1.375;
+      break;
+    default:
+      break;
+  }
+
+  return Math.round(power);
+};
+
+export const calcCritChance = (level: number, quality: number) => {
+  let crit = ((level + 10) * 1.85 * 44) / 44;
+
+  switch (quality) {
+    case 2:
+      crit = crit * 1.1;
+      break;
+    case 3:
+      crit = crit * 1.375;
+      break;
+    default:
+      break;
+  }
+  crit = crit / 44;
+  return (crit * 0.01).toFixed(6);
+};
+
+export const calcStamina = (level: number, quality: number) => {
+  let stamina = level * 1.35 + 10;
+
+  switch (quality) {
+    case 2:
+      stamina = stamina * 1.1;
+      break;
+    case 3:
+      stamina = stamina * 1.375;
+    default:
+      break;
+  }
+
+  return Math.ceil(stamina);
+};
+
 export const itemSlotIcon = (slot: number) => {
   const iconPath = '/icons/items/';
   switch (slot) {

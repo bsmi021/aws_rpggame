@@ -1,4 +1,4 @@
-# characters/remove_item.py
+# characters/unequip_item.py
 
 import os
 import json
@@ -17,8 +17,7 @@ log_level = os.environ.get('LOG_LEVEL', 'INFO')
 logging.root.setLevel(logging.getLevelName(log_level))
 logger = logging.getLogger(__name__)
 
-
-def remove_item(event, context):
+def unequip_item(event, context):
     logger.debug(f'Event received: {json.dumps(event)}')
     char_id = event['pathParameters']['id']
     data = json.loads(event.get('body'))
@@ -28,7 +27,7 @@ def remove_item(event, context):
     if character is None:
         raise Exception('No character found')
 
-    character.remove_item(data.get('id'))
+    character.unequip_item(data.get('inv_id'))
 
     response = {
         'statusCode': 200,
@@ -41,4 +40,3 @@ def remove_item(event, context):
     logger.debug(f'Response: {json.dumps(event)}')
 
     return response
-

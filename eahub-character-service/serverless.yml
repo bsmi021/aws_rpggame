@@ -48,6 +48,7 @@ functions:
           path: characters/{id}/add_xp
           method: put
           cors: true
+
   add_item:
     handler: characters/add_item.add_item
     events:
@@ -61,6 +62,22 @@ functions:
     events:
       - http:
           path: characters/{id}/remove_item
+          method: put
+          cors: true
+
+  unequip_item:
+    handler: characters/unequip_item.unequip_item
+    events:
+      - http:
+          path: characters/{id}/unequip_item
+          method: put
+          cors: true
+
+  equip_item:
+    handler: characters/equip_item.equip_item
+    events:
+      - http:
+          path: characters/{id}/equip_item
           method: put
           cors: true
   get:

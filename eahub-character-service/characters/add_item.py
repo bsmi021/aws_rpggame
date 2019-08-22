@@ -34,6 +34,8 @@ def add_item(event, context):
         raise Exception('No character found')
 
     character.add_item(InventoryItemMap(id=data['id'],
+                                        equipped=False,
+                                        inv_id=str(uuid4()),
                                         slot=data['slot'],
                                         slot_name=data['slot_name'],
                                         damage=data['damage'],

@@ -1,14 +1,14 @@
-# fights/list.py
+# fights/list_attacks.py
 
 import os
 import json
 import logging
 
 if 'ENV' in os.environ:
-    from models import FightModel, Character, CharacterFightModel
+    from models import AttackModel
     from utils import ModelEncoder
 else:
-    from fights.models import FightModel, Character, CharacterFightModel
+    from fights.models import AttackModel
     from fights.utils import ModelEncoder
 
 log_level = os.environ.get('LOG_LEVEL', 'INFO')
@@ -18,24 +18,28 @@ logger = logging.getLogger(__name__)
 
 def list(event, context):
     logger.debug(f'Event received: {json.dumps(event)}')
+
+    fight_id = event['pathParameters']['id']
     query = None
-    # query params {enemy_id, char_id, status}
+
+    query = AttackModel.fight_id == fight_id
+
     if 'queryStringParameters' in event:
         queryParams = event.get('queryStringParameters')
 
         if queryParams is not None:
-            if (queryParams.get('enemy_id') is not None):
-                clause = FightModel.enemy.id == queryParams.get('enemy_id')
+            if (queryParams.get('char_id') is not None):
+                char_id = queryParams.get('char_id')
+                clause = AttackModel.source_id == char_id  # | AttackModel.target_id == char_id
                 query = clause if query is None else query & clause
 
-          
+    results = AttackModel.scan(query)
 
-    results = FightModel.scan(query)
     response = {
         'statusCode': 200,
         'body': json.dumps(
             {
-                "fights": [x for x in results]
+                "attacks": [x for x in results]
             }, cls=ModelEncoder
         ),
         'headers': {

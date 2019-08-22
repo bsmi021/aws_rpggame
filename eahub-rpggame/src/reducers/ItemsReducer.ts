@@ -4,7 +4,8 @@ import { ItemActionTypes, ItemActions, IItemsState } from '../types/ItemTypes';
 const initialItemsState: IItemsState = {
   items: [],
   itemsLoading: false,
-  currentItem: null
+  currentItem: null,
+  error: null
 };
 
 export const itemsReducer: Reducer<IItemsState, ItemActions> = (
@@ -36,7 +37,7 @@ export const itemsReducer: Reducer<IItemsState, ItemActions> = (
       return {
         ...state,
         itemsLoading: false,
-        items: [...state.items, action.item]
+        items: state.items.concat(action.items)
       };
     }
     default:

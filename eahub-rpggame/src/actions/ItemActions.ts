@@ -78,13 +78,19 @@ export const createItem: ActionCreator<
       body: itemVals
     };
 
-    const item = await API.post('items', 'items', request).catch(e =>
-      alert('There was a problem saving this item')
-    );
+    try {
+      const items = await API.post('items', 'items', request);
 
-    return dispatch({
-      type: ItemActionTypes.CREATE,
-      item
-    });
+      return dispatch({
+        type: ItemActionTypes.CREATE,
+        items
+      });
+    } catch (error) {
+      alert('There was a problem saving this item');
+      return dispatch({
+        type: ItemActionTypes.ERROR,
+        message: error
+      });
+    }
   };
 };

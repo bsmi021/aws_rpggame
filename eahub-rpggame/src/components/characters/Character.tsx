@@ -6,7 +6,7 @@ import ItemCardSmall from '../items/ItemCardSmall';
 import { IItem } from '../../types/ItemTypes';
 import { classIcon, calcDps, isMyCharacter } from './charUtils';
 import { setDefaultCharacter } from '../../actions/CharacterActions';
-
+import { firstBy } from 'thenby';
 import { useSelector, useDispatch } from 'react-redux';
 import { IApplicationState } from '../../store/Store';
 import { startFight } from '../../actions/FightActions';
@@ -74,7 +74,7 @@ const Character: React.FunctionComponent<IProps> = props => {
         {character.inventory ? (
           <Card.Group stackable={true}>
             {character.inventory
-              .sort((a: IItem, b: IItem) => (a.slot > b.slot ? 1 : -1))
+              .sort(firstBy(s => s.slot))
               .map((item: IItem) => {
                 return <ItemCardSmall key={item.id} item={item} />;
               })}

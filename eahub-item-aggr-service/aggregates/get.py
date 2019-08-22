@@ -10,7 +10,7 @@ logging.root.setLevel(logging.getLevelName(log_level))
 logger = logging.getLogger(__name__)
 
 region = os.environ['REGION']
-char_lambda = os.environ['LIST_CHAR_SERVICE']
+item_lambda = os.environ['GET_ITEM_SERVICE']
 
 lambda_client = client('lambda', region_name=region)
 
@@ -19,7 +19,7 @@ def handler(event, context):
     logger.debug(f'Event received: {json.dumps(event)}')
     
 
-    invoke_response = lambda_client.invoke(FunctionName=char_lambda,
+    invoke_response = lambda_client.invoke(FunctionName=item_lambda,
                                            InvocationType='RequestResponse',
                                            Payload=json.dumps(event))
 

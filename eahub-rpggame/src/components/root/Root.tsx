@@ -7,6 +7,7 @@ import { Authenticator, Greetings } from 'aws-amplify-react';
 import { Auth } from 'aws-amplify';
 import { signedIn } from '../../actions/AuthActions';
 import awsmobile from '../../config';
+import { Segment } from 'semantic-ui-react';
 
 interface IProps {
   store: Store<IApplicationState>;

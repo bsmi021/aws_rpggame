@@ -1,5 +1,4 @@
-# fights/list.py
-
+#fights/charlist.py
 import os
 import json
 import logging
@@ -15,22 +14,22 @@ log_level = os.environ.get('LOG_LEVEL', 'INFO')
 logging.root.setLevel(logging.getLevelName(log_level))
 logger = logging.getLogger(__name__)
 
-
-def list(event, context):
+def list (event, context):
     logger.debug(f'Event received: {json.dumps(event)}')
     query = None
+    
+    results = []
     # query params {enemy_id, char_id, status}
-    if 'queryStringParameters' in event:
-        queryParams = event.get('queryStringParameters')
+    char_id = event['pathParameters']['id']
 
-        if queryParams is not None:
-            if (queryParams.get('enemy_id') is not None):
-                clause = FightModel.enemy.id == queryParams.get('enemy_id')
-                query = clause if query is None else query & clause
+    fights = CharacterFightModel.scan(
+                    CharacterFightModel.char_id == char_id)
 
-          
+    for c_fight in fights:
+        fight = FightModel.get(c_fight.fight_id)
 
-    results = FightModel.scan(query)
+        results.append(fight)
+
     response = {
         'statusCode': 200,
         'body': json.dumps(
@@ -46,3 +45,13 @@ def list(event, context):
     logger.debug(f'Response: {json.dumps(response)}')
 
     return response
+#   if (queryParams.get('char_id') is not None):
+
+#                 fights = CharacterFightModel.scan(
+#                     CharacterFightModel.char_id == queryParams.get('char_id'))
+
+#                 for fight in fights:
+#                     clause = FightModel.id == fight.fight_id
+#                     logger.info(f'Fight Id: {fight.fight_id}')
+#                     query = clause if query is None else query & clause
+#                     logger.info(f'query {query}')

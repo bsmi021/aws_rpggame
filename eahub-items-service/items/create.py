@@ -29,7 +29,11 @@ def create(event, context):
                      damage=data.get('damage'),
                      level=data.get('level'),
                      crit_chance=data.get('crit_chance'),
-                     stamina=data.get('stamina'))
+                     stamina=data.get('stamina'),
+                     is_warrior=data.get('is_warrior', False),
+                     is_sorcerer=data.get('is_sorcerer', False),
+                     is_archer=data.get('is_archer', False),
+                     is_rogue=data.get('is_rogue', False))
 
     item.save()
 

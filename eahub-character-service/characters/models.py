@@ -22,11 +22,21 @@ from pynamodb.models import Model
 
 aws_region = os.environ['REGION']
 
+
 class PlayerClass(Enum):
     WARRIOR = 1
     ARCHER = 2
     SORCERER = 3
     ROGUE = 4
+
+damage_base = {
+            PlayerClass.ARCHER.value: { 'base_damage': 18, 'speed': 1500, 'can_use_2h': False, 'can_dual_wield': False },
+            PlayerClass.WARRIOR.value: { 'base_damage': 30, 'speed': 2500, 'can_use_2h': True, 'can_dual_wield': True },
+            PlayerClass.SORCERER.value: { 'base_damage': 20, 'speed': 1800, 'can_use_2h': False, 'can_dual_wield': False },
+            PlayerClass.ROGUE.value: { 'base_damage': 13, 'speed': 1300, 'can_use_2h': False, 'can_dual_wield': True }
+        }
+
+
 
 class BaseModel(Model):
     created_at = UTCDateTimeAttribute(default=datetime.utcnow())
@@ -49,11 +59,14 @@ class BaseModel(Model):
 
 class InventoryItemMap(MapAttribute):
     id = UnicodeAttribute()
+    inv_id = UnicodeAttribute(default=str(uuid4()))
     slot = NumberAttribute()
     slot_name = UnicodeAttribute()
     damage = NumberAttribute()
     crit_chance = NumberAttribute()
     stamina = NumberAttribute(default=10)
+    equipped = BooleanAttribute(default=False)
+    min_lvl = NumberAttribute(1)
 
 class CharacterModel(BaseModel):
     class Meta:
@@ -128,16 +141,16 @@ class CharacterModel(BaseModel):
         base_hp = round(((self.base_hp * (1 + self.level * .1)) * 6.5))
         base_damage = self.base_damage
 
+
+
         if self.inventory is not None:
-            base_crit += Enumerable(self.inventory) \
-                .sum(lambda x: x.crit_chance)
-            base_min += Enumerable(self.inventory) \
-                .sum(lambda x: round(x.damage / 4.75))
-            base_max += Enumerable(self.inventory) \
-                .sum(lambda x: round(x.damage / 2))
-            base_hp += Enumerable(self.inventory) \
-                .sum(lambda x: x.stamina * 10)
-            base_damage += Enumerable(self.inventory).sum(lambda x: x.damage)
+            equipped_items = Enumerable(self.inventory).where(lambda x: x.equipped)
+
+            base_crit += equipped_items.sum(lambda x: x.crit_chance)
+            base_min += equipped_items.sum(lambda x: round(x.damage / 4.75))
+            base_max += equipped_items.sum(lambda x: round(x.damage / 2))
+            base_hp += equipped_items.sum(lambda x: x.stamina * 10)
+            base_damage += equipped_items.sum(lambda x: x.damage)
         else:
             self.inventory = []
 
@@ -151,40 +164,89 @@ class CharacterModel(BaseModel):
         self.current_hp = self.hit_points
 
     def add_item(self, item):
+        """Adds an item to the character's inventory
+        
+        Arguments:
+            item {ItemModel} -- An inventory item
+        """
+        if self.inventory is None:
+            self.inventory = []
+
+        item.inv_id = str(uuid4())
+        self.inventory.append(item)
+        
+        self.save()
+
+    def remove_item(self, inventory_item_id):
+        """Removes an item from the character's inventory, this is not reversable
+        
+        Arguments:
+            inventory_item_id {string} -- Inventory ID for the item to remove
+        """
         if self.inventory is None:
             self.inventory = []
         
+        item = Enumerable(self.inventory) \
+            .where(lambda x: x.inv_id == inventory_item_id).first_or_default()
+
+        if item is not None:
+            self.inventory.remove(item)
+
+        self.save()
+
+    def equip_item(self, inventory_item_id):
+        """Marks the item as equipped which will add to a character's stats
+        
+        Arguments:
+            inventory_item_id {string} -- Identifies the item in the inventory
+        """
+        if self.inventory is None:
+            self.inventory = []
+        
+        item = Enumerable(self.inventory) \
+            .where(lambda x: x.inv_id == inventory_item_id).first_or_default()
+
+        if item is None:
+            raise Exception("The item does not exist in the inventory")
+        
+        if not self.can_use_2h and item.slot == 14:
+            raise Exception("Cannot equip a two-handed weapon")
+        # else:
+        #     self.attack_speed = damage_base[self.player_class]['speed'] * 1.25
+
+        if not self.can_dual_wield and item.slot == 13:
+            raise Exception("Cannot equip a weapon in the off hand")
+
         existing_item = Enumerable(self.inventory) \
             .where(lambda x: x.slot == item.slot).first_or_default()
         
         if existing_item is not None:
-            self.inventory.remove(existing_item)
-        
-        self.inventory.append(item)
+            self.unequip_item(existing_item.inv_id)
+            existing_item.equipped = False
+
+        item.equipped = True    
         self.calc_stats()
         self.save()
 
-    def remove_item(self, item_id):
+    def unequip_item(self, inventory_item_id):
+        """Unequips the item preventing it from being used in stat calculations
+        
+        Arguments:
+            inventory_item_id {string} -- The inventory item id
+        """
         if self.inventory is None:
             self.inventory = []
 
         item = Enumerable(self.inventory) \
-            .where(lambda x: x.id == item_id).first_or_default()
+            .where(lambda x: x.inv_id == inventory_item_id).first_or_default()
 
         if item is not None:
-            self.inventory.remove(item)
+            item.equipped = False
 
         self.calc_stats()
         self.save()
 
     def set_class_attributes(self):
-        damage_base = {
-            PlayerClass.ARCHER.value: { 'base_damage': 18, 'speed': 1500, 'can_use_2h': True, 'can_dual_wield': False },
-            PlayerClass.WARRIOR.value: { 'base_damage': 30, 'speed': 2500, 'can_use_2h': True, 'can_dual_wield': True },
-            PlayerClass.SORCERER.value: { 'base_damage': 20, 'speed': 1800, 'can_use_2h': True, 'can_dual_wield': False },
-            PlayerClass.ROGUE.value: { 'base_damage': 13, 'speed': 1300, 'can_use_2h': False, 'can_dual_wield': True }
-        }
-
         self.base_min_damage = round(damage_base[self.player_class]['base_damage'] / 4.75)
         self.base_max_damage = round(damage_base[self.player_class]['base_damage'] / 2)
         self.base_damage = damage_base[self.player_class]['base_damage']
@@ -198,9 +260,7 @@ class CharacterModel(BaseModel):
         self.xp_to_lvl = experienceCalcs.xp_required_to_level(1)
 
     def save(self, conditional_operator=None, **expected_values):
-        
         self.set_class_attributes()
-
         self.calc_stats()
         self.updated_at = datetime.utcnow()
         super(CharacterModel, self).save()
@@ -223,24 +283,25 @@ if __name__ == "__main__":
     character_1.add_item(InventoryItemMap(id=str(uuid4()), slot=1, slot_name='Head', damage=21, crit_chance=.025))
     character_1.save()
     print()
-   # print(character_1)
+    print(character_1)
 
     character_1.add_item(InventoryItemMap(id=str(uuid4()), slot=1, slot_name='Head', damage=15, crit_chance=.033))
     character_1.save()
+    character_1.equip_item(character_1.inventory[0].inv_id)
     print()
   #  print(character_1)
 
-    character_1.update_xp(50)
-    print(f'lvl: {character_1.level} (hp: {character_1.hit_points} {character_1.min_damage}-{character_1.max_damage}) curr_xp: {character_1.curr_lvl_xp} xp_to_lvl: {character_1.xp_to_lvl} total_xp: {character_1.xp_gained}')
-    character_1.update_xp(50)
-    print(f'lvl: {character_1.level} (hp: {character_1.hit_points} {character_1.min_damage}-{character_1.max_damage}) curr_xp: {character_1.curr_lvl_xp} xp_to_lvl: {character_1.xp_to_lvl} total_xp: {character_1.xp_gained}')
-    character_1.update_xp(65)
-    print(f'lvl: {character_1.level} (hp: {character_1.hit_points} {character_1.min_damage}-{character_1.max_damage}) curr_xp: {character_1.curr_lvl_xp} xp_to_lvl: {character_1.xp_to_lvl} total_xp: {character_1.xp_gained}')
-    character_1.update_xp(85)
-    print(f'lvl: {character_1.level} (hp: {character_1.hit_points} {character_1.min_damage}-{character_1.max_damage}) curr_xp: {character_1.curr_lvl_xp} xp_to_lvl: {character_1.xp_to_lvl} total_xp: {character_1.xp_gained}')
-    character_1.update_xp(5000)
-    print(f'lvl: {character_1.level} (hp: {character_1.hit_points} {character_1.min_damage}-{character_1.max_damage}) curr_xp: {character_1.curr_lvl_xp} xp_to_lvl: {character_1.xp_to_lvl} total_xp: {character_1.xp_gained}')
-    #print(character_1)
+    # character_1.update_xp(50)
+    # print(f'lvl: {character_1.level} (hp: {character_1.hit_points} {character_1.min_damage}-{character_1.max_damage}) curr_xp: {character_1.curr_lvl_xp} xp_to_lvl: {character_1.xp_to_lvl} total_xp: {character_1.xp_gained}')
+    # character_1.update_xp(50)
+    # print(f'lvl: {character_1.level} (hp: {character_1.hit_points} {character_1.min_damage}-{character_1.max_damage}) curr_xp: {character_1.curr_lvl_xp} xp_to_lvl: {character_1.xp_to_lvl} total_xp: {character_1.xp_gained}')
+    # character_1.update_xp(65)
+    # print(f'lvl: {character_1.level} (hp: {character_1.hit_points} {character_1.min_damage}-{character_1.max_damage}) curr_xp: {character_1.curr_lvl_xp} xp_to_lvl: {character_1.xp_to_lvl} total_xp: {character_1.xp_gained}')
+    # character_1.update_xp(85)
+    # print(f'lvl: {character_1.level} (hp: {character_1.hit_points} {character_1.min_damage}-{character_1.max_damage}) curr_xp: {character_1.curr_lvl_xp} xp_to_lvl: {character_1.xp_to_lvl} total_xp: {character_1.xp_gained}')
+    # character_1.update_xp(5000)
+    # print(f'lvl: {character_1.level} (hp: {character_1.hit_points} {character_1.min_damage}-{character_1.max_damage}) curr_xp: {character_1.curr_lvl_xp} xp_to_lvl: {character_1.xp_to_lvl} total_xp: {character_1.xp_gained}')
+    # #print(character_1)
 
     #print(character_1.to_json())
 
