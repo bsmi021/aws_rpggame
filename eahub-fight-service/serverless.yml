@@ -101,6 +101,22 @@ functions:
           method: get
           cors: true
 
+  createloot:
+    handler: fights/create_loot.handler
+    events:
+      - http:
+          path: fights/{id}/create_loot
+          method: put
+          cors: true
+
+  claimloot:
+    handler: fights/claim_loot.handler
+    events:
+      - http:
+          path: fights/{id}/claim_loot
+          method: put
+          cors: true
+
 resources:
   Resources:
     FightsDynamoDBTable:

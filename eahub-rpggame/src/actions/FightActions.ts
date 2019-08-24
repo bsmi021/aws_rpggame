@@ -52,7 +52,11 @@ export const attack: ActionCreator<
     );
 
     if (attackresponse) {
-      const fight = await API.get('fightsaggr', `fights/${fightId}`, null);
+      let fight = await API.get('fightsaggr', `fights/${fightId}`, null);
+
+      if (fight.enemy.status === 'DEAD') {
+        fight = await API.get('fightsaggr', `fights/${fightId}`, null);
+      }
 
       return dispatch({
         type: FightActionTypes.ATTACK,

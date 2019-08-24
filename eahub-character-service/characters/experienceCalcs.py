@@ -3,9 +3,9 @@ def reduction_factor(char_lvl):
     # a difficulty reduction factor is applied by increased level
     if (char_lvl < 10):
         return 1
-    if (11 <= char_lvl <= 27):
+    elif (11 <= char_lvl <= 27):
         return (1-(char_lvl-10)/100)
-    if (28 <= char_lvl <= 59):
+    elif (28 <= char_lvl <= 59):
         return .82
     else:
         return 1
@@ -15,13 +15,13 @@ def difficulty_factor(char_lvl):
     # An extra difficulty factor is applied at level 30 and increased by level
     if (char_lvl <= 28):
         return 0
-    if (char_lvl == 29):
+    elif (char_lvl == 29):
         return 1
-    if (char_lvl == 30):
+    elif (char_lvl == 30):
         return 3
-    if (char_lvl == 31):
+    elif (char_lvl == 31):
         return 6
-    if (32 <= char_lvl <= 59):
+    elif (32 <= char_lvl <= 59):
         return 5 * (char_lvl - 30)
     else:
         return 0

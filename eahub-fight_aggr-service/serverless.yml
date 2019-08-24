@@ -13,6 +13,9 @@ provider:
     CREATE_FIGHT_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-create
     ATTACK_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-attack
     GET_FIGHT_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-get
+    LIST_ITEM_SERVICE: sascraft-item-service-${opt:stage, self:provider.stage}-list
+    CREATE_LOOT_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-createloot
+    CLAIM_LOOT_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-claimloot
     REGION: ${self:provider.region}
   iamRoleStatements:
     - Effect: 'Allow'
@@ -23,9 +26,12 @@ provider:
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-add_xp'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-enemy-service-${opt:stage, self:provider.stage}-create'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-fight-service-${opt:stage, self:provider.stage}-create'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-fight-service-${opt:stage, self:provider.stage}-createloot'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-fight-service-${opt:stage, self:provider.stage}-claimloot'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-fight-service-${opt:stage, self:provider.stage}-attack'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-fight-service-${opt:stage, self:provider.stage}-get'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-enemy-service-${opt:stage, self:provider.stage}-get'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-item-service-${opt:stage, self:provider.stage}-list'
 
 functions:
   start:

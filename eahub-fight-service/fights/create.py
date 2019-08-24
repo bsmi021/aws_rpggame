@@ -50,10 +50,10 @@ def create(event, context):
 
     fight.save()
 
-    for char in fight.characters:
-        logger.info(char.id)
-        char_fight = CharacterFightModel(char_id=char.id, fight_id=fight.id, enemy_id=fight.enemy.id)
-        char_fight.save()
+    # for char in fight.characters:
+    #     logger.info(char.id)
+    #     char_fight = CharacterFightModel(char_id=char.id, fight_id=fight.id, enemy_id=fight.enemy.id)
+    #     char_fight.save()
 
     response = {
         'statusCode': 200,

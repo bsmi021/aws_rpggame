@@ -8,6 +8,7 @@ from datetime import datetime
 from uuid import uuid4
 from enum import Enum
 
+
 from pynamodb.attributes import (UnicodeAttribute,
                                  BooleanAttribute,
                                  UTCDateTimeAttribute,
@@ -16,6 +17,7 @@ from pynamodb.attributes import (UnicodeAttribute,
                                  JSONAttribute,
                                  MapAttribute)
 from pynamodb.models import Model
+from pynamodb.indexes import AllProjection, GlobalSecondaryIndex
 
 aws_region = os.environ.get('REGION', 'none')
 
@@ -61,6 +63,10 @@ class Character (MapAttribute):
     status = UnicodeAttribute(default='ALIVE')
     min_damage = NumberAttribute()
     max_damage = NumberAttribute()
+    loot_item_id = UnicodeAttribute(null=True)
+    loot_claimed = BooleanAttribute(default=False)
+
+
 
 
 class CharacterFightModel(Model):

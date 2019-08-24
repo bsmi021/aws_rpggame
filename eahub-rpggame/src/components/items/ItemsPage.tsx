@@ -55,13 +55,6 @@ class ItemsPage extends React.Component<IProps, IState> {
           <h2>Items</h2>
           <Segment>
             <Segment.Inline>
-              <NavLink
-                to="/items/new"
-                className="ui button primary float-right"
-              >
-                Create New
-              </NavLink>
-
               <form className="ui form">
                 <Form.Group>
                   <Form.Select
