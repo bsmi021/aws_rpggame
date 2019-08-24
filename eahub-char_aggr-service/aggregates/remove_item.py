@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 region = os.environ['REGION']
 # item_lambda = os.environ['ITEM_SERVICE']
-char_lambda = os.environ['REMOVE_SERVICE']
+char_lambda = os.environ['CHAR_REMOVEITEM_SERVICE']
 
 lambda_client = client('lambda', region_name=region)
 

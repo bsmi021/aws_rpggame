@@ -74,6 +74,7 @@ export const createItem: ActionCreator<
   ThunkAction<Promise<AnyAction>, IItemsState, null, IItemCreateAction>
 > = (itemVals: IItemBase) => {
   return async (dispatch: Dispatch) => {
+    dispatch(loading());
     const request = {
       body: itemVals
     };
@@ -89,7 +90,7 @@ export const createItem: ActionCreator<
       alert('There was a problem saving this item');
       return dispatch({
         type: ItemActionTypes.ERROR,
-        message: error
+        error
       });
     }
   };

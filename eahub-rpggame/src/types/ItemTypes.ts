@@ -56,6 +56,7 @@ export interface IItemEditAction {
 
 export interface IItemErrorAction {
   type: ItemActionTypes.ERROR;
+  error: string;
 }
 
 export type ItemActions =

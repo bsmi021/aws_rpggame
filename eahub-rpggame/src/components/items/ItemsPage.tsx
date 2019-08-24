@@ -36,7 +36,7 @@ class ItemsPage extends React.Component<IProps, IState> {
   }
 
   public componentDidMount() {
-    if (this.props.items.length === 0 && !this.props.loading) {
+    if (!this.props.loading) {
       this.props.getItems(
         this.state.slot,
         this.state.quality,

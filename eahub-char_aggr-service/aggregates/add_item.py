@@ -23,7 +23,7 @@ def handler(event, context):
 
     request = {
         'pathParameters': {
-            'id': data['id']
+            'id': data['item_id']
         }
     }
 

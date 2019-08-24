@@ -1,5 +1,10 @@
 import { IItem } from './ItemTypes';
 
+export interface ICharacterInventoryItem extends IItem {
+  equipped: boolean;
+  inv_id: string;
+}
+
 export interface ICharacter {
   id: string;
   name: string;
@@ -17,7 +22,7 @@ export interface ICharacter {
   crit_chance: number;
   hit_points: number;
   current_hp: number;
-  inventory?: IItem[];
+  inventory?: ICharacterInventoryItem[];
   created_at: string;
   updated_at: string;
   player_class_name: string;
@@ -44,7 +49,10 @@ export enum CharacterActionTypes {
   DELETE = 'CHARACTERS/DELETE',
   SETDEFAULT = 'CHARACTERS/SETDEFAULT',
   EQUIPITEM = 'CHARACTERS/EQUIPITEM',
-  UNEQUIPITEM = 'CHARACTERS/UNEQUIPITEM'
+  UNEQUIPITEM = 'CHARACTERS/UNEQUIPITEM',
+  ADDITEM = 'CHARACTERS/ADDITEM',
+  REMOVEITEM = 'CHARACTERS/REMOVEITEM',
+  ERROR = 'CHARACTERS/ERROR'
 }
 
 export interface ICharacterGetAllAction {
@@ -57,53 +65,72 @@ export interface ICharacterGetSingleAction {
   character: ICharacter;
 }
 
-export interface ICharacterLoading {
+export interface ICharacterLoadingAction {
   type: CharacterActionTypes.LOADING;
 }
 
-export interface ICharacterCreate {
+export interface ICharacterErrorAction {
+  type: CharacterActionTypes.ERROR;
+  error: string;
+}
+
+export interface ICharacterCreateAction {
   type: CharacterActionTypes.CREATE;
   character: ICharacter;
 }
 
-export interface ICharacterEdit {
+export interface ICharacterEditAction {
   type: CharacterActionTypes.EDIT;
   character: ICharacter;
 }
 
-export interface ICharacterDelete {
+export interface ICharacterDeleteAction {
   type: CharacterActionTypes.DELETE;
 }
 
-export interface ICharacterSetDefault {
+export interface ICharacterSetDefaultAction {
   type: CharacterActionTypes.SETDEFAULT;
   character: ICharacter;
 }
 
-export interface ICharacterEquipItem {
+export interface ICharacterEquipItemAction {
   type: CharacterActionTypes.EQUIPITEM;
   character: ICharacter;
 }
 
-export interface ICharacterUnequipItem {
+export interface ICharacterUnequipItemAction {
   type: CharacterActionTypes.UNEQUIPITEM;
   character: ICharacter;
 }
 
+export interface ICharacterAddItemAction {
+  type: CharacterActionTypes.ADDITEM;
+  character: ICharacter;
+}
+
+export interface ICharacterRemoveItemAction {
+  type: CharacterActionTypes.REMOVEITEM;
+  character: ICharacter;
+}
+
 export type CharacterActions =
-  | ICharacterCreate
-  | ICharacterDelete
-  | ICharacterEdit
+  | ICharacterCreateAction
+  | ICharacterDeleteAction
+  | ICharacterEditAction
   | ICharacterGetAllAction
   | ICharacterGetSingleAction
-  | ICharacterLoading
-  | ICharacterSetDefault
-  | ICharacterUnequipItem
-  | ICharacterEquipItem;
+  | ICharacterLoadingAction
+  | ICharacterSetDefaultAction
+  | ICharacterUnequipItemAction
+  | ICharacterEquipItemAction
+  | ICharacterRemoveItemAction
+  | ICharacterErrorAction
+  | ICharacterAddItemAction;
 
 export interface ICharacterState {
   readonly characters: ICharacter[];
   readonly charactersLoading: boolean;
   readonly currentCharacter: ICharacter | null;
   readonly defaultCharacter: ICharacter | null;
+  readonly error: string | null;
 }

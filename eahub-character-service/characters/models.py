@@ -30,7 +30,7 @@ class PlayerClass(Enum):
     ROGUE = 4
 
 damage_base = {
-            PlayerClass.ARCHER.value: { 'base_damage': 18, 'speed': 1500, 'can_use_2h': False, 'can_dual_wield': False },
+            PlayerClass.ARCHER.value: { 'base_damage': 18, 'speed': 1500, 'can_use_2h': True, 'can_dual_wield': False },
             PlayerClass.WARRIOR.value: { 'base_damage': 30, 'speed': 2500, 'can_use_2h': True, 'can_dual_wield': True },
             PlayerClass.SORCERER.value: { 'base_damage': 20, 'speed': 1800, 'can_use_2h': False, 'can_dual_wield': False },
             PlayerClass.ROGUE.value: { 'base_damage': 13, 'speed': 1300, 'can_use_2h': False, 'can_dual_wield': True }
@@ -103,6 +103,13 @@ class CharacterModel(BaseModel):
     can_dual_wield = BooleanAttribute(default=False)
     can_use_2h = BooleanAttribute(default=False)
     inventory = ListAttribute(of=InventoryItemMap)
+    wallet = NumberAttribute(default=0)
+
+    def update_wallet(self, amount):
+        self.wallet += amount
+
+        self.updated_at = datetime.utcnow()
+        super(self).save()
 
     def update_xp(self, xp_earned):
         """Updates the characters xp based on the amount earned

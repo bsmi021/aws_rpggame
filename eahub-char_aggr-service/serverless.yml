@@ -7,13 +7,14 @@ provider:
   stage: dev
   environment:
     ITEM_SERVICE: sascraft-item-service-${opt:stage, self:provider.stage}-get
+    LIST_ITEM_SERVICE: sascraft-item-service-${opt:stage, self:provider.stage}-list
     CHAR_ADDITEM_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-add_item
     CHAR_EQUIP_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-equip_item
     CHAR_UNEQUIP_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-unequip_item
     CHAR_REMOVEITEM_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-remove_item
     GET_CHAR_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-get
     LIST_CHAR_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-list
-
+    CHAR_CREATE_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-create
     REGION: ${self:provider.region}
   iamRoleStatements:
     - Effect: 'Allow'
@@ -21,12 +22,14 @@ provider:
         - lambda:InvokeFunction
       Resource:
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-item-service-${opt:stage, self:provider.stage}-get'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-item-service-${opt:stage, self:provider.stage}-list'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-add_item'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-equip_item'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-unequip_item'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-get'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-remove_item'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-list'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-create'
 package:
   exclude:
     - env/**
@@ -76,6 +79,14 @@ functions:
       - http:
           path: characters/{id}/unequip_item
           method: put
+          cors: true
+  create:
+    handler: aggregates/create.handler
+    timeout: 30
+    events:
+      - http:
+          path: characters
+          method: post
           cors: true
 
 plugins:

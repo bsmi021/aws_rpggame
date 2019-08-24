@@ -20,7 +20,7 @@ interface IProps extends RouteComponentProps {
 
 class CharactersPage extends React.Component<IProps> {
   public componentDidMount() {
-    if (this.props.characters.length === 0 && !this.props.loading) {
+    if (!this.props.loading) {
       this.props.getCharacters();
     }
   }

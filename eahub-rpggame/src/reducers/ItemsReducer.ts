@@ -40,6 +40,13 @@ export const itemsReducer: Reducer<IItemsState, ItemActions> = (
         items: state.items.concat(action.items)
       };
     }
+    case ItemActionTypes.ERROR: {
+      return {
+        ...state,
+        itemsLoading: false,
+        error: action.error
+      };
+    }
     default:
       return state;
   }

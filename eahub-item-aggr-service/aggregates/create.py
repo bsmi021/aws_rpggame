@@ -38,9 +38,9 @@ def handler(event, context):
             'level': data.get('level')
         }
 
-        item['damage'] = itemCalculations.calc_attack_power(item['level'], i)
-        item['crit_chance'] = itemCalculations.calc_crit_chance(item['level'], i)
-        item['stamina'] = itemCalculations.calc_stamina(item['level'], i)
+        item['damage'] = itemCalculations.calc_attack_power(item['level'], i, item['slot'])
+        item['crit_chance'] = itemCalculations.calc_crit_chance(item['level'], i, item['slot'])
+        item['stamina'] = itemCalculations.calc_stamina(item['level'], i, item['slot'])
         item['quality'] = i
 
         request = {

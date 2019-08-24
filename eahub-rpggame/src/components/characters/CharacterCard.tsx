@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom';
 import { classIcon, isMyCharacter } from './charUtils';
 import { useSelector, useDispatch } from 'react-redux';
 import { IApplicationState } from '../../store/Store';
+import { setDefaultCharacter } from '../../actions/CharacterActions';
 
 interface IProps {
   character?: ICharacter;
@@ -52,10 +53,7 @@ export const CharacterCard: React.FunctionComponent<IProps> = props => {
                 className="ui mini button"
                 onClick={e => {
                   e.preventDefault();
-                  dispatch({
-                    type: CharacterActionTypes.SETDEFAULT,
-                    character
-                  });
+                  dispatch(setDefaultCharacter(character));
                 }}
               >
                 <i className={`user icon ${isDefaultChar() ? 'blue' : ''}`} />

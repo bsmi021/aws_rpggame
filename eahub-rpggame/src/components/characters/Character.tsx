@@ -1,11 +1,18 @@
 import * as React from 'react';
-import { ICharacter } from '../../types/CharacterTypes';
+import {
+  ICharacter,
+  ICharacterInventoryItem
+} from '../../types/CharacterTypes';
 import withLoader from '../common/withLoader';
-import { Grid, Tab, Card, Progress } from 'semantic-ui-react';
-import ItemCardSmall from '../items/ItemCardSmall';
+import { Grid, Tab, Card, Progress, Segment } from 'semantic-ui-react';
+import ItemCardSmall from './CharacterItemCardSmall';
 import { IItem } from '../../types/ItemTypes';
 import { classIcon, calcDps, isMyCharacter } from './charUtils';
-import { setDefaultCharacter } from '../../actions/CharacterActions';
+import {
+  setDefaultCharacter,
+  equipItem,
+  unequipItem
+} from '../../actions/CharacterActions';
 import { firstBy } from 'thenby';
 import { useSelector, useDispatch } from 'react-redux';
 import { IApplicationState } from '../../store/Store';
@@ -70,17 +77,46 @@ const Character: React.FunctionComponent<IProps> = props => {
       return null;
     }
     return (
-      <div>
+      <Grid stackable={true}>
         {character.inventory ? (
-          <Card.Group stackable={true}>
-            {character.inventory
-              .sort(firstBy(s => s.slot))
-              .map((item: IItem) => {
-                return <ItemCardSmall key={item.id} item={item} />;
-              })}
-          </Card.Group>
+          <Grid.Row>
+            <Grid.Column>
+              <Card.Group stackable={true}>
+                {character.inventory
+                  .filter(a => !a.equipped)
+                  .sort(firstBy(s => s.slot))
+                  .map((item: ICharacterInventoryItem) => {
+                    return (
+                      <ItemCardSmall
+                        key={item.id}
+                        item={item}
+                        charId={character.id}
+                        isCurrentChar={defaultCharacterId === character.id}
+                      />
+                    );
+                  })}
+              </Card.Group>
+            </Grid.Column>
+            <Grid.Column>
+              <Card.Group stackable={true}>
+                {character.inventory
+                  .filter(a => a.equipped)
+                  .sort(firstBy(s => s.slot))
+                  .map((item: ICharacterInventoryItem) => {
+                    return (
+                      <ItemCardSmall
+                        key={item.id}
+                        item={item}
+                        charId={character.id}
+                        isCurrentChar={defaultCharacterId === character.id}
+                      />
+                    );
+                  })}
+              </Card.Group>
+            </Grid.Column>
+          </Grid.Row>
         ) : null}
-      </div>
+      </Grid>
     );
   };
 

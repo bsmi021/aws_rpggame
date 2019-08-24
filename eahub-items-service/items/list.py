@@ -26,18 +26,28 @@ def list(event, context):
         queryParams = event.get('queryStringParameters', {})
 
         if queryParams is not None:
+            if 'player_class' in queryParams:
+                query = None
 
-            queryFields = {'slot', 'quality', 'level'}
-            query = None
+                if 'level' in queryParams:
+                    clause = ItemModel.level == int(queryParams['level'])
+                    query = clause if query is None else query & clause
 
-            for fieldName in queryFields:
-                field = getattr(ItemModel, fieldName, None)
-                if field is None or fieldName not in queryParams:
-                    continue
-                clause = field == int(queryParams[fieldName])
-                query = clause if query is None else query & clause
+                results = ItemModel.player_class_index.query(
+                    int(queryParams['player_class']),query)
 
-            results = ItemModel.scan(query)
+            else:
+                queryFields = {'slot', 'quality', 'level'}
+                query = None
+
+                for fieldName in queryFields:
+                    field = getattr(ItemModel, fieldName, None)
+                    if field is None or fieldName not in queryParams:
+                        continue
+                    clause = field == int(queryParams[fieldName])
+                    query = clause if query is None else query & clause
+
+                results = ItemModel.scan(query)
         else:
             results = ItemModel.scan()
     else:

@@ -9,11 +9,11 @@ provider:
     DYNAMODB_TABLE: ${self:service}-ITEMS-${opt:stage, self:provider.stage}
     REGION: ${self:provider.region}
   iamRoleStatements:
-    - Effect: "Allow"
+    - Effect: 'Allow'
       Action:
         - sqs:*
       Resource:
-        - "*"
+        - '*'
     - Effect: Allow
       Action:
         - dynamodb:Query
@@ -23,7 +23,9 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
         - dynamodb:DescribeTable
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+      Resource:
+        - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}'
+        - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}/index/*'
 
 package:
   exclude:
@@ -69,12 +71,10 @@ resources:
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: id
+          - AttributeName: id
             AttributeType: S
         KeySchema:
-          - 
-            AttributeName: id
+          - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 5
@@ -90,4 +90,3 @@ custom:
   secrets: ${file(secrets.yml):${self:custom.stage}}
   pythonRequirements:
     dockerizePip: false
-
