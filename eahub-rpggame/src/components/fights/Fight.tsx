@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { IApplicationState } from '../../store/Store';
-import { IFight, IAttack } from '../../types/FightTypes';
+import { IFight, IAttack, IFightState } from '../../types/FightTypes';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Grid,
@@ -8,11 +8,11 @@ import {
   Transition,
   Segment,
   Progress,
-  Loader
+  Loader,
+  Modal
 } from 'semantic-ui-react';
-import { fightsReducer } from '../../reducers/FightReducer';
-import { attack } from '../../actions/FightActions';
-import { enemyHealthBarColor } from './fightUtils';
+import { attack, getFight, claimLoot } from '../../actions/FightActions';
+import { enemyHealthBarColor, getAttackText } from './fightUtils';
 import { FightEnemyNameplate } from './FightEnemyNameplate';
 
 interface IProps {
@@ -21,25 +21,12 @@ interface IProps {
 
 export const Fight: React.FunctionComponent<IProps> = (props: IProps) => {
   const dispatch = useDispatch();
-  const [interval, setIntervalState] = React.useState();
   const enemy = useSelector((state: IApplicationState) => {
     return state.fights.currentFightEnemy;
   });
-  // React.useEffect(() => {
-  //   setIntervalState(
-  //     setInterval(() => {
-  //       if (props.fight && !props.fight.is_active) {
-  //         //setIntervalState(undefined);
-  //       }
-  //       if (props.fight) {
-  //         console.log(props.fight.enemy.curr_hp);
-  //       }
-  //     }, 1000)
-  //   );
-  //   return () => {
-  //     setIntervalState(undefined);
-  //   };
-  // }, [interval, props.fight]);
+  // const fight = useSelector((state: IFightState) => {
+  //   return state.currentFight;
+  // });
 
   const [attackActive, setAttackActive] = React.useState(true);
 
@@ -53,6 +40,10 @@ export const Fight: React.FunctionComponent<IProps> = (props: IProps) => {
 
   const fight = props.fight;
   if (!fight) {
+    return null;
+  }
+
+  if (!currentCharacter) {
     return null;
   }
 
@@ -72,25 +63,86 @@ export const Fight: React.FunctionComponent<IProps> = (props: IProps) => {
       <Grid container={true} stackable={true} celled={true}>
         <Grid.Row>
           <Grid.Column>
-            <div>
-              <Segment>
-                {enemy && <FightEnemyNameplate enemy={enemy} />}
-              </Segment>
-
-              <Segment>
-                <Progress
-                  active={fight.enemy.status.toLowerCase() === 'alive'}
-                  total={fight.enemy.base_hp}
-                  value={fight.enemy.curr_hp}
-                  color={enemyHealthBarColor(
-                    fight.enemy.curr_hp,
-                    fight.enemy.base_hp
-                  )}
+            <Grid>
+              <Grid.Row stretched={true}>
+                <Grid.Column width={8}>
+                  <Segment>
+                    <div>
+                      {currentCharacter.name} | {currentCharacter.level}
+                    </div>
+                    <Progress
+                      total={currentCharacter.hit_points}
+                      value={
+                        fight.characters.filter(
+                          x => x.id === currentCharacter.id
+                        )[0].curr_hp
+                      }
+                      color="green"
+                    />
+                  </Segment>
+                </Grid.Column>
+                <Grid.Column width={8}>
+                  <Segment>
+                    {enemy && <FightEnemyNameplate enemy={enemy} />}
+                    <Progress
+                      active={fight.enemy.status.toLowerCase() === 'alive'}
+                      total={fight.enemy.base_hp}
+                      value={fight.enemy.curr_hp}
+                      color={enemyHealthBarColor(
+                        fight.enemy.curr_hp,
+                        fight.enemy.base_hp
+                      )}
+                    >
+                      {fight.enemy.curr_hp}/{fight.enemy.base_hp}
+                    </Progress>
+                  </Segment>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+            <Segment>
+              {!fight.is_active && (
+                <Modal
+                  trigger={
+                    <button
+                      className="ui button primary"
+                      onClick={e => {
+                        dispatch(getFight(fight.id));
+                      }}
+                    >
+                      <i className="icon trophy centered" />
+                    </button>
+                  }
                 >
-                  {fight.enemy.curr_hp}/{fight.enemy.base_hp}
-                </Progress>
-              </Segment>
-            </div>
+                  <Modal.Header>You've got loot</Modal.Header>
+                  <Modal.Description>
+                    {currentCharacter &&
+                      fight.characters.filter(
+                        i => i.id === currentCharacter.id
+                      )[0] && (
+                        <div>
+                          {
+                            fight.characters.filter(
+                              i => i.id === currentCharacter.id
+                            )[0].loot_item_id
+                          }
+                          {!fight.characters.filter(
+                            i => i.id === currentCharacter.id
+                          )[0].loot_claimed && (
+                            <button
+                              className="ui button primary"
+                              onClick={e => {
+                                dispatch(claimLoot(fight.id));
+                              }}
+                            >
+                              Claim the Loot
+                            </button>
+                          )}
+                        </div>
+                      )}
+                  </Modal.Description>
+                </Modal>
+              )}
+            </Segment>
           </Grid.Column>
         </Grid.Row>
         <Grid.Row columns="equal" stretched={true}>
@@ -107,48 +159,39 @@ export const Fight: React.FunctionComponent<IProps> = (props: IProps) => {
             </button>
           </Grid.Column>
         </Grid.Row>
-        <Grid.Row>
+        <Grid.Row stretched={true}>
           <Grid.Column width={16}>
-            <Segment
-              className="ui centered container "
-              style={{
-                overflowY: 'scroll',
-                overflowX: 'scroll',
-                flex: 1,
-                background: 'lightgrey',
-                width: '100%',
-                outerHeight: '300px'
-              }}
-            >
-              <Transition.Group
-                as={List}
-                duration={500}
-                divided={true}
-                relaxed={true}
-                animation="slide left"
+            <Segment className="ui centered container ">
+              <div
+                style={{ maxHeight: '150%', height: 'auto', overflow: 'auto' }}
               >
-                {attacks
-                  .filter((a: IAttack) => a.fight_id === fight.id)
-                  .sort((a: IAttack, b: IAttack) =>
-                    a.attack_ts > b.attack_ts ? -1 : 1
-                  )
-                  .map(att => {
-                    return (
-                      <List.Item key={att.id} style={{ width: '100%' }}>
-                        <List.Description>
-                          <span>{att.attack_ts} | </span>
-
-                          <span>{att.attack_amt} | </span>
-
-                          <span>{att.is_critical ? 'Crit' : 'Reg.'} | </span>
-                        </List.Description>
-                      </List.Item>
-                    );
-                  })}
-              </Transition.Group>
+                <Transition.Group
+                  as={List}
+                  duration={500}
+                  divided={true}
+                  relaxed={true}
+                  animation="slide left"
+                >
+                  {attacks
+                    .filter((a: IAttack) => a.fight_id === fight.id)
+                    .sort((a: IAttack, b: IAttack) =>
+                      a.attack_ts > b.attack_ts ? -1 : 1
+                    )
+                    .map(att => {
+                      return (
+                        <List.Item key={att.id} style={{ width: '100%' }}>
+                          <List.Description>
+                            {enemy && getAttackText(att, enemy)}
+                          </List.Description>
+                        </List.Item>
+                      );
+                    })}
+                </Transition.Group>
+              </div>
             </Segment>
           </Grid.Column>
         </Grid.Row>
+        <Grid.Row />
       </Grid>
     </div>
   );

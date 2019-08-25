@@ -28,7 +28,7 @@ def remove_item(event, context):
     if character is None:
         raise Exception('No character found')
 
-    character.remove_item(data.get('id'))
+    character.remove_item(data.get('inv_id'))
 
     response = {
         'statusCode': 200,

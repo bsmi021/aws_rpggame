@@ -80,7 +80,7 @@ const Character: React.FunctionComponent<IProps> = props => {
       <Grid stackable={true}>
         {character.inventory ? (
           <Grid.Row>
-            <Grid.Column>
+            <Grid.Column width={8}>
               <Card.Group stackable={true}>
                 {character.inventory
                   .filter(a => !a.equipped)
@@ -97,7 +97,7 @@ const Character: React.FunctionComponent<IProps> = props => {
                   })}
               </Card.Group>
             </Grid.Column>
-            <Grid.Column>
+            <Grid.Column width={8}>
               <Card.Group stackable={true}>
                 {character.inventory
                   .filter(a => a.equipped)

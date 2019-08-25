@@ -116,29 +116,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
-        GlobalSecondaryIndexes:
-          - IndexName: 'player_level-level-index'
-            KeySchema:
-              - AttributeName: player_level
-                KeyType: 'HASH'
-              - AttributeName: level
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
-          - IndexName: 'level-player_class-index'
-            KeySchema:
-              - AttributeName: level
-                KeyType: 'HASH'
-              - AttributeName: player_class
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
+
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
 
 plugins:

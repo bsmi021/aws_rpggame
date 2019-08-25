@@ -155,6 +155,21 @@ if __name__ == "__main__":
 
     print(last_evalutated_key)
 
+    from utils import ModelEncoder
+    import rapidjson
+    import pickle
+
+    print(datetime.utcnow())
+    results = ItemModel.player_class_index.query(1)
+
+    result = {
+        'statusCode': 200,
+        'body':
+        json.dumps([r for r in results], cls=ModelEncoder)}
+    print(datetime.utcnow())
+
+    #print(result)
+
     # results = ItemModel.player_class_index.query(1)
 
     # for r in results:

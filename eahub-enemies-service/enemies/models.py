@@ -43,10 +43,10 @@ class EnemyRaces(Enum):
     GNOLL = 4
 
 EnemyInformation = {
-    EnemyRaces.ORC.value: { "can_block": True, "can_dodge": True, "base_hp": 1000, "block_pct": 0.075, "block_amt": 0.40, "dodge_pct": 0.02},
-    EnemyRaces.TROLL.value: { "can_block": True, "can_dodge": True, "base_hp": 750, "block_pct": 0.035, "block_amt": 0.22, "dodge_pct": 0.075},
-    EnemyRaces.OGRE.value: { "can_block": True, "can_dodge": False, "base_hp": 1500, "block_pct": 0.05, "block_amt": 0.57, "dodge_pct": 0.00 },
-    EnemyRaces.GNOLL.value: { "can_block": False, "can_dodge": True, "base_hp": 500, "block_pct": 0.00, "block_amt": 0.0, "dodge_pct": 0.02 }
+    EnemyRaces.ORC.value: { "can_block": True, "can_dodge": True, "base_hp": 900, "block_pct": 0.075, "block_amt": 0.40, "dodge_pct": 0.07},
+    EnemyRaces.TROLL.value: { "can_block": True, "can_dodge": True, "base_hp": 750, "block_pct": 0.035, "block_amt": 0.22, "dodge_pct": 0.115},
+    EnemyRaces.OGRE.value: { "can_block": True, "can_dodge": False, "base_hp": 1000, "block_pct": 0.05, "block_amt": 0.57, "dodge_pct": 0.00 },
+    EnemyRaces.GNOLL.value: { "can_block": False, "can_dodge": True, "base_hp": 500, "block_pct": 0.00, "block_amt": 0.0, "dodge_pct": 0.06 }
 }
 
 EnemyStatus = {

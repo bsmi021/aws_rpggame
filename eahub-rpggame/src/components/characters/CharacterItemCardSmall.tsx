@@ -45,7 +45,7 @@ const ItemCardSmall: React.FunctionComponent<IProps> = props => {
   };
 
   return (
-    <div>
+    <div style={{ border: 'purple 1px' }}>
       {item && (
         <div>
           <Popup

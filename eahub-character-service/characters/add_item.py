@@ -14,7 +14,6 @@ else:
     from characters.utils import ModelEncoder
 
 
-
 log_level = os.environ.get('LOG_LEVEL', 'INFO')
 logging.root.setLevel(logging.getLevelName(log_level))
 logger = logging.getLogger(__name__)
@@ -39,8 +38,8 @@ def add_item(event, context):
                                         slot=data['slot'],
                                         slot_name=data['slot_name'],
                                         damage=data['damage'],
+                                        stamina=data['stamina'], 
                                         crit_chance=data['crit_chance']))
-
 
     response = {
         'statusCode': 200,

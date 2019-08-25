@@ -9,15 +9,24 @@ import {
   IFightStartAction,
   IFightGetSingleAction,
   IFightState,
-  IFightAttackAction
+  IFightAttackAction,
+  IFightClaimLootAction
 } from '../types/FightTypes';
 
 const loading: ActionCreator<IFightLoadingAction> = () => ({
   type: FightActionTypes.LOADING
 });
 
+type GetFightResult<R> = ThunkAction<
+  R,
+  IFightState,
+  null,
+  IFightGetSingleAction
+>;
+
 export const getFight: ActionCreator<
-  ThunkAction<Promise<AnyAction>, IFightState, null, IFightGetSingleAction>
+  GetFightResult<Promise<boolean>>
+  // ThunkAction<Promise<AnyAction>, IFightState, null, IFightGetSingleAction>
 > = (id: string) => {
   return async (dispatch: ThunkDispatch<{}, {}, AnyAction>, getState) => {
     dispatch(loading());
@@ -28,11 +37,12 @@ export const getFight: ActionCreator<
       `enemies/${response.enemy.id}`,
       null
     );
-    return dispatch({
+    dispatch({
       type: FightActionTypes.GETSINGLE,
       fight: response,
       enemy
     });
+    return Promise.resolve(true);
   };
 };
 
@@ -67,6 +77,38 @@ export const attack: ActionCreator<
 
     return dispatch({
       type: FightActionTypes.ERROR
+    });
+  };
+};
+
+export const claimLoot: ActionCreator<
+  ThunkAction<
+    Promise<AnyAction>,
+    IApplicationState,
+    null,
+    IFightClaimLootAction
+  >
+> = (fightId: string) => {
+  return async (dispatch: ThunkDispatch<{}, {}, AnyAction>, getState) => {
+    dispatch(loading);
+    const character = getState().characters.defaultCharacter;
+    const characterId = character ? character.id : '';
+
+    const claimRequest = {
+      body: {
+        char_id: characterId
+      }
+    };
+
+    const response = await API.put(
+      'fightsaggr',
+      `fights/${fightId}/claim_loot`,
+      claimRequest
+    );
+
+    return dispatch({
+      type: FightActionTypes.CLAIM,
+      fight: response
     });
   };
 };

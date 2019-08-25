@@ -109,7 +109,7 @@ class CharacterModel(BaseModel):
         self.wallet += amount
 
         self.updated_at = datetime.utcnow()
-        super(self).save()
+        super(CharacterModel, self).save()
 
     def update_xp(self, xp_earned):
         """Updates the characters xp based on the amount earned
@@ -148,8 +148,6 @@ class CharacterModel(BaseModel):
         base_hp = round(((self.base_hp * (1 + self.level * .1)) * 6.5))
         base_damage = self.base_damage
 
-
-
         if self.inventory is not None:
             equipped_items = Enumerable(self.inventory).where(lambda x: x.equipped)
 
@@ -182,7 +180,8 @@ class CharacterModel(BaseModel):
         item.inv_id = str(uuid4())
         self.inventory.append(item)
         
-        self.save()
+        self.updated_at = datetime.utcnow()
+        super(CharacterModel, self).save()
 
     def remove_item(self, inventory_item_id):
         """Removes an item from the character's inventory, this is not reversable
@@ -199,7 +198,8 @@ class CharacterModel(BaseModel):
         if item is not None:
             self.inventory.remove(item)
 
-        self.save()
+        self.updated_at = datetime.utcnow()
+        super(CharacterModel, self).save()
 
     def equip_item(self, inventory_item_id):
         """Marks the item as equipped which will add to a character's stats
@@ -210,8 +210,7 @@ class CharacterModel(BaseModel):
         if self.inventory is None:
             self.inventory = []
         
-        item = Enumerable(self.inventory) \
-            .where(lambda x: x.inv_id == inventory_item_id).first_or_default()
+        item = Enumerable(self.inventory).first_or_default(lambda x: x.inv_id == inventory_item_id)
 
         if item is None:
             raise Exception("The item does not exist in the inventory")
@@ -224,16 +223,16 @@ class CharacterModel(BaseModel):
         if not self.can_dual_wield and item.slot == 13:
             raise Exception("Cannot equip a weapon in the off hand")
 
-        existing_item = Enumerable(self.inventory) \
-            .where(lambda x: x.slot == item.slot).first_or_default()
+        existing_item = Enumerable(self.inventory).first_or_default(lambda x: x.slot == item.slot and x.equipped)
         
         if existing_item is not None:
             self.unequip_item(existing_item.inv_id)
-            existing_item.equipped = False
+            #existing_item.equipped = False
 
         item.equipped = True    
         self.calc_stats()
-        self.save()
+        self.updated_at = datetime.utcnow()
+        super(CharacterModel, self).save()
 
     def unequip_item(self, inventory_item_id):
         """Unequips the item preventing it from being used in stat calculations
@@ -244,14 +243,14 @@ class CharacterModel(BaseModel):
         if self.inventory is None:
             self.inventory = []
 
-        item = Enumerable(self.inventory) \
-            .where(lambda x: x.inv_id == inventory_item_id).first_or_default()
+        item = Enumerable(self.inventory).first_or_default(lambda x: x.inv_id == inventory_item_id)
 
         if item is not None:
             item.equipped = False
 
         self.calc_stats()
-        self.save()
+        self.updated_at = datetime.utcnow()
+        super(CharacterModel, self).save()
 
     def set_class_attributes(self):
         self.base_min_damage = round(damage_base[self.player_class]['base_damage'] / 4.75)
@@ -267,6 +266,7 @@ class CharacterModel(BaseModel):
         self.xp_to_lvl = experienceCalcs.xp_required_to_level(1)
 
     def save(self, conditional_operator=None, **expected_values):
+        # only use this for the first save
         self.set_class_attributes()
         self.calc_stats()
         self.updated_at = datetime.utcnow()

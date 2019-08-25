@@ -97,7 +97,9 @@ def handler(event, context):
                                                            InvocationType="Event",
                                                            Payload=json.dumps(xp_request))
 
-
+                        if char_level == 1:
+                            continue
+                            
                         # now get items that can be given as loot
                         items_request = {
                             'queryStringParameters': {

@@ -44,6 +44,13 @@ export const fightsReducer: Reducer<IFightState, FightActions> = (
         currentFightEnemy: action.enemy
       };
     }
+    case FightActionTypes.CLAIM: {
+      return {
+        ...state,
+        currentFight: action.fight,
+        fightsLoading: false
+      };
+    }
     case FightActionTypes.ATTACK: {
       return {
         ...state,

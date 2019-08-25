@@ -22,6 +22,8 @@ export interface IFightCharacter {
   prev_hp: number;
   curr_hp: number;
   crit_chance: number;
+  loot_claimed: boolean;
+  loot_item_id: string | undefined;
 }
 
 export interface IFight {
@@ -58,7 +60,8 @@ export enum FightActionTypes {
   START = 'FIGHTS/START',
   ATTACK = 'FIGHTS/ATTACK',
   LOADING = 'FIGHTS/LOADING',
-  ERROR = 'FIGHTS/ERROR'
+  ERROR = 'FIGHTS/ERROR',
+  CLAIM = 'FIGHTS/CLAIM'
 }
 
 export interface IFightLoadingAction {
@@ -69,6 +72,11 @@ export interface IFightStartAction {
   type: FightActionTypes.START | FightActionTypes.ERROR;
   fight: IFight;
   enemy: IEnemy;
+}
+
+export interface IFightClaimLootAction {
+  type: FightActionTypes.CLAIM;
+  fight: IFight;
 }
 
 export interface IFightAttackAction {
@@ -87,6 +95,7 @@ export type FightActions =
   | IFightLoadingAction
   | IFightStartAction
   | IFightGetSingleAction
+  | IFightClaimLootAction
   | IFightAttackAction;
 
 export interface IFightState {

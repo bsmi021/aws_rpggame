@@ -7,6 +7,7 @@ provider:
   stage: dev
   environment:
     GET_CHAR_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-get
+    CHAR_ADD_ITEM_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-add_item
     ADD_XP_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-add_xp
     GET_ENEMY_SERVICE: sascraft-enemy-service-${opt:stage, self:provider.stage}-get
     CREATE_ENEMY_SERVICE: sascraft-enemy-service-${opt:stage, self:provider.stage}-create
@@ -14,6 +15,7 @@ provider:
     ATTACK_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-attack
     GET_FIGHT_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-get
     LIST_ITEM_SERVICE: sascraft-item-service-${opt:stage, self:provider.stage}-list
+    GET_ITEM_SERVICE: sascraft-item-service-${opt:stage, self:provider.stage}-get
     CREATE_LOOT_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-createloot
     CLAIM_LOOT_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-claimloot
     REGION: ${self:provider.region}
@@ -24,6 +26,7 @@ provider:
       Resource:
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-get'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-add_xp'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-character-service-${opt:stage, self:provider.stage}-add_item'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-enemy-service-${opt:stage, self:provider.stage}-create'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-fight-service-${opt:stage, self:provider.stage}-create'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-fight-service-${opt:stage, self:provider.stage}-createloot'
@@ -32,6 +35,7 @@ provider:
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-fight-service-${opt:stage, self:provider.stage}-get'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-enemy-service-${opt:stage, self:provider.stage}-get'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-item-service-${opt:stage, self:provider.stage}-list'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-item-service-${opt:stage, self:provider.stage}-get'
 
 functions:
   start:
@@ -61,6 +65,14 @@ functions:
       - http:
           path: fights/{id}
           method: get
+          cors: true
+
+  claim_loot:
+    handler: fights/claim_loot.handler
+    events:
+      - http:
+          path: fights/{id}/claim_loot
+          method: put
           cors: true
 
 package:
