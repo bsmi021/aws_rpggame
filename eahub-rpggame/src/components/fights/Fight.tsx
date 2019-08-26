@@ -9,11 +9,14 @@ import {
   Segment,
   Progress,
   Loader,
-  Modal
+  Modal,
+  Button
 } from 'semantic-ui-react';
 import { attack, getFight, claimLoot } from '../../actions/FightActions';
-import { enemyHealthBarColor, getAttackText } from './fightUtils';
+import { getAttackText } from './fightUtils';
 import { FightEnemyNameplate } from './FightEnemyNameplate';
+import { getItem } from '../../actions/ItemActions';
+import ItemCard from '../items/ItemCard';
 
 interface IProps {
   fight?: IFight;
@@ -21,28 +24,69 @@ interface IProps {
 
 export const Fight: React.FunctionComponent<IProps> = (props: IProps) => {
   const dispatch = useDispatch();
-  const enemy = useSelector((state: IApplicationState) => {
+
+  // grab the information for the enemy to display on the screen
+  const currentEnemy = useSelector((state: IApplicationState) => {
     return state.fights.currentFightEnemy;
   });
-  // const fight = useSelector((state: IFightState) => {
-  //   return state.currentFight;
-  // });
 
+  const [lootLoaded, setLootLoaded] = React.useState(false);
+
+  const [lootClaimed, setLootClaimed] = React.useState(false);
+
+  // if an attack has been cast we need to put the attack button on CD
   const [attackActive, setAttackActive] = React.useState(true);
 
+  // there needs to be a selected character to do anything
   const currentCharacter = useSelector((store: IApplicationState) => {
     return store.characters.defaultCharacter;
   });
 
+  // set the lootItem state to the application store
+  const lootItem = useSelector((state: IApplicationState) => {
+    return state.items.currentItem;
+  });
+
+  // get the collection of attacks for the fight
   const attacks = useSelector(
     (store: IApplicationState) => store.fights.attacks
   );
 
+  // determine if the item is loading
+  const lootLoading = useSelector((state: IApplicationState) => {
+    return state.items.itemsLoading;
+  });
+
+  React.useEffect(() => {
+    // check if the fight is over (ensure other values set)
+    // go get the item data for the loot
+
+    if (
+      props.fight &&
+      currentCharacter &&
+      !props.fight.is_active &&
+      !lootLoaded &&
+      props.fight.characters.filter(
+        x => x.id === currentCharacter.id && x.loot_item_id && !x.loot_claimed
+      ).length !== 0
+    ) {
+      dispatch(
+        getItem(
+          props.fight.characters.filter(x => x.id === currentCharacter.id)[0]
+            .loot_item_id
+        )
+      );
+      setLootLoaded(true);
+    }
+  });
+
   const fight = props.fight;
+
+  // if there is no fight get out of here
   if (!fight) {
     return null;
   }
-
+  // if there is no current character get out of here
   if (!currentCharacter) {
     return null;
   }
@@ -50,6 +94,7 @@ export const Fight: React.FunctionComponent<IProps> = (props: IProps) => {
   const onAttackClick = (e: any) => {
     e.preventDefault();
 
+    // only cast the attack if the currentCharacter is set
     if (currentCharacter) {
       dispatch(attack(currentCharacter.id, fight.id));
       setAttackActive(false);
@@ -82,64 +127,63 @@ export const Fight: React.FunctionComponent<IProps> = (props: IProps) => {
                   </Segment>
                 </Grid.Column>
                 <Grid.Column width={8}>
-                  <Segment>
-                    {enemy && <FightEnemyNameplate enemy={enemy} />}
-                    <Progress
-                      active={fight.enemy.status.toLowerCase() === 'alive'}
-                      total={fight.enemy.base_hp}
-                      value={fight.enemy.curr_hp}
-                      color={enemyHealthBarColor(
-                        fight.enemy.curr_hp,
-                        fight.enemy.base_hp
-                      )}
-                    >
-                      {fight.enemy.curr_hp}/{fight.enemy.base_hp}
-                    </Progress>
-                  </Segment>
+                  {currentEnemy && (
+                    <FightEnemyNameplate enemy={currentEnemy} fight={fight} />
+                  )}
                 </Grid.Column>
               </Grid.Row>
             </Grid>
             <Segment>
               {!fight.is_active && (
                 <Modal
+                  size="mini"
                   trigger={
-                    <button
-                      className="ui button primary"
+                    <Button
+                      icon={true}
+                      color="yellow"
                       onClick={e => {
                         dispatch(getFight(fight.id));
                       }}
                     >
                       <i className="icon trophy centered" />
-                    </button>
+                    </Button>
                   }
+                  stye={{ width: '25em' }}
                 >
                   <Modal.Header>You've got loot</Modal.Header>
-                  <Modal.Description>
+                  <Modal.Content>
                     {currentCharacter &&
                       fight.characters.filter(
                         i => i.id === currentCharacter.id
                       )[0] && (
                         <div>
-                          {
-                            fight.characters.filter(
-                              i => i.id === currentCharacter.id
-                            )[0].loot_item_id
-                          }
-                          {!fight.characters.filter(
-                            i => i.id === currentCharacter.id
-                          )[0].loot_claimed && (
-                            <button
-                              className="ui button primary"
-                              onClick={e => {
-                                dispatch(claimLoot(fight.id));
-                              }}
-                            >
-                              Claim the Loot
-                            </button>
+                          <Loader active={!lootLoading}>
+                            Getting your loot
+                          </Loader>
+                          {lootItem && !lootClaimed && (
+                            <ItemCard item={lootItem} />
                           )}
                         </div>
                       )}
-                  </Modal.Description>
+                  </Modal.Content>
+                  <Modal.Actions>
+                    {!fight.characters.filter(
+                      i => i.id === currentCharacter.id
+                    )[0].loot_claimed && (
+                      <span>
+                        <button className="ui button red">Leave it</button>
+                        <button
+                          className="ui button green"
+                          onClick={e => {
+                            dispatch(claimLoot(fight.id));
+                            setLootClaimed(true);
+                          }}
+                        >
+                          Take your loot
+                        </button>
+                      </span>
+                    )}
+                  </Modal.Actions>
                 </Modal>
               )}
             </Segment>
@@ -163,7 +207,7 @@ export const Fight: React.FunctionComponent<IProps> = (props: IProps) => {
           <Grid.Column width={16}>
             <Segment className="ui centered container ">
               <div
-                style={{ maxHeight: '150%', height: 'auto', overflow: 'auto' }}
+                style={{ maxHeight: '25em', height: '25em', overflow: 'auto' }}
               >
                 <Transition.Group
                   as={List}
@@ -181,7 +225,7 @@ export const Fight: React.FunctionComponent<IProps> = (props: IProps) => {
                       return (
                         <List.Item key={att.id} style={{ width: '100%' }}>
                           <List.Description>
-                            {enemy && getAttackText(att, enemy)}
+                            {currentEnemy && getAttackText(att, currentEnemy)}
                           </List.Description>
                         </List.Item>
                       );

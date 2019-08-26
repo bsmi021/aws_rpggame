@@ -17,16 +17,8 @@ const loading: ActionCreator<IFightLoadingAction> = () => ({
   type: FightActionTypes.LOADING
 });
 
-type GetFightResult<R> = ThunkAction<
-  R,
-  IFightState,
-  null,
-  IFightGetSingleAction
->;
-
 export const getFight: ActionCreator<
-  GetFightResult<Promise<boolean>>
-  // ThunkAction<Promise<AnyAction>, IFightState, null, IFightGetSingleAction>
+  ThunkAction<Promise<AnyAction>, IFightState, null, IFightGetSingleAction>
 > = (id: string) => {
   return async (dispatch: ThunkDispatch<{}, {}, AnyAction>, getState) => {
     dispatch(loading());
@@ -37,12 +29,12 @@ export const getFight: ActionCreator<
       `enemies/${response.enemy.id}`,
       null
     );
-    dispatch({
+
+    return dispatch({
       type: FightActionTypes.GETSINGLE,
       fight: response,
       enemy
     });
-    return Promise.resolve(true);
   };
 };
 

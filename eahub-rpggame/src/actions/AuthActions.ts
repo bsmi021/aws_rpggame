@@ -12,6 +12,10 @@ import {
   ISignIn,
   IAuthSignedInAction
 } from '../types/AuthTypes';
+import { IApplicationState } from '../store/Store';
+import { FightActionTypes } from '../types/FightTypes';
+import { ItemActionTypes } from '../types/ItemTypes';
+import { EnemyActionTypes } from '../types/EnemyTypes';
 
 const loading: ActionCreator<IAuthLoadingAction> = () => ({
   type: AuthActionTypes.LOADING
@@ -45,17 +49,6 @@ export const signIn: ActionCreator<
     const userName = user.username;
     const userId = user.attributes.sub;
 
-    // Auth.currentSession()
-    //   .then(data => {
-    //     console.log(data);
-    //     window.sessionStorage.setItem('session', stringify(data));
-    //   })
-    //   .catch(err => console.log(err));
-
-    // if (session) {
-    //   window.sessionStorage.setItem(session, stringifiedUserToken);
-    // }
-
     return dispatch({
       isAuthenticated: true,
       userName,
@@ -66,11 +59,20 @@ export const signIn: ActionCreator<
 };
 
 export const signOut: ActionCreator<
-  ThunkAction<Promise<AnyAction>, IAuthState, null, IAuthSignOutAction>
+  ThunkAction<Promise<AnyAction>, IApplicationState, null, IAuthSignOutAction>
 > = () => {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch, getState) => {
     await Auth.signOut();
 
+    dispatch({
+      type: FightActionTypes.CLEAR
+    });
+
+    dispatch({
+      type: ItemActionTypes.CLEAR
+    });
+
+    dispatch({ type: EnemyActionTypes.CLEAR });
     return dispatch({
       isAuthenticated: false,
       auth: {},

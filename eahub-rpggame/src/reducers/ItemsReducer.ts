@@ -19,6 +19,15 @@ export const itemsReducer: Reducer<IItemsState, ItemActions> = (
         itemsLoading: true
       };
     }
+    case ItemActionTypes.CLEAR: {
+      return {
+        ...state,
+        items: [],
+        itemsLoading: false,
+        currentItem: null,
+        error: null
+      };
+    }
     case ItemActionTypes.GETALL: {
       return {
         ...state,

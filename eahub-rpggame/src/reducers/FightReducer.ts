@@ -12,7 +12,8 @@ const initialFightState: IFightState = {
   currentFight: null,
   currentFightEnemy: null,
   fightStartError: false,
-  fightsLoading: false
+  fightsLoading: false,
+  currentFightCharacter: null
 };
 
 export const fightsReducer: Reducer<IFightState, FightActions> = (
@@ -24,6 +25,19 @@ export const fightsReducer: Reducer<IFightState, FightActions> = (
       return {
         ...state,
         fightsLoading: true
+      };
+    }
+    case FightActionTypes.CLEAR: {
+      return {
+        ...state,
+        fights: [],
+        attacks: [],
+        currentAttack: null,
+        currentFight: null,
+        currentFightEnemy: null,
+        fightStartError: false,
+        fightsLoading: false,
+        currentFightCharacter: null
       };
     }
     case FightActionTypes.START: {

@@ -2,8 +2,16 @@ import * as React from 'react';
 
 import { IItem } from '../../types/ItemTypes';
 import { NavLink } from 'react-router-dom';
-import { colorSelector, itemSlotIcon } from '../items/itemUtils';
-import { Grid, Popup, Image, Segment, Button } from 'semantic-ui-react';
+import { colorSelector, itemSlotIcon, itemQualities } from '../items/itemUtils';
+import {
+  Grid,
+  Popup,
+  Image,
+  Segment,
+  Button,
+  Header,
+  Icon
+} from 'semantic-ui-react';
 import { ICharacterInventoryItem } from '../../types/CharacterTypes';
 import {
   equipItem,
@@ -18,14 +26,13 @@ interface IProps {
   isCurrentChar: boolean;
 }
 
-const ItemCardSmall: React.FunctionComponent<IProps> = props => {
+const CharacterItemCardSmall: React.FunctionComponent<IProps> = props => {
   const item = props.item;
   const dispatch = useDispatch();
 
   const handleEquipClick = (e: any) => {
     e.preventDefault();
     if (props.item) {
-      console.log('equip');
       dispatch(equipItem(props.charId, props.item.inv_id));
     }
   };
@@ -45,53 +52,81 @@ const ItemCardSmall: React.FunctionComponent<IProps> = props => {
   };
 
   return (
-    <div style={{ border: 'purple 1px' }}>
+    <div>
       {item && (
-        <div>
-          <Popup
-            content={
-              <Grid>
-                <Grid.Row>
-                  <Grid.Column>{item.description}</Grid.Column>
-                </Grid.Row>
-                <Grid.Row>{item.damage}</Grid.Row>
-              </Grid>
-            }
-            header={item.name}
-            trigger={
-              <NavLink
-                to={`/items/${item.id}`}
-                className={`${colorSelector(item.quality)} small`}
-              >
-                <Image
-                  src={itemSlotIcon(item.slot)}
-                  avatar={true}
-                  className="left floated"
-                />
-              </NavLink>
-            }
-          />
-          <span className="right floated content">
+        <NavLink to={`/items/${item.id}`} style={{ width: '125px' }}>
+          <div
+            style={{
+              border: 'solid',
+              borderWidth: '1px',
+              width: '125px',
+              height: '105px',
+              borderColor: 'white', // `${colorSelector(item.quality)}`,
+              margin: '4px',
+              boxShadow: `3px 3px 5px -2px ${colorSelector(item.quality)}`,
+              padding: '3px'
+            }}
+          >
+            <Image
+              src={itemSlotIcon(item.slot)}
+              avatar={true}
+              style={{ margin: '1px' }}
+            />
+            <Header
+              as="h5"
+              // color={colorSelector(item.quality)}
+              style={{ margin: '2px' }}
+            >
+              {item.name}
+            </Header>
             {!item.equipped && props.isCurrentChar && (
-              <span>
-                <button className="mini button" onClick={handleEquipClick}>
-                  <i className="plus icon" />
-                </button>
-                <button className="mini button" onClick={handleRemoveClick}>
-                  <i className="trash alternate outline icon" />
-                </button>
-              </span>
+              <Button.Group size="mini">
+                <Button icon={true} onClick={handleEquipClick} size="mini">
+                  <Icon name="plus" />
+                </Button>
+                <Button.Or />
+                <Button icon={true} onClick={handleRemoveClick} size="mini">
+                  <Icon name="trash" />
+                </Button>
+              </Button.Group>
             )}
+
             {item.equipped && props.isCurrentChar && (
-              <button className="mini button" onClick={handleUnequipClick}>
-                <i className="minus icon centered" />
-              </button>
+              <Button
+                icon={true}
+                onClick={handleUnequipClick}
+                size="mini"
+                stlye={{ verticalAlign: 'bottom' }}
+              >
+                <Icon name="minus" />
+              </Button>
             )}
-          </span>
-        </div>
+          </div>
+        </NavLink>
       )}
     </div>
   );
 };
 
-export default ItemCardSmall;
+export default CharacterItemCardSmall;
+
+/* 
+
+    style={{
+                  position: 'absolute',
+                  alignContent: 'center',
+                  justifyContent: 'center',
+                  height: '100%',
+                  width: '100%'
+                }}
+
+<div className={`${colorSelector(item.quality)} small`}>
+          <div style={{ border: '1px', borderColor: 'black' }}>
+            
+          </div>
+          <span className="right floated content">
+            
+          
+          </span>
+        </div>
+  */

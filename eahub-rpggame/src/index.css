@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #183661;
 }
 
 body.noScroll {
@@ -27,4 +28,12 @@ code {
 }
 .animate-exit {
   display: none;
+}
+
+.ui-container {
+  background: #1c4b82;
+}
+
+.ui.celled.grid {
+  background: #dae1e7;
 }

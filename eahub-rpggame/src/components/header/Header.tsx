@@ -23,9 +23,7 @@ const Header: React.FunctionComponent = () => {
       <NavLink to="/characters" className="item" activeClassName="item active">
         Characters
       </NavLink>
-      <NavLink to="/items" className="item" activeClassName="item active">
-        Items
-      </NavLink>
+
       <div className="right menu">
         {defaultCharacter && (
           <CharacterSmallCard character={defaultCharacter} />

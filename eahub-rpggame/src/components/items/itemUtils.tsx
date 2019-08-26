@@ -82,7 +82,9 @@ export const itemSlotIcon = (slot: number) => {
       return iconPath + '008-boot.png';
     case 8:
       return iconPath + '010-cape.png';
-    case 9 || 10:
+    case 9:
+      return iconPath + '009-engagement.png';
+    case 10:
       return iconPath + '009-engagement.png';
     case 11:
       return iconPath + '013-necklace.png';

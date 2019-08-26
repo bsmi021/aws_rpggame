@@ -1,0 +1,13 @@
+.character.statbox {
+  align-self: center;
+  text-align: center;
+  padding: 1px;
+  margin: 2px;
+}
+.character.statbox div {
+  margin: 1px;
+}
+.character.statbox.dps {
+  color: #62374e;
+  margin: 1px;
+}

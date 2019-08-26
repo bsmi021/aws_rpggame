@@ -54,26 +54,6 @@ export const ItemCard: React.FunctionComponent<IProps> = props => {
           <div className="header">{item.name}</div>
           <div className="meta">{item.slot_name}</div>
           <div className="description">{item.description}</div>
-
-          {(defaultCharacter &&
-            defaultCharacter.inventory &&
-            (defaultCharacter.inventory.filter((i: IItem) => i.id === item.id)
-              .length === 0 && (
-              <div className="extra content ">
-                <button className="ui mini button" onClick={onEquipClick}>
-                  <i className="plus icon green" />
-                  Equip
-                </button>
-              </div>
-            ))) ||
-            (defaultCharacter && defaultCharacter.inventory && (
-              <div className="extra content ">
-                <button className="ui mini button" onClick={onUnequipClick}>
-                  <i className="minus icon red" />
-                  Unequip
-                </button>
-              </div>
-            ))}
         </div>
       </NavLink>
     )
@@ -81,3 +61,23 @@ export const ItemCard: React.FunctionComponent<IProps> = props => {
 };
 
 export default ItemCard;
+
+// {(defaultCharacter &&
+//   defaultCharacter.inventory &&
+//   (defaultCharacter.inventory.filter((i: IItem) => i.id === item.id)
+//     .length === 0 && (
+//     <div className="extra content ">
+//       <button className="ui mini button" onClick={onEquipClick}>
+//         <i className="plus icon green" />
+//         Equip
+//       </button>
+//     </div>
+//   ))) ||
+//   (defaultCharacter && defaultCharacter.inventory && (
+//     <div className="extra content ">
+//       <button className="ui mini button" onClick={onUnequipClick}>
+//         <i className="minus icon red" />
+//         Unequip
+//       </button>
+//     </div>
+//   ))}

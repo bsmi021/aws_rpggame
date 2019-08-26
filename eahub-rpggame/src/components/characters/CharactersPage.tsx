@@ -7,7 +7,7 @@ import CharacterList from './CharacterList';
 import { getCharacters } from '../../actions/CharacterActions';
 import { ICharacter } from '../../types/CharacterTypes';
 import { IApplicationState } from '../../store/Store';
-import { Segment } from 'semantic-ui-react';
+import { Segment, Button, Icon } from 'semantic-ui-react';
 import { firstBy } from 'thenby';
 
 interface IProps extends RouteComponentProps {
@@ -40,12 +40,13 @@ class CharactersPage extends React.Component<IProps> {
             >
               Create New
             </NavLink>
-            <button
-              className="ui small button blue float-right"
+            <Button
+              icon={true}
               onClick={() => this.props.getCharacters()}
+              color="blue"
             >
-              <i className="refresh icon" />
-            </button>
+              <Icon name="refresh" />
+            </Button>
           </Segment>
           <Segment>
             <CharacterList

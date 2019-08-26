@@ -27,12 +27,17 @@ export enum ItemActionTypes {
   LOADING = 'ITEMS/LOADING',
   CREATE = 'ITEMS/CREATE',
   EDIT = 'ITEMS/EDIT',
-  ERROR = 'ITEMS/ERROR'
+  ERROR = 'ITEMS/ERROR',
+  CLEAR = 'ITEMS/CLEAR'
 }
 
 export interface IItemsGetAllAction {
   type: ItemActionTypes.GETALL;
   items: IItem[];
+}
+
+export interface IItemsClearAction {
+  type: ItemActionTypes.CLEAR;
 }
 
 export interface IItemGetSingleAction {
@@ -65,6 +70,7 @@ export type ItemActions =
   | IItemGetSingleAction
   | IItemsGetAllAction
   | IItemErrorAction
+  | IItemsClearAction
   | IItemLoadingAction;
 
 export interface IItemsState {

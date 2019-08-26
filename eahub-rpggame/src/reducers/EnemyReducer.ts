@@ -22,6 +22,14 @@ export const enemiesReducer: Reducer<IEnemyState, EnemyActions> = (
         enemiesLoading: false
       };
     }
+    case EnemyActionTypes.CLEAR: {
+      return {
+        ...state,
+        enemies: [],
+        enemiesLoading: false,
+        currentEnemy: null
+      };
+    }
     case EnemyActionTypes.GETSINGLE: {
       return {
         ...state,

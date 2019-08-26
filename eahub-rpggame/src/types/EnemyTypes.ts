@@ -19,9 +19,13 @@ export interface IEnemy {
 export enum EnemyActionTypes {
   LOADING = 'ENEMIES/LOADING',
   GETALL = 'ENEMIES/GETALL',
-  GETSINGLE = 'ENEMIES/GETSINGLE'
+  GETSINGLE = 'ENEMIES/GETSINGLE',
+  CLEAR = 'ENEMIES/CLEAR'
 }
 
+export interface IEnemyClearAction {
+  type: EnemyActionTypes.CLEAR;
+}
 export interface IEnemyLoadingAction {
   type: EnemyActionTypes.LOADING;
 }
@@ -39,6 +43,7 @@ export interface IEnemyGetSingleAction {
 export type EnemyActions =
   | IEnemyLoadingAction
   | IEnemyGetAllAction
+  | IEnemyClearAction
   | IEnemyGetSingleAction;
 
 export interface IEnemyState {

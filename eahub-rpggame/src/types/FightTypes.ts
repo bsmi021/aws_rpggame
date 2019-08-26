@@ -61,7 +61,12 @@ export enum FightActionTypes {
   ATTACK = 'FIGHTS/ATTACK',
   LOADING = 'FIGHTS/LOADING',
   ERROR = 'FIGHTS/ERROR',
-  CLAIM = 'FIGHTS/CLAIM'
+  CLAIM = 'FIGHTS/CLAIM',
+  CLEAR = 'FIGHTS/CLEAR'
+}
+
+export interface IFightClearAction {
+  type: FightActionTypes.CLEAR;
 }
 
 export interface IFightLoadingAction {
@@ -96,6 +101,7 @@ export type FightActions =
   | IFightStartAction
   | IFightGetSingleAction
   | IFightClaimLootAction
+  | IFightClearAction
   | IFightAttackAction;
 
 export interface IFightState {
@@ -106,4 +112,5 @@ export interface IFightState {
   readonly fightsLoading: boolean;
   readonly fightStartError: boolean;
   readonly currentFightEnemy: IEnemy | null;
+  readonly currentFightCharacter: IFightCharacter | null;
 }

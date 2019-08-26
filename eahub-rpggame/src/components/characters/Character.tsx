@@ -4,23 +4,18 @@ import {
   ICharacterInventoryItem
 } from '../../types/CharacterTypes';
 import withLoader from '../common/withLoader';
-import { Grid, Tab, Card, Progress, Segment } from 'semantic-ui-react';
-import ItemCardSmall from './CharacterItemCardSmall';
-import { IItem } from '../../types/ItemTypes';
+import { Grid, Tab, Card, Progress, Header } from 'semantic-ui-react';
+import CharacterItemCardSmall from './CharacterItemCardSmall';
 import { classIcon, calcDps, isMyCharacter } from './charUtils';
-import {
-  setDefaultCharacter,
-  equipItem,
-  unequipItem
-} from '../../actions/CharacterActions';
+import { setDefaultCharacter } from '../../actions/CharacterActions';
 import { firstBy } from 'thenby';
 import { useSelector, useDispatch } from 'react-redux';
 import { IApplicationState } from '../../store/Store';
 import { startFight } from '../../actions/FightActions';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
-import { IFightStartAction } from '../../types/FightTypes';
 import { Redirect } from 'react-router';
+import './styles/character.css';
 
 interface IProps {
   character?: ICharacter;
@@ -77,17 +72,27 @@ const Character: React.FunctionComponent<IProps> = props => {
       return null;
     }
     return (
-      <Grid stackable={true}>
+      <Grid style={{ height: '40em' }}>
         {character.inventory ? (
-          <Grid.Row>
-            <Grid.Column width={8}>
-              <Card.Group stackable={true}>
+          <Grid.Row columns="equal">
+            <Grid.Column>
+              <Header>Bag:</Header>
+              <Card.Group
+                stackable={true}
+                itemsPerRow={3}
+                style={{ overflow: 'auto', height: '37em' }}
+              >
                 {character.inventory
                   .filter(a => !a.equipped)
-                  .sort(firstBy(s => s.slot))
+                  .sort(
+                    firstBy(s => s.slot, { direction: -1 }).thenBy(
+                      s => s.quality,
+                      { direction: -1 }
+                    )
+                  )
                   .map((item: ICharacterInventoryItem) => {
                     return (
-                      <ItemCardSmall
+                      <CharacterItemCardSmall
                         key={item.id}
                         item={item}
                         charId={character.id}
@@ -97,14 +102,19 @@ const Character: React.FunctionComponent<IProps> = props => {
                   })}
               </Card.Group>
             </Grid.Column>
-            <Grid.Column width={8}>
-              <Card.Group stackable={true}>
+
+            <Grid.Column>
+              <Header>Equipped</Header>
+              <Card.Group
+                stackable={true}
+                style={{ overflow: 'auto', height: '37em' }}
+              >
                 {character.inventory
                   .filter(a => a.equipped)
                   .sort(firstBy(s => s.slot))
                   .map((item: ICharacterInventoryItem) => {
                     return (
-                      <ItemCardSmall
+                      <CharacterItemCardSmall
                         key={item.id}
                         item={item}
                         charId={character.id}
@@ -202,24 +212,41 @@ const Character: React.FunctionComponent<IProps> = props => {
               />
             </Grid.Column>
           </Grid.Row>
-          <Grid.Row columns="equal" color="grey">
+          <Grid.Row columns="equal">
             <Grid.Column>
-              <span>Health: {character.hit_points}</span>
-            </Grid.Column>
-            <Grid.Column>
-              <span>DPS: {calcDps(character)}/s</span>
-            </Grid.Column>
-            <Grid.Column>
-              <div>
-                Damage Range: {character.min_damage}-{character.max_damage}
+              <div style={{ alignContent: 'center', textAlign: 'center' }}>
+                <div style={{ color: 'green' }}>{character.hit_points}</div>
+                <div>Health</div>
               </div>
             </Grid.Column>
             <Grid.Column>
-              <div>Critical Strike %: {character.crit_chance}</div>
+              <div className="character statbox">
+                <div className="character statbox dps">
+                  {calcDps(character)}
+                </div>
+                <div>DPS</div>
+              </div>
             </Grid.Column>
             <Grid.Column>
-              <div>
-                Attack Speed: {(character.attack_speed / 1000).toFixed(1)}s
+              <div className="character statbox">
+                <div>
+                  {character.min_damage}-{character.max_damage}
+                </div>
+                <div>Damage</div>
+              </div>
+            </Grid.Column>
+            <Grid.Column>
+              <div className="character statbox">
+                <div className="character statbox crit">
+                  {Math.round(character.crit_chance * 100)}%
+                </div>
+                <div>Crit.</div>
+              </div>
+            </Grid.Column>
+            <Grid.Column>
+              <div className="character statbox">
+                <div>{(character.attack_speed / 1000).toFixed(1)}s</div>
+                Speed
               </div>
             </Grid.Column>
           </Grid.Row>

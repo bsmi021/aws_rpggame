@@ -52,7 +52,8 @@ export enum CharacterActionTypes {
   UNEQUIPITEM = 'CHARACTERS/UNEQUIPITEM',
   ADDITEM = 'CHARACTERS/ADDITEM',
   REMOVEITEM = 'CHARACTERS/REMOVEITEM',
-  ERROR = 'CHARACTERS/ERROR'
+  ERROR = 'CHARACTERS/ERROR',
+  CLEAR = 'CHARACTERS/CLEAR'
 }
 
 export interface ICharacterGetAllAction {
@@ -60,6 +61,9 @@ export interface ICharacterGetAllAction {
   characters: ICharacter[];
 }
 
+export interface ICharacterClearAction {
+  type: CharacterActionTypes.CLEAR;
+}
 export interface ICharacterGetSingleAction {
   type: CharacterActionTypes.GETSINGLE;
   character: ICharacter;
@@ -125,6 +129,7 @@ export type CharacterActions =
   | ICharacterEquipItemAction
   | ICharacterRemoveItemAction
   | ICharacterErrorAction
+  | ICharacterClearAction
   | ICharacterAddItemAction;
 
 export interface ICharacterState {
