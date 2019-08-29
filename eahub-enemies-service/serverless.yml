@@ -7,6 +7,7 @@ provider:
   stage: dev
   environment:
     DYNAMODB_TABLE: ${self:service}-ENEMIES-${opt:stage, self:provider.stage}
+    EN_RACE_TABLE: ${self:service}-ENEMYRACES-${opt:stage, self:provider.stage}
     REGION: ${self:provider.region}
   iamRoleStatements:
     - Effect: 'Allow'
@@ -23,7 +24,9 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
         - dynamodb:DescribeTable
-      Resource: 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}'
+      Resource:
+        - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}'
+        - 'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.EN_RACE_TABLE}'
 
 package:
   exclude:
@@ -58,6 +61,20 @@ functions:
 
 resources:
   Resources:
+    EnemiyRaceDynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: en_race_id
+            AttributeType: N
+        KeySchema:
+          - AttributeName: en_race_id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 2
+        TableName: ${self:provider.environment.EN_RACE_TABLE}
     EnemiesDynamoDBTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain

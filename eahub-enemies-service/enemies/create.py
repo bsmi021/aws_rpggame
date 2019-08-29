@@ -7,11 +7,11 @@ from datetime import datetime
 from uuid import uuid4
 
 if 'ENV' in os.environ:
-    from models import EnemyModel
-    from utils import ModelEncoder
+    from models import EnemyModel, EnemyRaceModel
+    from utils import ModelEncoder, get_body, create_response
 else:
-    from enemies.models import EnemyModel
-    from enemies.utils import ModelEncoder
+    from enemies.models import EnemyModel, EnemyRaceModel
+    from enemies.utils import ModelEncoder, get_body, create_response
 
 log_level = os.environ.get('LOG_LEVEL', 'INFO')
 logging.root.setLevel(logging.getLevelName(log_level))
@@ -20,25 +20,46 @@ logger = logging.getLogger(__name__)
 
 def create(event, context):
     logger.debug(f'Event received: {json.dumps(event)}')
-    data = json.loads(event.get('body'))
+    try:
+        data = get_body(event, logger)
 
-    enemy = EnemyModel(id=str(uuid4()),
-                       # realm=str(uuid4()),
-                       status="",
-                       level=data['level'],
-                       en_race=data['race'],
-                       created_at=datetime.utcnow())
+        en_race_id = data['race']
 
-    enemy.save()
+        en_race = EnemyRaceModel.get(en_race_id)
 
-    response = {
-        'statusCode': 200,
-        'body': json.dumps(enemy, cls=ModelEncoder),
-        'headers': {
-            'Access-Control-Allow-Origin': '*'
-        }
-    }
+        enemy = EnemyModel(id=str(uuid4()),
+                        # realm=str(uuid4()),
+                        status="",
+                        level=data['level'],
+                        en_race=en_race_id,
+                        en_race_name=en_race.en_race_name,
+                        base_hp=en_race.base_hp,
+                        can_block=en_race.can_block,
+                        can_dodge=en_race.can_dodge,
+                        block_amt=en_race.block_amt,
+                        block_pct=en_race.block_pct,
+                        dodge_pct=en_race.dodge_pct,
+                        base_ap=en_race.base_ap,
+                        ap_mult=en_race.ap_mult,
+                        attack_speed=en_race.attack_speed,
+                        can_crit=en_race.can_crit,
+                        crit_chance=en_race.crit_chance,
+                        created_at=datetime.utcnow())
 
-    logger.debug(f'Response: {json.dumps(response)}')
+        enemy.save()
 
-    return response
+        response = create_response(200, json.dumps(enemy, cls=ModelEncoder))
+        # {
+        #     'statusCode': 200,
+        #     'body': json.dumps(enemy, cls=ModelEncoder),
+        #     'headers': {
+        #         'Access-Control-Allow-Origin': '*'
+        #     }
+        # }
+
+        logger.debug(f'Response: {json.dumps(response)}')
+
+        return response
+    except Exception as ex:
+        logger.error(f'There was an error creating the enemy: {ex}')
+        return create_response(500, {'error': 'Unable to create the enemy'})
