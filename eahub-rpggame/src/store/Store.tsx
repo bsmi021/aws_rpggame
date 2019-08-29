@@ -20,7 +20,7 @@ export interface IApplicationState {
   characters: ICharacterState;
   items: IItemsState;
   auth: IAuthState;
-  fights: IFightState;
+  // fights: IFightState;
   enemies: IEnemyState;
 }
 
@@ -28,7 +28,7 @@ const rootReducer = combineReducers<IApplicationState>({
   characters: charactersReducer,
   items: itemsReducer,
   auth: authReducer,
-  fights: fightsReducer,
+  //  fights: fightsReducer,
   enemies: enemiesReducer
 });
 
@@ -45,7 +45,7 @@ export default function configureStore(): Store<IApplicationState> {
         auth: store.getState().auth,
         characters: store.getState().characters,
         items: store.getState().items,
-        fights: store.getState().fights,
+        //      fights: store.getState().fights,
         enemies: store.getState().enemies
       });
     }, 1000)

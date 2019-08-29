@@ -8,7 +8,7 @@ import { Auth } from 'aws-amplify';
 import { signedIn } from '../../actions/AuthActions';
 import awsmobile from '../../config';
 import { Segment } from 'semantic-ui-react';
-
+import { StoreContext } from 'redux-react-hook';
 interface IProps {
   store: Store<IApplicationState>;
   signedIn: typeof signedIn;

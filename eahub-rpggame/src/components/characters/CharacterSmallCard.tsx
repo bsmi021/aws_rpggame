@@ -1,9 +1,12 @@
 import * as React from 'react';
 
-import { NavLink } from 'react-router-dom';
+import { NavLink, Redirect } from 'react-router-dom';
 import { classIcon } from './charUtils';
 import { ICharacter } from '../../types/CharacterTypes';
-import { Segment, Grid, Header } from 'semantic-ui-react';
+import { Segment, Grid, Header, Button } from 'semantic-ui-react';
+import { useSelector, useDispatch } from 'react-redux';
+import { IApplicationState } from '../../store/Store';
+import { startFight } from '../../actions/FightActions';
 
 interface IProps {
   character?: ICharacter;
@@ -11,6 +14,14 @@ interface IProps {
 
 export const CharacterSmallCard: React.FunctionComponent<IProps> = props => {
   const character = props.character;
+  const dispatch = useDispatch();
+
+  const onStartFight = (e: any) => {
+    e.preventDefault();
+
+    dispatch(startFight());
+  };
+
   if (!character) {
     return null;
   }

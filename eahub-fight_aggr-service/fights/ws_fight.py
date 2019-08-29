@@ -323,12 +323,22 @@ def start_fight(event, context):
     fight_data = json.loads(fight_response.get('Payload').read())
     fight_data = _get_body(fight_data)
 
+    logger.info(json.dumps(fight_data))
+
+    fight = _get_fight(fight_data['id'])
+
     data = _get_response(200, fight_data)
 
-    _send_to_connection(connection_id, fight_data, event)
+    c_data = {
+        'message': 'FIGHT_STARTED',
+        'fight': fight,
+        'character': char_data,
+        'enemy': enemy_data
+    }
+
+    _send_to_connection(connection_id, c_data, event)
 
     return _get_response(200, "Fight sent to requestor")
-
 
 def on_player_win(fight, event):
     if fight['is_active']:
@@ -347,18 +357,26 @@ def on_player_win(fight, event):
 
     for f_char in fight['characters']:
         char = _get_character(f_char['id'])
+        curr_level = char['level']
 
         xp_earned = experienceCalcs.xp_earned(char['level'], enemy_level)
 
         c_data = {
             'message': 'XP_EARNED',
-            'xp_earned': xp_earned
+            'xp_earned': xp_earned,
+            'prev_level': curr_level
         }
 
         # send out to add xp to the character
         _add_xp_to_char(char['id'], xp_earned)
 
+        char = _get_character(f_char['id'])
+        
+        c_data['curr_level'] = char['level']
+
         _send_to_connection(connection_id, c_data, event)
+
+        loot_awarded = random.randint(1, 100) * .01 <= .42
 
         if char['level'] == 1:
             c_data = {
@@ -469,7 +487,7 @@ def player_attack(event, context):
 
     if not fight_data['is_active']:
         data = {
-            'message': 'FIGHT_OVER',
+            'message': 'FIGHT_ENDED',
             'fight': fight_data
         }
 
@@ -497,7 +515,7 @@ def player_attack(event, context):
     fight_data = _get_fight(fight_id)
 
     c_data = {
-        "message": 'FIGHT_ACTIVE' if fight_data['enemy']['status'] == 'ALIVE' else 'FIGHT_OVER',
+        "message": 'ATTACK_SUCCESS',
         "fight": fight_data,
         "attack": attack_data
     }
@@ -510,5 +528,11 @@ def player_attack(event, context):
     response = _get_response(200, "Attack action completed")
 
     _send_to_connection(connection_id, c_data, event)
+
+    if not fight_data['is_active']:
+        c_data = {
+            'message': 'FIGHT_ENDED',
+            'fight': fight_data
+        }
 
     return response

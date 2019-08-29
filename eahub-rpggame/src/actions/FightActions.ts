@@ -41,7 +41,7 @@ export const getFight: ActionCreator<
 export const attack: ActionCreator<
   ThunkAction<Promise<AnyAction>, IApplicationState, null, IFightAttackAction>
 > = (characterId: string, fightId: string) => {
-  return async (dispatch: ThunkDispatch<{}, {}, AnyAction>, getState) => {
+  return async (dispatch: Dispatch, getState) => {
     dispatch(loading());
 
     const attackrequest = {
@@ -54,11 +54,11 @@ export const attack: ActionCreator<
     );
 
     if (attackresponse) {
-      let fight = await API.get('fightsaggr', `fights/${fightId}`, null);
+      const fight = await API.get('fightsaggr', `fights/${fightId}`, null);
 
-      if (fight.enemy.status === 'DEAD') {
-        fight = await API.get('fightsaggr', `fights/${fightId}`, null);
-      }
+      // if (fight.enemy.status === 'DEAD') {
+      //   fight = await API.get('fightsaggr', `fights/${fightId}`, null);
+      // }
 
       return dispatch({
         type: FightActionTypes.ATTACK,

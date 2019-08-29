@@ -75,10 +75,10 @@ def handler(event, context):
             'slot': item['slot'],
             'slot_name': item['slot_name'],
             'level': item['level'],
-            'is_archer': item['is_archer'],
-            'is_warrior': item['is_warrior'],
-            'is_rogue': item['is_rogue'],
-            'is_sorcerer': item['is_sorcerer']
+            # 'is_archer': item['is_archer'],
+            # 'is_warrior': item['is_warrior'],
+            # 'is_rogue': item['is_rogue'],
+            # 'is_sorcerer': item['is_sorcerer']
             }
 
         inventory.append(item)

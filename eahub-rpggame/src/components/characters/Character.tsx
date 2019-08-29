@@ -4,7 +4,15 @@ import {
   ICharacterInventoryItem
 } from '../../types/CharacterTypes';
 import withLoader from '../common/withLoader';
-import { Grid, Tab, Card, Progress, Header } from 'semantic-ui-react';
+import {
+  Grid,
+  Tab,
+  Card,
+  Progress,
+  Header,
+  Dropdown,
+  Form
+} from 'semantic-ui-react';
 import CharacterItemCardSmall from './CharacterItemCardSmall';
 import { classIcon, calcDps, isMyCharacter } from './charUtils';
 import { setDefaultCharacter } from '../../actions/CharacterActions';
@@ -16,6 +24,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { Redirect } from 'react-router';
 import './styles/character.css';
+import { label } from '@aws-amplify/ui';
 
 interface IProps {
   character?: ICharacter;
@@ -34,9 +43,6 @@ const Character: React.FunctionComponent<IProps> = props => {
   const dispatch = useDispatch();
 
   // TODO: Remove this
-  const currentFight = useSelector((store: IApplicationState) => {
-    return store.fights.currentFight;
-  });
 
   const [fightRedirect, setFightRedirect] = React.useState(false);
 
@@ -76,7 +82,7 @@ const Character: React.FunctionComponent<IProps> = props => {
         {character.inventory ? (
           <Grid.Row columns="equal">
             <Grid.Column>
-              <Header>Bag:</Header>
+              <Header>Bag:</Header>{' '}
               <Card.Group
                 stackable={true}
                 itemsPerRow={3}
@@ -141,9 +147,9 @@ const Character: React.FunctionComponent<IProps> = props => {
     }
   ];
 
-  if (currentFight && currentFight.is_active) {
-    return <Redirect to={`/fights/${currentFight.id}`} />;
-  }
+  // if (currentFight && currentFight.is_active) {
+  //   return <Redirect to={`/fights/${currentFight.id}`} />;
+  // }
 
   if (!character) {
     return null;
@@ -261,4 +267,4 @@ const Character: React.FunctionComponent<IProps> = props => {
   );
 };
 
-export default withLoader(Character);
+export default Character;
