@@ -28,22 +28,33 @@ export const enemyHealthBarColor = (currHp: number, baseHp: number) => {
   }
 };
 
-export const getAttackText = (attack: any, enemy: any) => {
-  const name = 'The enemy'; // enemy.en_race_name.toLowerCase();
-  if (attack.is_missed) {
-    return `You missed the ${name}.`;
-  }
-  if (attack.is_dodged) {
-    return `The ${name} dodged your attack.`;
-  }
-  if (attack.is_blocked) {
-    return `The ${name} blocked your attack you only hit them for ${attack.attack_amt} damage.`;
-  }
-  if (attack.is_critical) {
-    return `You critically hit the ${name} for ${attack.attack_amt} damage!`;
+export const getAttackText = (attack: any, enemy: any, character: any) => {
+  let sourceName = '';
+  let targetName = '';
+  if (attack.source_tp === 'C') {
+    sourceName = character.name;
+    targetName = enemy.race_name;
+  } else {
+    sourceName = enemy.race_name;
+    targetName = character.name;
   }
 
-  return `You hit the ${name} for ${attack.attack_amt} damage.`;
+  const name = enemy.en_race_name.toLowerCase();
+
+  if (attack.is_missed) {
+    return `${sourceName}'s attack missed ${targetName}.`;
+  }
+  if (attack.is_dodged) {
+    return `${targetName} dodged ${sourceName}'s attack.`;
+  }
+  if (attack.is_blocked) {
+    return `${targetName} blocked your ${sourceName}'s attack, ${attack.attack_amt} damage.`;
+  }
+  if (attack.is_critical) {
+    return `${sourceName} critically hit ${targetName} for ${attack.attack_amt} damage!`;
+  }
+
+  return `${sourceName} hit ${targetName} for ${attack.attack_amt} damage.`;
 };
 
 const WSFight: React.FC = () => {
@@ -129,6 +140,12 @@ const WSFight: React.FC = () => {
         setLeveledUp(data.prev_level > data.curr_level);
         setCurrLevel(data.curr_level);
         setPrevLevel(data.prev_level);
+        break;
+      case 'ENEMY_ATTACK':
+        setCurrentFight(data.fight);
+        setCurrentFightEnemy(data.fight.enemy);
+        setCurrentFightCharacter(data.fight.characters[0]);
+        setAttacks((attacks: any) => [...attacks, data.attack]);
         break;
       case 'LOOT':
         setLoot(data.loot_item);
@@ -280,7 +297,7 @@ const WSFight: React.FC = () => {
                             <List.Item key={att.id} style={{ width: '100%' }}>
                               <List.Description>
                                 {currentFightEnemy &&
-                                  getAttackText(att, currentFightEnemy)}
+                                  getAttackText(att, enemy, character)}
                               </List.Description>
                             </List.Item>
                           );

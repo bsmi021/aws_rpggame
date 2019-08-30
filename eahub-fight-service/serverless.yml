@@ -92,6 +92,13 @@ functions:
           path: fights/{id}/attack
           method: put
           cors: true
+  enemyAttacks:
+    handler: fights/en_attack.handler
+    events:
+      - http:
+          path: fights/{id}/enemy_attack
+          method: put
+          cors: true
 
   listattacks:
     handler: fights/list_attacks.list

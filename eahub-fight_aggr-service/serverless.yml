@@ -8,6 +8,14 @@ provider:
   websocketApiName: ${self:service}-{$opt:stage, self:provider.stage}
   websocketApiRouteSelectionExpression: $request.body.action
   environment:
+    APIG_ENDPOINT:
+      Fn::Join:
+        - ''
+        - - Ref: WebsocketsApi
+          - .execute-api.
+          - Ref: AWS::Region
+          - .amazonaws.com/
+          - ${opt:stage, self:provider.stage}
     FIGHT_CONN_TABLE_NAME: ${self:service}-FIGHT_CONNECTIONS-${opt:stage, self:provider.stage}
     GET_CHAR_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-get
     CHAR_ADD_ITEM_SERVICE: sascraft-character-service-${opt:stage, self:provider.stage}-add_item
@@ -16,11 +24,14 @@ provider:
     CREATE_ENEMY_SERVICE: sascraft-enemy-service-${opt:stage, self:provider.stage}-create
     CREATE_FIGHT_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-create
     ATTACK_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-attack
+    ENEMY_ATTACK_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-enemyAttacks
     GET_FIGHT_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-get
     LIST_ITEM_SERVICE: sascraft-item-service-${opt:stage, self:provider.stage}-list
     GET_ITEM_SERVICE: sascraft-item-service-${opt:stage, self:provider.stage}-get
     CREATE_LOOT_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-createloot
     CLAIM_LOOT_SERVICE: sascraft-fight-service-${opt:stage, self:provider.stage}-claimloot
+
+    ENEMY_FIGHT_SERVICE: sascraft-fight-aggr-service-${opt:stage, self:provider.stage}-enemyFightHandler
     REGION: ${self:provider.region}
   iamRoleStatements:
     - Effect: 'Allow'
@@ -39,6 +50,8 @@ provider:
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-enemy-service-${opt:stage, self:provider.stage}-get'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-item-service-${opt:stage, self:provider.stage}-list'
         - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-item-service-${opt:stage, self:provider.stage}-get'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-fight-aggr-service-${opt:stage, self:provider.stage}-enemyFightHandler'
+        - 'arn:aws:lambda:${opt:region, self:provider.region}:*:function:sascraft-fight-service-${opt:stage, self:provider.stage}-enemyAttacks'
     - Effect: Allow
       Action:
         - 'execute-api:ManageConnections'
@@ -73,12 +86,6 @@ functions:
           method: post
           cors: true
 
-  # handleFightUpdate:
-  #   handler: fights/fightUpdateHandler.handler
-  #   events:
-  #     - stream:
-  #         type: dynamodb
-  #         arn: 'arn:aws:dynamodb:us-east-2:815248853218:table/sascraft-fight-service-FIGHTS-dev/stream/2019-08-21T14:12:37.275'
   get:
     handler: fights/get.get
     events:
@@ -109,6 +116,9 @@ functions:
     events:
       - websocket:
           route: claimLoot
+  enemyFightHandler:
+    handler: fights/ws_fight.enemy_attacks
+    timeout: 360
 
   claim_loot:
     handler: fights/claim_loot.handler

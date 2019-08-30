@@ -7,6 +7,7 @@ import json
 from datetime import datetime
 from uuid import uuid4
 from enum import Enum
+from py_linq import Enumerable
 
 
 from pynamodb.attributes import (UnicodeAttribute,
@@ -51,6 +52,12 @@ class Enemy (MapAttribute):
     base_hp = NumberAttribute()
     curr_hp = NumberAttribute()
     prev_hp = NumberAttribute()
+    min_damage = NumberAttribute(null=True, default=0)
+    max_damage = NumberAttribute(null=True, default=0)
+    can_crit = BooleanAttribute(null=True, default=False)
+    crit_chance = NumberAttribute(null=True, default=0)
+    attack_speed = NumberAttribute(null=True, default=0)
+
     status = UnicodeAttribute(default="ALIVE")
 
 
@@ -58,6 +65,7 @@ class Character (MapAttribute):
     id = UnicodeAttribute()
     attack_speed = NumberAttribute()
     crit_chance = NumberAttribute()
+    base_hp = NumberAttribute(default=0, null=True)
     curr_hp = NumberAttribute()
     prev_hp = NumberAttribute()
     status = UnicodeAttribute(default='ALIVE')
@@ -95,6 +103,7 @@ class FightModel(BaseModel):
     is_active = BooleanAttribute(default=True)
     enemy = Enemy()
     characters = ListAttribute(of=Character)
+    connectionId = UnicodeAttribute(null=True)
 
     def update_enemy_hp(self, attack_amt):
         self.enemy.prev_hp = self.enemy.curr_hp
@@ -107,6 +116,20 @@ class FightModel(BaseModel):
             self.enemy.curr_hp -= attack_amt
 
         self.save()
+
+    def update_character_hp(self, char_id, attack_amt):
+        character = Enumerable(self.characters).first_or_default(lambda x: x.id == char_id)
+        character.prev_hp = character.curr_hp
+
+        if character.curr_hp - attack_amt <= 0:
+            character.curr_hp = 0
+            character.status = 'DEAD'
+            self.is_active = False
+        else:
+            character.curr_hp -= attack_amt
+
+        self.save()
+
 
     def save(self, conditional_operator=None, **expected_values):
         self.updated_at = datetime.utcnow()

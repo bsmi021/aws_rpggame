@@ -82,10 +82,9 @@ const Character: React.FunctionComponent<IProps> = props => {
         {character.inventory ? (
           <Grid.Row columns="equal">
             <Grid.Column>
-              <Header>Bag:</Header>{' '}
+              <Header>Bag:</Header>
               <Card.Group
                 stackable={true}
-                itemsPerRow={3}
                 style={{ overflow: 'auto', height: '37em' }}
               >
                 {character.inventory
@@ -99,7 +98,7 @@ const Character: React.FunctionComponent<IProps> = props => {
                   .map((item: ICharacterInventoryItem) => {
                     return (
                       <CharacterItemCardSmall
-                        key={item.id}
+                        key={item.inv_id}
                         item={item}
                         charId={character.id}
                         isCurrentChar={defaultCharacterId === character.id}
@@ -121,7 +120,7 @@ const Character: React.FunctionComponent<IProps> = props => {
                   .map((item: ICharacterInventoryItem) => {
                     return (
                       <CharacterItemCardSmall
-                        key={item.id}
+                        key={item.inv_id}
                         item={item}
                         charId={character.id}
                         isCurrentChar={defaultCharacterId === character.id}

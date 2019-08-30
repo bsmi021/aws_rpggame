@@ -49,10 +49,10 @@ def calc_attack(player, fight):
     if is_missed:
         attack_amt = 0
     else:
-        is_critical = _calc_critical(.21)
+        is_critical = _calc_critical(player.crit_chance)
 
         if is_critical and not is_missed:
-            attack_amt = round(attack_amt * 2.5)
+            attack_amt = round(attack_amt * 1.5)
 
         if fight.enemy.can_block:
             is_blocked = _calc_block(fight.enemy.block_pct)
@@ -67,6 +67,7 @@ def calc_attack(player, fight):
 
             if is_dodged:
                 attack_amt = 0
+                is_critical = False
 
     return {'attack_amt': attack_amt,
             'is_blocked': is_blocked,

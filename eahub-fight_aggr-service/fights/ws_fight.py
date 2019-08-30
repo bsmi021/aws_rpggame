@@ -7,6 +7,7 @@ import logging
 import random
 import boto3
 from py_linq import Enumerable
+import time
 
 if 'ENV' in os.environ:
     from models import FightConnectionModel
@@ -32,9 +33,12 @@ add_xp_lambda = os.environ['ADD_XP_SERVICE']
 create_loot_lambda = os.environ['CREATE_LOOT_SERVICE']
 char_add_item_lambda = os.environ['CHAR_ADD_ITEM_SERVICE']
 claim_loot_lambda = os.environ['CLAIM_LOOT_SERVICE']
+enemy_fight_lambda = os.environ['ENEMY_FIGHT_SERVICE']
+enemy_attack_lambda = os.environ['ENEMY_ATTACK_SERVICE']
 
 lambda_client = boto3.client('lambda', region_name=region)
 
+apig_url = os.environ['APIG_ENDPOINT']
 
 def _get_response(status_code, body):
     if not isinstance(body, str):
@@ -63,9 +67,9 @@ def _get_connection_id(event):
 
 def _send_to_connection(connection_id, data, event):
     """ Sends a payload of data to the specified connection """
-    gatewayapi = boto3.client("apigatewaymanagementapi",
-                              endpoint_url="https://" + event["requestContext"]["domainName"] +
-                              "/" + event["requestContext"]["stage"])
+    gatewayapi = boto3.client("apigatewaymanagementapi", endpoint_url="https://" + apig_url)
+                            #   endpoint_url="https://" + event["requestContext"]["domainName"] +
+                            #   "/" + event["requestContext"]["stage"])
     return gatewayapi.post_to_connection(ConnectionId=connection_id,
                                          Data=json.dumps(data).encode('utf-8'))
 
@@ -310,7 +314,8 @@ def start_fight(event, context):
                     'max_damage': char_data['max_damage']
                 }
             ],
-            'enemy': enemy_data
+            'enemy': enemy_data,
+            'connectionId': connection_id
         })
     }
 
@@ -338,7 +343,51 @@ def start_fight(event, context):
 
     _send_to_connection(connection_id, c_data, event)
 
+    lambda_client.invoke(FunctionName=enemy_fight_lambda,
+                         InvocationType='Event',
+                         Payload=json.dumps({
+                             'pathParameters': { 'id': fight['id']}
+                         }))
+
     return _get_response(200, "Fight sent to requestor")
+
+
+def enemy_attacks(event, context):
+    try:
+        fight_id = event['pathParameters']['id']
+
+        fight = _get_fight(fight_id)
+
+        while fight['is_active']:
+            response = lambda_client.invoke(FunctionName=enemy_attack_lambda,
+                                            InvocationType='RequestResponse',
+                                            Payload=json.dumps(event))
+            
+            attack_data = json.loads(response.get('Payload').read())
+            attack_data = _get_body(attack_data)
+
+            fight = _get_fight(fight_id)
+
+            c_data = {
+                'message': 'ENEMY_ATTACK',
+                'attack': attack_data,
+                'fight': fight
+            }
+
+            _send_to_connection(fight['connectionId'], c_data, event)
+
+            if fight['is_active']:
+                time.sleep(fight['enemy']['attack_speed'] / 1000)
+            else: break
+
+        response = _get_response(200, 'Enemy fought well')
+        return response
+    except Exception as ex:
+        logger.error(f'Error in handling enemy: {ex}')
+        response = _get_response(500, f'Error in enemy fighting: {ex}')
+        return response
+
+
 
 def on_player_win(fight, event):
     if fight['is_active']:
