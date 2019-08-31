@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   Grid,
   Segment,
@@ -7,10 +7,36 @@ import {
   Transition,
   List
 } from 'semantic-ui-react';
-import Sockette from 'sockette';
+import useWebSocket from 'react-use-websocket';
 import { useSelector } from 'react-redux';
 import { IApplicationState } from '../../store/Store';
-let ws: Sockette;
+// let ws: Sockette;
+
+const CONNECTION_STATUS_CONNECTING = 0;
+const CONNECTION_STATUS_OPEN = 1;
+const CONNECTION_STATUS_CLOSING = 2;
+const CONNECTION_STATUS_CLOSED = 3;
+
+const connectionStates = (readyState: number) => {
+  switch (readyState) {
+    case CONNECTION_STATUS_CONNECTING:
+      return 'Connecting';
+      break;
+    case CONNECTION_STATUS_OPEN:
+      return 'Open';
+      break;
+    case CONNECTION_STATUS_CLOSING:
+      return 'Closing';
+    case CONNECTION_STATUS_CLOSED:
+      return 'Closed';
+    default:
+      return 'Undefined';
+  }
+  // [CONNECTION_STATUS_CONNECTING]: 'Connecting',
+  // [CONNECTION_STATUS_OPEN]: 'Open',
+  // [CONNECTION_STATUS_CLOSING]: 'Closing',
+  // [CONNECTION_STATUS_CLOSED]: 'Closed',}
+};
 
 export const enemyHealthBarColor = (currHp: number, baseHp: number) => {
   const enemyLifeLeftPct = currHp / baseHp;
@@ -33,13 +59,11 @@ export const getAttackText = (attack: any, enemy: any, character: any) => {
   let targetName = '';
   if (attack.source_tp === 'C') {
     sourceName = character.name;
-    targetName = enemy.race_name;
+    targetName = enemy.en_race_name;
   } else {
-    sourceName = enemy.race_name;
+    sourceName = enemy.en_race_name;
     targetName = character.name;
   }
-
-  const name = enemy.en_race_name.toLowerCase();
 
   if (attack.is_missed) {
     return `${sourceName}'s attack missed ${targetName}.`;
@@ -48,7 +72,7 @@ export const getAttackText = (attack: any, enemy: any, character: any) => {
     return `${targetName} dodged ${sourceName}'s attack.`;
   }
   if (attack.is_blocked) {
-    return `${targetName} blocked your ${sourceName}'s attack, ${attack.attack_amt} damage.`;
+    return `${targetName} blocked ${sourceName}'s attack, ${attack.attack_amt} damage.`;
   }
   if (attack.is_critical) {
     return `${sourceName} critically hit ${targetName} for ${attack.attack_amt} damage!`;
@@ -74,43 +98,29 @@ const WSFight: React.FC = () => {
   const [character, setCharacter] = useState(); // used to display non fight info
   const [enemy, setEnemy] = useState(); // used to display non fight info
 
+  const [socketUrl, setSocketUrl] = useState(
+    'wss://eofvkzzz58.execute-api.us-east-2.amazonaws.com/dev'
+  );
+  const [messageHistory, setMessageHistory] = useState([]);
+  const [sendMessage, lastMessage, readyState] = useWebSocket(socketUrl);
+
   const defaultCharacter = useSelector((state: IApplicationState) => {
     return state.characters.defaultCharacter;
   });
 
   React.useEffect(() => {
-    const socketUrl =
-      'wss://eofvkzzz58.execute-api.us-east-2.amazonaws.com/dev';
-    if (!ws && !connected) {
-      ws = new Sockette(socketUrl, {
-        onopen: e => {
-          setConnected(true);
-          console.log('Connected');
-        },
-        onclose: e => {
-          setConnected(false);
-        },
-        onreconnect: e => {
-          console.log('Reconnecting');
-        },
-        onmessage: e => {
-          onMessageReceived(e);
-        }
-      });
-      //   return () => {
-      //     ws && ws.close();
-      //   };
+    if (lastMessage !== null) {
+      setMessageHistory(prev => prev.concat(lastMessage));
+      onMessageReceived(lastMessage);
     }
-  });
-  //   React.useEffect(() => {
-  //     ws && ws.close();
-  //   }, []);
+  }, [lastMessage]);
+
+  const connectionStatus = connectionStates(readyState);
 
   const onMessageReceived = (message: MessageEvent) => {
     const data = JSON.parse(message.data);
     switch (data.message) {
       case 'FIGHT_STARTED':
-        console.log(data.fight);
         setCurrentFight(data.fight);
         setCharacter(data.character);
         setEnemy(data.enemy);
@@ -157,34 +167,39 @@ const WSFight: React.FC = () => {
       default:
         break;
     }
-    // console.log(JSON.parse(JSON.parse(data).body).yourMessage);
   };
   const onStartFight = () => {
     if (defaultCharacter) {
-      ws.json({
-        action: 'startFight',
-        char_id: defaultCharacter.id
-      });
+      sendMessage(
+        JSON.stringify({
+          action: 'startFight',
+          char_id: defaultCharacter.id
+        })
+      );
     }
   };
 
   const onAttack = () => {
-    ws.json({
-      action: 'playerAttack',
-      fight_id: currentFight.id,
-      char_id: currentFight.characters[0].id
-    });
+    sendMessage(
+      JSON.stringify({
+        action: 'playerAttack',
+        fight_id: currentFight.id,
+        char_id: currentFight.characters[0].id
+      })
+    );
     setAttackActive(false);
 
     setTimeout(() => setAttackActive(true), character.attack_speed);
   };
 
   const onClaimLoot = () => {
-    ws.json({
-      action: 'claimLoot',
-      fight_id: currentFight.id,
-      char_id: currentFight.characters[0].id
-    });
+    sendMessage(
+      JSON.stringify({
+        action: 'claimLoot',
+        fight_id: currentFight.id,
+        char_id: currentFight.characters[0].id
+      })
+    );
   };
 
   return (
