@@ -25,6 +25,7 @@ import { Action } from 'redux';
 import { Redirect } from 'react-router';
 import './styles/character.css';
 import { label } from '@aws-amplify/ui';
+import CharacterXPBar from './CharacterXPBar';
 
 interface IProps {
   character?: ICharacter;
@@ -32,19 +33,9 @@ interface IProps {
   setDefaultCharacter: typeof setDefaultCharacter;
 }
 
-export type ReduxDispatch = ThunkDispatch<IApplicationState, any, Action>;
-
-const useReduxDispatch: ReduxDispatch = () => {
-  return useDispatch<ReduxDispatch>();
-};
-
 const Character: React.FunctionComponent<IProps> = props => {
   const character = props.character;
   const dispatch = useDispatch();
-
-  // TODO: Remove this
-
-  const [fightRedirect, setFightRedirect] = React.useState(false);
 
   const userId: string =
     useSelector((state: IApplicationState) => {
@@ -57,21 +48,6 @@ const Character: React.FunctionComponent<IProps> = props => {
         ? state.characters.defaultCharacter.id
         : '';
     }) || '';
-
-  // handle start fight click
-  const onStartFight = (e: any) => {
-    e.preventDefault();
-
-    dispatch(startFight());
-  };
-
-  const fightButton = () => {
-    return (
-      <button className="ui mini button left floated" onClick={onStartFight}>
-        start fight
-      </button>
-    );
-  };
 
   const inventoryPane = () => {
     if (!character) {
@@ -146,123 +122,102 @@ const Character: React.FunctionComponent<IProps> = props => {
     }
   ];
 
-  // if (currentFight && currentFight.is_active) {
-  //   return <Redirect to={`/fights/${currentFight.id}`} />;
-  // }
-
   if (!character) {
     return null;
   }
 
   return (
-    <React.Fragment>
-      <div>
-        <Grid celled={true} container={true} stackable={false}>
-          <Grid.Row color="black">
-            <Grid.Column width={5}>
-              <span>
-                <div
-                  style={{
-                    background: 'white',
-                    width: '50px',
-                    height: '50px',
-                    float: 'left'
-                  }}
-                >
-                  <img
-                    src={`${classIcon(character.player_class_name)}`}
-                    style={{ height: '50px', width: '50px' }}
-                    alt={character.player_class_name}
-                  />
-                </div>
-                <h2
-                  style={{
-                    float: 'left',
-                    marginLeft: '10px',
-                    verticalAlign: 'middle'
-                  }}
-                >
-                  {character.name}
-                </h2>
-              </span>
-            </Grid.Column>
-            <Grid.Column width={10}>
-              <h4>
-                Level {character.level} {character.player_class_name}
-              </h4>
-              {isMyCharacter(character.account, userId) &&
-                character.id !== defaultCharacterId && (
-                  <button
-                    className="ui mini button left floated"
-                    onClick={e => {
-                      e.preventDefault();
-                      props.setDefaultCharacter(props.character);
-                    }}
-                  >
-                    <i className={`user icon`} />
-                    Make Default
-                  </button>
-                )}
-              {character.id === defaultCharacterId && fightButton()}
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
-            <Grid.Column>
-              <Progress
-                total={character.xp_to_lvl}
-                value={character.curr_lvl_xp}
-                color="purple"
-                active={true}
-                label={`${character.curr_lvl_xp}/${character.xp_to_lvl}`}
+    <Grid celled={true} container={true} stackable={false}>
+      <Grid.Row style={{ background: '#0D4067' }}>
+        <Grid.Column width={5}>
+          <span>
+            <div
+              style={{
+                background: 'white',
+                width: '50px',
+                height: '50px',
+                float: 'left'
+              }}
+            >
+              <img
+                src={`${classIcon(character.player_class_name)}`}
+                style={{ height: '50px', width: '50px' }}
+                alt={character.player_class_name}
               />
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row columns="equal">
-            <Grid.Column>
-              <div style={{ alignContent: 'center', textAlign: 'center' }}>
-                <div style={{ color: 'green' }}>{character.hit_points}</div>
-                <div>Health</div>
-              </div>
-            </Grid.Column>
-            <Grid.Column>
-              <div className="character statbox">
-                <div className="character statbox dps">
-                  {calcDps(character)}
-                </div>
-                <div>DPS</div>
-              </div>
-            </Grid.Column>
-            <Grid.Column>
-              <div className="character statbox">
-                <div>
-                  {character.min_damage}-{character.max_damage}
-                </div>
-                <div>Damage</div>
-              </div>
-            </Grid.Column>
-            <Grid.Column>
-              <div className="character statbox">
-                <div className="character statbox crit">
-                  {Math.round(character.crit_chance * 100)}%
-                </div>
-                <div>Crit.</div>
-              </div>
-            </Grid.Column>
-            <Grid.Column>
-              <div className="character statbox">
-                <div>{(character.attack_speed / 1000).toFixed(1)}s</div>
-                Speed
-              </div>
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
-            <Grid.Column>
-              <Tab menu={{ secondary: true }} panes={panes} />
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </div>
-    </React.Fragment>
+            </div>
+            <h2
+              style={{
+                float: 'left',
+                marginLeft: '10px',
+                verticalAlign: 'middle'
+              }}
+            >
+              {character.name}
+            </h2>
+            {isMyCharacter(character.account, userId) &&
+              character.id !== defaultCharacterId && (
+                <button
+                  className="ui mini button left floated"
+                  onClick={e => {
+                    e.preventDefault();
+                    props.setDefaultCharacter(props.character);
+                  }}
+                >
+                  <i className={`user icon`} />
+                  Make Default
+                </button>
+              )}
+          </span>
+        </Grid.Column>
+        <Grid.Column width={10}>
+          <h4>
+            Level {character.level} {character.player_class_name}
+          </h4>
+          <CharacterXPBar character={character} />
+        </Grid.Column>
+      </Grid.Row>
+      <Grid.Row columns="equal">
+        <Grid.Column>
+          <div style={{ alignContent: 'center', textAlign: 'center' }}>
+            <div style={{ color: 'green' }}>{character.hit_points}</div>
+            <div>Health</div>
+          </div>
+        </Grid.Column>
+        <Grid.Column>
+          <div className="character statbox">
+            <div className="character statbox dps">{calcDps(character)}</div>
+            <div>DPS</div>
+          </div>
+        </Grid.Column>
+        <Grid.Column>
+          <div className="character statbox">
+            <div>
+              {character.min_damage}-{character.max_damage}
+            </div>
+            <div>Damage</div>
+          </div>
+        </Grid.Column>
+        <Grid.Column>
+          <div className="character statbox">
+            <div className="character statbox crit">
+              {Math.round(character.crit_chance * 100)}%
+            </div>
+            <div>Crit.</div>
+          </div>
+        </Grid.Column>
+        <Grid.Column>
+          <div className="character statbox">
+            <div>{(character.attack_speed / 1000).toFixed(1)}s</div>
+            Speed
+          </div>
+        </Grid.Column>
+      </Grid.Row>
+      <Grid.Row>
+        <Grid.Column>
+          <Tab menu={{ secondary: true }} panes={panes} />
+        </Grid.Column>
+      </Grid.Row>
+    </Grid>
   );
 };
 

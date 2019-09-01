@@ -358,6 +358,8 @@ def enemy_attacks(event, context):
 
         fight = _get_fight(fight_id)
 
+        time.sleep(fight['enemy']['attack_speed'] / 1000)
+
         while fight['is_active']:
             response = lambda_client.invoke(FunctionName=enemy_attack_lambda,
                                             InvocationType='RequestResponse',
@@ -369,7 +371,7 @@ def enemy_attacks(event, context):
             fight = _get_fight(fight_id)
 
             c_data = {
-                'message': 'ENEMY_ATTACK',
+                'message': 'ATTACK_SUCCESS',
                 'attack': attack_data,
                 'fight': fight
             }
@@ -422,12 +424,13 @@ def on_player_win(fight, event):
         char = _get_character(f_char['id'])
         
         c_data['curr_level'] = char['level']
+        c_data['leveled_up'] = c_data['prev_level'] != char['level']
 
         _send_to_connection(connection_id, c_data, event)
 
         loot_awarded = random.randint(1, 100) * .01 <= .42
 
-        if char['level'] == 1:
+        if char['level'] == 1 or not loot_awarded:
             c_data = {
                 'message': 'NO_LOOT'
             }

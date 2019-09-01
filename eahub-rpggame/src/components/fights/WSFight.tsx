@@ -10,6 +10,8 @@ import {
 import useWebSocket from 'react-use-websocket';
 import { useSelector } from 'react-redux';
 import { IApplicationState } from '../../store/Store';
+import config from '../../config';
+import FightHealthBar from './FightHealthBar';
 // let ws: Sockette;
 
 const CONNECTION_STATUS_CONNECTING = 0;
@@ -98,11 +100,10 @@ const WSFight: React.FC = () => {
   const [character, setCharacter] = useState(); // used to display non fight info
   const [enemy, setEnemy] = useState(); // used to display non fight info
 
-  const [socketUrl, setSocketUrl] = useState(
-    'wss://eofvkzzz58.execute-api.us-east-2.amazonaws.com/dev'
-  );
   const [messageHistory, setMessageHistory] = useState([]);
-  const [sendMessage, lastMessage, readyState] = useWebSocket(socketUrl);
+  const [sendMessage, lastMessage, readyState] = useWebSocket(
+    config.apiGateway.FIGHT_AGGR_WS_URL
+  );
 
   const defaultCharacter = useSelector((state: IApplicationState) => {
     return state.characters.defaultCharacter;
@@ -203,12 +204,14 @@ const WSFight: React.FC = () => {
   };
 
   return (
-    <div className="ui-container">
+    <div className="ui container">
       <div>
         <button
           className="ui primary button"
           onClick={onStartFight}
-          disabled={currentFight && currentFight.is_active}
+          disabled={
+            readyState === 1 && (currentFight && currentFight.is_active)
+          }
         >
           Start
         </button>
@@ -222,16 +225,11 @@ const WSFight: React.FC = () => {
                   <div>
                     {character.name} | {character.level}
                   </div>
-                  <Progress
-                    total={character.hit_points}
-                    value={currentFightCharacter.curr_hp}
-                    color={enemyHealthBarColor(
-                      currentFightCharacter.curr_hp,
-                      character.hit_points
-                    )}
-                  >
-                    {currentFightCharacter.curr_hp}/{character.hit_points}
-                  </Progress>
+                  <FightHealthBar
+                    totalHP={currentFightCharacter.base_hp}
+                    currHP={currentFightCharacter.curr_hp}
+                    status={currentFightCharacter.status}
+                  />
                 </Segment>
               </Grid.Column>
               <Grid.Column>
@@ -239,17 +237,11 @@ const WSFight: React.FC = () => {
                   <div>
                     {enemy.en_race_name} | {enemy.level}
                   </div>
-                  <Progress
-                    active={currentFight.enemy.status.toLowerCase() === 'alive'}
-                    total={currentFight.enemy.base_hp}
-                    value={currentFight.enemy.curr_hp}
-                    color={enemyHealthBarColor(
-                      currentFight.enemy.curr_hp,
-                      currentFight.enemy.base_hp
-                    )}
-                  >
-                    {currentFightEnemy.curr_hp}/{currentFightEnemy.base_hp}
-                  </Progress>
+                  <FightHealthBar
+                    totalHP={currentFightEnemy.base_hp}
+                    currHP={currentFightEnemy.curr_hp}
+                    status={currentFightEnemy.status}
+                  />
                 </Segment>
               </Grid.Column>
             </Grid.Row>

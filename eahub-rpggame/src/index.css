@@ -5,7 +5,31 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #183661;
+  /* background: #183661; */
+  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#183661+0,2989d8+42,207cca+60,183661+100 */
+  background: #183661; /* Old browsers */
+  background: -moz-linear-gradient(
+    top,
+    #012036 0%,
+    #2989d8 42%,
+    #207cca 60%,
+    #012036 100%
+  ); /* FF3.6-15 */
+  background: -webkit-linear-gradient(
+    top,
+    #012036 0%,
+    #2989d8 42%,
+    #207cca 60%,
+    #012036 100%
+  ); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(
+    to bottom,
+    #012036 0%,
+    #2989d8 42%,
+    #207cca 60%,
+    #012036 100%
+  ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#012036', endColorstr='#012036',GradientType=0 ); /* IE6-9 */
 }
 
 body.noScroll {

@@ -17,10 +17,20 @@ const Header: React.FunctionComponent = () => {
 
   return (
     <div className="ui pointing stackable inverted menu">
-      <NavLink className="item" to="/" activeClassName="item">
+      <NavLink
+        className="item"
+        to="/"
+        activeClassName="item"
+        style={{ background: '#012036' }}
+      >
         <h3>SASCraft Demo</h3>
       </NavLink>
-      <NavLink to="/characters" className="item" activeClassName="item active">
+      <NavLink
+        to="/characters"
+        className="item"
+        activeClassName="item active"
+        style={{ background: '#012036' }}
+      >
         Characters
       </NavLink>
       <NavLink
