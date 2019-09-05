@@ -38,7 +38,7 @@ const Routes: React.FunctionComponent<RouteComponentProps> = props => {
         height: '100vh',
         maxHeight: '100vh',
         position: 'relative',
-        margin: '0',
+        margin: '2px',
         padding: '0'
       }}
     >
@@ -51,13 +51,13 @@ const Routes: React.FunctionComponent<RouteComponentProps> = props => {
         style={{
           padding: 0,
           overflow: 'auto',
-          margin: 0,
+          margin: '2px',
           height: '50rem',
           maxHeight: '50rem',
           background: '#dae1e7'
         }}
       >
-        <Grid.Column style={{ overflow: 'auto', padding: '0', margin: '0' }}>
+        <Grid.Column style={{ overflow: 'auto', padding: '0', margin: '2px' }}>
           <Switch key={props.location.key} location={props.location}>
             <Redirect exact={true} from="/" to="/home" />
             <Route exact={true} path="/home" component={Home} />
@@ -79,8 +79,8 @@ const Routes: React.FunctionComponent<RouteComponentProps> = props => {
           </Switch>
         </Grid.Column>
       </Grid.Row>
-      <Grid.Row style={{ padding: 0, margin: 0 }}>
-        <Grid.Column style={{ padding: 0, margin: 0 }}>
+      <Grid.Row style={{ padding: 0, margin: '2px' }}>
+        <Grid.Column style={{ padding: 0, margin: '2px' }}>
           <Footer />
         </Grid.Column>
       </Grid.Row>

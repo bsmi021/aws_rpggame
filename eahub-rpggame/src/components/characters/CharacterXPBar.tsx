@@ -8,7 +8,7 @@ export interface IProps {
 
 const CharacterXPBar: React.SFC<IProps> = props => {
   return (
-    <div>
+    <div style={{ color: 'white', margin: '2px' }}>
       <Progress
         total={props.character.xp_to_lvl}
         value={props.character.curr_lvl_xp}

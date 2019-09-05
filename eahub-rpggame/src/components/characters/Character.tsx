@@ -141,19 +141,23 @@ const Character: React.FunctionComponent<IProps> = props => {
             >
               <img
                 src={`${classIcon(character.player_class_name)}`}
-                style={{ height: '50px', width: '50px' }}
+                style={{ height: '50px', width: '50px', color: 'white' }}
                 alt={character.player_class_name}
               />
             </div>
-            <h2
+            <div
               style={{
                 float: 'left',
                 marginLeft: '10px',
-                verticalAlign: 'middle'
+                verticalAlign: 'middle',
+                color: 'white'
               }}
             >
-              {character.name}
-            </h2>
+              <h2 style={{ marginBottom: '2px' }}>{character.name}</h2>
+              <h4 style={{ marginTop: '2px' }}>
+                Level {character.level} {character.player_class_name}
+              </h4>
+            </div>
             {isMyCharacter(character.account, userId) &&
               character.id !== defaultCharacterId && (
                 <button
@@ -170,10 +174,12 @@ const Character: React.FunctionComponent<IProps> = props => {
           </span>
         </Grid.Column>
         <Grid.Column width={10}>
-          <h4>
-            Level {character.level} {character.player_class_name}
-          </h4>
-          <CharacterXPBar character={character} />
+          <div style={{ color: 'white' }}>
+            Experience Points:
+            <br />
+            <CharacterXPBar character={character} />
+            {`${character.curr_lvl_xp}/${character.xp_to_lvl}`}
+          </div>
         </Grid.Column>
       </Grid.Row>
       <Grid.Row columns="equal">
