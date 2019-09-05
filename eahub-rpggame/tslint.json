@@ -1,12 +1,16 @@
 {
   "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
+  "plugins": ["react-hooks"],
   "rules": {
     "ordered-imports": false,
     "object-literal-sort-keys": false,
     "jsx-no-lambda": false,
     "no-debugger": false,
-    "no-console": false
+    "no-console": false,
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   },
+
   "linterOptions": {
     "exclude": [
       "config/**/*.js",

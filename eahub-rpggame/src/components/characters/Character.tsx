@@ -54,7 +54,7 @@ const Character: React.FunctionComponent<IProps> = props => {
       return null;
     }
     return (
-      <Grid style={{ height: '40em' }}>
+      <Grid style={{ height: '40em', overflow: 'auto' }}>
         {character.inventory ? (
           <Grid.Row columns="equal">
             <Grid.Column>
@@ -197,7 +197,7 @@ const Character: React.FunctionComponent<IProps> = props => {
             <div>Damage</div>
           </div>
         </Grid.Column>
-        <Grid.Column>
+        <Grid.Column className="column stats">
           <div className="character statbox">
             <div className="character statbox crit">
               {Math.round(character.crit_chance * 100)}%

@@ -30,10 +30,10 @@ class PlayerClass(Enum):
     ROGUE = 4
 
 damage_base = {
-            PlayerClass.ARCHER.value: { 'base_damage': 18, 'speed': 1500, 'can_use_2h': True, 'can_dual_wield': False },
-            PlayerClass.WARRIOR.value: { 'base_damage': 30, 'speed': 2500, 'can_use_2h': True, 'can_dual_wield': True },
-            PlayerClass.SORCERER.value: { 'base_damage': 20, 'speed': 1800, 'can_use_2h': True, 'can_dual_wield': False },
-            PlayerClass.ROGUE.value: { 'base_damage': 13, 'speed': 1300, 'can_use_2h': False, 'can_dual_wield': True }
+            PlayerClass.ARCHER.value: { 'base_damage': 22, 'speed': 1500, 'can_use_2h': True, 'can_dual_wield': False },
+            PlayerClass.WARRIOR.value: { 'base_damage': 45, 'speed': 2500, 'can_use_2h': True, 'can_dual_wield': True },
+            PlayerClass.SORCERER.value: { 'base_damage': 27, 'speed': 1800, 'can_use_2h': True, 'can_dual_wield': False },
+            PlayerClass.ROGUE.value: { 'base_damage': 18, 'speed': 1300, 'can_use_2h': False, 'can_dual_wield': True }
         }
 
 
@@ -142,11 +142,13 @@ class CharacterModel(BaseModel):
         super(CharacterModel, self).save()
 
     def calc_stats(self):
-        base_min = round(((self.base_min_damage * (1 + self.level * .1)) * 1.55))
-        base_max = round(((self.base_max_damage * (1 + self.level * .1)) * 1.55))
+        base_damage = self.base_damage
+
+        base_min = round((((self.base_damage / 4.75) * (1 + self.level * .1)) * 1.55))
+        base_max = round((((self.base_damage / 2) * (1 + self.level * .1)) * 1.55))
         base_crit = self.base_crit_chance
         base_hp = round(((self.base_hp * (1 + self.level * .1)) * 6.5))
-        base_damage = self.base_damage
+        
 
         if self.inventory is not None:
             equipped_items = Enumerable(self.inventory).where(lambda x: x.equipped)

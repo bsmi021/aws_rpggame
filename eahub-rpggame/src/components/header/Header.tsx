@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { IApplicationState } from '../../store/Store';
 import { signOut } from '../../actions/AuthActions';
 import CharacterSmallCard from '../characters/CharacterSmallCard';
+import { Button } from 'semantic-ui-react';
 
 const Header: React.FunctionComponent = () => {
   const isAuthenticated = useSelector(
@@ -16,20 +17,21 @@ const Header: React.FunctionComponent = () => {
   const dispatch = useDispatch();
 
   return (
-    <div className="ui pointing stackable inverted menu">
-      <NavLink
-        className="item"
-        to="/"
-        activeClassName="item"
-        style={{ background: '#012036' }}
-      >
-        <h3>SASCraft Demo</h3>
+    <div className="ui pointing inverted stackable menu">
+      <NavLink className="item" to="/" activeClassName="item">
+        <img
+          src="/sas-logo-white.png"
+          alt="SAS logo"
+          style={{ width: '100px' }}
+        />
+        <h3 style={{ marginLeft: '10px', verticalAlign: 'middle' }}>
+          SASCraft Demo
+        </h3>
       </NavLink>
       <NavLink
         to="/characters"
-        className="item"
+        className="item dropdown"
         activeClassName="item active"
-        style={{ background: '#012036' }}
       >
         Characters
       </NavLink>
@@ -41,15 +43,15 @@ const Header: React.FunctionComponent = () => {
       >
         Fight
       </NavLink>
-      <div className="right menu">
+      <div className="right menu" style={{ padding: 0 }}>
         {defaultCharacter && (
           <CharacterSmallCard character={defaultCharacter} />
         )}
         {isAuthenticated && (
           <div className="item">
-            <button className="ui button" onClick={() => dispatch(signOut())}>
+            <Button size="mini" onClick={() => dispatch(signOut())}>
               Log Out
-            </button>
+            </Button>
           </div>
         )}
       </div>

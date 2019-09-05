@@ -30,34 +30,32 @@ class CharactersPage extends React.Component<IProps> {
     const search = searchParams.get('search') || '';
 
     return (
-      <div className="ui container-fluid">
-        <div className="ui container">
-          <Segment>
-            <h2>Characters</h2>
-            <NavLink
-              to="/characters/new"
-              className="ui button primary float-right"
-            >
-              Create New
-            </NavLink>
-            <Button
-              icon={true}
-              onClick={() => this.props.getCharacters()}
-              color="blue"
-            >
-              <Icon name="refresh" />
-            </Button>
-          </Segment>
-          <Segment>
-            <CharacterList
-              search={search}
-              characters={this.props.characters.sort(
-                firstBy(c => c.name, { direction: -1 })
-              )}
-              loading={this.props.loading}
-            />
-          </Segment>
-        </div>
+      <div className="ui container" style={{ margin: '1px', padding: 0 }}>
+        <Segment>
+          <NavLink
+            to="/characters/new"
+            className="ui button primary float-right"
+          >
+            Create New
+          </NavLink>
+          <Button
+            icon={true}
+            onClick={() => this.props.getCharacters()}
+            color="blue"
+            style={{ margin: '1px' }}
+          >
+            <Icon name="refresh" />
+          </Button>
+        </Segment>
+        <Segment>
+          <CharacterList
+            search={search}
+            characters={this.props.characters.sort(
+              firstBy(c => c.name, { direction: -1 })
+            )}
+            loading={this.props.loading}
+          />
+        </Segment>
       </div>
     );
   }

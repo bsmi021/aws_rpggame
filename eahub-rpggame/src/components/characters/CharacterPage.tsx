@@ -9,6 +9,7 @@ import { ICharacter } from '../../types/CharacterTypes';
 import { IApplicationState } from '../../store/Store';
 import Character from './Character';
 import { firstBy } from 'thenby';
+import { Container } from 'semantic-ui-react';
 
 interface IProps extends RouteComponentProps<{ id: string }> {
   getCharacter: typeof getCharacter;
@@ -26,7 +27,10 @@ class CharacterPage extends React.Component<IProps> {
     const character = this.props.character;
 
     return (
-      <div className="ui container">
+      <Container
+        id="charpage"
+        style={{ overflow: 'auto', margin: 0, padding: 0 }}
+      >
         {character ? (
           <Character
             character={character}
@@ -36,7 +40,7 @@ class CharacterPage extends React.Component<IProps> {
         ) : (
           <></>
         )}
-      </div>
+      </Container>
     );
   }
 }

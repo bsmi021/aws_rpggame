@@ -11,3 +11,8 @@
   color: #62374e;
   margin: 1px;
 }
+
+.column.stats {
+  padding: 1px;
+  margin: 2px;
+}

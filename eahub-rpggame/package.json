@@ -57,6 +57,7 @@
     "@types/react-transition-group": "^4.2.2",
     "@types/redux-thunk": "^2.1.0",
     "@types/zen-observable": "^0.8.0",
+    "eslint-plugin-react-hooks": "^2.0.1",
     "tslint": "^5.18.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-react": "^4.0.0"

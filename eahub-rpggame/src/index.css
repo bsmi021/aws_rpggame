@@ -61,3 +61,7 @@ code {
 .ui.celled.grid {
   background: #dae1e7;
 }
+
+.ui.menu .item {
+  padding: 6px;
+}

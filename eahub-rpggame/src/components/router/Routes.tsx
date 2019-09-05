@@ -19,6 +19,8 @@ import CharacterForm from '../characters/CharacterForm';
 import ItemForm from '../items/ItemForm';
 import WSFight from '../fights/WSFight';
 import WSFightPage from '../fights/WSFightPage';
+import Footer from '../footer/Footer';
+import { Container, Grid } from 'semantic-ui-react';
 
 const RoutesWrap: React.FunctionComponent = () => {
   return (
@@ -30,28 +32,69 @@ const RoutesWrap: React.FunctionComponent = () => {
 
 const Routes: React.FunctionComponent<RouteComponentProps> = props => {
   return (
-    <div className="ui middle aligned center inverted container">
-      <Header />
+    <Grid
+      container={true}
+      style={{
+        height: '100vh',
+        maxHeight: '100vh',
+        position: 'relative',
+        margin: '0',
+        padding: '0'
+      }}
+    >
+      <Grid.Row style={{ padding: 0, margin: 0 }}>
+        <Grid.Column style={{ padding: 0, margin: 0 }}>
+          <Header />
+        </Grid.Column>
+      </Grid.Row>
+      <Grid.Row
+        style={{
+          padding: 0,
+          overflow: 'auto',
+          margin: 0,
+          height: '50rem',
+          maxHeight: '50rem',
+          background: '#dae1e7'
+        }}
+      >
+        <Grid.Column style={{ overflow: 'auto', padding: '0', margin: '0' }}>
+          <Switch key={props.location.key} location={props.location}>
+            <Redirect exact={true} from="/" to="/home" />
+            <Route exact={true} path="/home" component={Home} />
+            <Route exact={true} path="/characters" component={CharactersPage} />
+            <Route
+              exact={true}
+              path="/characters/new"
+              component={CharacterForm}
+            />
+            <Route
+              exact={true}
+              path="/characters/:id"
+              component={CharacterPage}
+            />
 
-      <Switch key={props.location.key} location={props.location}>
-        <Redirect exact={true} from="/" to="/home" />
-        <Route exact={true} path="/home" component={Home} />
-        <Route exact={true} path="/characters" component={CharactersPage} />
-        <Route exact={true} path="/characters/new" component={CharacterForm} />
-        <Route exact={true} path="/characters/:id" component={CharacterPage} />
-        <Route exact={true} path="/items" component={ItemsPage} />
-        <Route exact={true} path="/items/new" component={ItemForm} />
-        <Route exact={true} path="/items/:id" component={ItemPage} />
-        <Route exact={true} path="/fight" component={WSFightPage} />
-        <Route component={NotFoundPage} />
-      </Switch>
-    </div>
+            <Route exact={true} path="/items/:id" component={ItemPage} />
+            <Route exact={true} path="/fight" component={WSFightPage} />
+            <Route component={NotFoundPage} />
+          </Switch>
+        </Grid.Column>
+      </Grid.Row>
+      <Grid.Row style={{ padding: 0, margin: 0 }}>
+        <Grid.Column style={{ padding: 0, margin: 0 }}>
+          <Footer />
+        </Grid.Column>
+      </Grid.Row>
+    </Grid>
   );
 };
 
 export default RoutesWrap;
 
 /*
+
+      </Container>
+
+
       <TransitionGroup>
         <CSSTransition
           key={props.location.key}
